@@ -1,0 +1,121 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineSystem.cmake:211 (message)"
+      - "CMakeLists.txt:5 (project)"
+    message: |
+      The system is: Windows - 10.0.19045 - AMD64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:5 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler:  
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      .NET Framework 向け Microsoft (R) Build Engine バージョン 16.11.2+f32259642
+      Copyright (C) Microsoft Corporation.All rights reserved.
+      
+      2023/07/24 20:59:39 にビルドを開始しました。
+      ノード 1 上のプロジェクト "C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\3.27.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (既定のターゲット)。
+      PrepareForBuild:
+        ディレクトリ "Debug\\" を作成しています。
+        ディレクトリ "Debug\\CompilerIdCXX.tlog\\" を作成しています。
+      InitializeBuildStatus:
+        "AlwaysCreate" が指定されたため "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" を作成しています。
+      ClCompile:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:classic /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc141.pdb" /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        CMakeCXXCompilerId.cpp
+      Link:
+        C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\3.27.0-rc5\\CompilerIdCXX\\.\\CompilerIdCXX.exe
+      PostBuildEvent:
+        for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
+        :VCEnd
+        CMAKE_CXX_COMPILER=C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\Hostx64\\x64\\cl.exe
+      FinalizeBuildStatus:
+        ファイル "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" を削除しています。
+        "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate" のタッチ タスクを実行しています。
+      プロジェクト "C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\3.27.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (既定のターゲット) のビルドが完了しました。
+      
+      ビルドに成功しました。
+          0 個の警告
+          0 エラー
+      
+      経過時間 00:00:01.47
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
+      
+      The CXX compiler identification is MSVC, found in:
+        ./CMakeFiles/3.27.0-rc5/CompilerIdCXX/CompilerIdCXX.exe
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-3.27/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:5 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "./CMakeFiles/CMakeScratch/TryCompile-dgdo9w"
+      binary: "./CMakeFiles/CMakeScratch/TryCompile-dgdo9w"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
+      CMAKE_EXE_LINKER_FLAGS: "/machine:x64"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: './CMakeFiles/CMakeScratch/TryCompile-dgdo9w'
+        
+        Run Build Command(s): "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin/MSBuild.exe" cmTC_4951c.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        .NET Framework 向け Microsoft (R) Build Engine バージョン 16.11.2+f32259642
+        Copyright (C) Microsoft Corporation.All rights reserved.
+        
+        2023/07/24 20:59:42 にビルドを開始しました。
+        ノード 1 上のプロジェクト "C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\CMakeScratch\\TryCompile-dgdo9w\\cmTC_4951c.vcxproj" (既定のターゲット)。
+        PrepareForBuild:
+          ディレクトリ "cmTC_4951c.dir\\Debug\\" を作成しています。
+          ディレクトリ "C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\CMakeScratch\\TryCompile-dgdo9w\\Debug\\" を作成しています。
+          ディレクトリ "cmTC_4951c.dir\\Debug\\cmTC_4951c.tlog\\" を作成しています。
+        InitializeBuildStatus:
+          "AlwaysCreate" が指定されたため "cmTC_4951c.dir\\Debug\\cmTC_4951c.tlog\\unsuccessfulbuild" を作成しています。
+        ClCompile:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:classic /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_4951c.dir\\Debug\\\\" /Fd"cmTC_4951c.dir\\Debug\\vc141.pdb" /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.27\\Modules\\CMakeCXXCompilerABI.cpp"
+          Microsoft(R) C/C++ Optimizing Compiler Version 19.16.27041 for x64
+          Copyright (C) Microsoft Corporation.  All rights reserved.
+          
+          cl /c /Zi /W3 /WX- /diagnostics:classic /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_4951c.dir\\Debug\\\\" /Fd"cmTC_4951c.dir\\Debug\\vc141.pdb" /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-3.27\\Modules\\CMakeCXXCompilerABI.cpp"
+          
+          CMakeCXXCompilerABI.cpp
+        Link:
+          C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Tools\\MSVC\\14.16.27023\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\CMakeScratch\\TryCompile-dgdo9w\\Debug\\cmTC_4951c.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"./CMakeFiles/CMakeScratch/TryCompile-dgdo9w/Debug/cmTC_4951c.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"./CMakeFiles/CMakeScratch/TryCompile-dgdo9w/Debug/cmTC_4951c.lib" /MACHINE:X64  /machine:x64 cmTC_4951c.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_4951c.vcxproj -> C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\CMakeScratch\\TryCompile-dgdo9w\\Debug\\cmTC_4951c.exe
+        FinalizeBuildStatus:
+          ファイル "cmTC_4951c.dir\\Debug\\cmTC_4951c.tlog\\unsuccessfulbuild" を削除しています。
+          "cmTC_4951c.dir\\Debug\\cmTC_4951c.tlog\\cmTC_4951c.lastbuildstate" のタッチ タスクを実行しています。
+        プロジェクト "C:\\Users\\n-tom\\Desktop\\event\\2023.9.CameraRemoteSDK\\CrSDK_v1.08.00_20230412a_Win64\\CMakeFiles\\CMakeScratch\\TryCompile-dgdo9w\\cmTC_4951c.vcxproj" (既定のターゲット) のビルドが完了しました。
+        
+        ビルドに成功しました。
+            0 個の警告
+            0 エラー
+        
+        経過時間 00:00:00.95
+        
+      exitCode: 0
+...
