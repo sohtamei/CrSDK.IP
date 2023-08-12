@@ -1,0 +1,67 @@
+﻿<!doctype html>
+<html>
+
+<head>
+	<title>WebSocket Client Test</title>
+
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
+<!--
+	<script src="https://ajax.aspnetcdn.com/ajax/jquery.ui/1.11.4/jquery-ui.min.js"></script>
+	<script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/bootstrap.min.js"></script>
+-->
+	<script type="text/javascript">
+		function log(msg) {
+			$('#output').append("" + msg + "<br/>");
+		}
+
+		$(document).ready(function () {
+			var socket;
+
+			$('#connect').click(function () {
+				socket = new WebSocket(document.getElementById('host').value);
+
+				socket.onopen = function(ev) {
+					log("connected");
+				}
+
+				socket.onmessage = function(ev) {
+					log(ev.data);
+				}
+
+				socket.onclose = function(ev) {
+					log("disconnected");
+				}
+
+				socket.onerror = function(ev) {
+					console.log(ev);
+					log("Error");
+				}
+			});
+
+			$('#disconnect').click(function () {
+				socket.close();
+			});
+
+			$('#send').click(function () {
+				var payload = JSON.parse($('#message').val());
+
+			//	payload['__MESSAGE__'] = 'message';
+				console.log(JSON.stringify(payload));
+				return socket.send(JSON.stringify(payload));
+			});
+		});
+	</script>
+</head>
+
+<body>
+	<p><input type="text" id="host" value = 'ws://localhost:8080/'/>
+	<button id="connect">connect</button>
+	<button id="disconnect">disconnect</button></p>
+
+	<p><input type="text" id="message" value='{"a":1, "b":2, "c":3}'/>
+	<button id="send">send</button></p>
+
+	<pre id="output"></pre>
+</body>
+
+</html>

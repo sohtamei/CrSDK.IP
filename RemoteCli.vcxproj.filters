@@ -19,6 +19,15 @@
     <ClCompile Include=".\app\MessageDefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="server.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WebsocketServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="external\jsoncpp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include=".\app\CameraDevice.h">
@@ -62,6 +71,9 @@
     </ClInclude>
     <ClInclude Include=".\app\CRSDK\IDeviceCallback.h">
       <Filter>CRSDK</Filter>
+    </ClInclude>
+    <ClInclude Include="WebsocketServer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

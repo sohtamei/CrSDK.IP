@@ -18,7 +18,14 @@ namespace fs = std::filesystem;
 
 namespace SDK = SCRSDK;
 
-int main()
+typedef std::shared_ptr<cli::CameraDevice> CameraDevicePtr;
+CameraDevicePtr camera = NULL;
+
+typedef std::vector<CameraDevicePtr> CameraDeviceList;
+CameraDeviceList cameraList; // all
+
+
+int remoteCli_init(void)
 {
     // Change global locale to native locale
     // Make the stream's locale the same as the current global locale
@@ -32,7 +39,7 @@ int main()
     if (!init_success) {
         cli::tout << "Failed to initialize Remote SDK. Terminating.\n";
         SDK::Release();
-        std::exit(EXIT_FAILURE);
+        return -1;
     }
 
     cli::tout << "Enumerate connected camera devices...\n";
@@ -41,22 +48,19 @@ int main()
     if (CR_FAILED(enum_status) || camera_list == nullptr) {
         cli::tout << "No cameras detected. Connect a camera and retry.\n";
         SDK::Release();
-        std::exit(EXIT_FAILURE);
+        return -1;
     }
     auto ncams = camera_list->GetCount();
     cli::tout << "Camera enumeration successful. " << ncams << " detected.\n\n";
 
     CrInt32u no = 1;
 
-    typedef std::shared_ptr<cli::CameraDevice> CameraDevicePtr;
-    typedef std::vector<CameraDevicePtr> CameraDeviceList;
-    CameraDeviceList cameraList; // all
     std::int32_t cameraNumUniq = 1;
 
     cli::tout << "Connect to selected camera...\n";
     auto* camera_info = camera_list->GetCameraObjectInfo(no - 1);
 
-    CameraDevicePtr camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_info));
+    camera = CameraDevicePtr(new cli::CameraDevice(cameraNumUniq, camera_info));
     cameraList.push_back(camera); // add 1st
     camera_list->Release();
 
@@ -75,6 +79,8 @@ int main()
         // Fingerprint is incorrect
         goto Error;
     }
+
+	return 0;
 
     /* Shutter/Rec Operation Menu */
     while (true) {
@@ -131,5 +137,9 @@ Error:
     SDK::Release();
 
     cli::tout << "Exiting application.\n";
-    std::exit(EXIT_SUCCESS);
+    return -1;
+}
+
+void af_shutter(void) {
+    camera->af_shutter();
 }
