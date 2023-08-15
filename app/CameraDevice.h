@@ -84,7 +84,7 @@ public:
     void get_still_capture_mode();
     void get_focus_mode();
     void get_focus_area();
-    void get_live_view();
+    std::int32_t get_live_view(uint8_t* buf[]);
     void get_live_view_image_quality();
     void get_af_area_position();
     void get_select_media_format();
@@ -130,6 +130,7 @@ public:
     void set_still_capture_mode();
     void set_focus_mode();
     void set_focus_area();
+    void set_live_view_image_quality(std::int32_t index);
     void set_live_view_image_quality();
     void set_af_area_position();
     void set_white_balance();

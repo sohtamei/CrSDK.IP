@@ -60,6 +60,8 @@ class WebsocketServer
 			});
 		}
 		
+		void send(ClientConnection conn, const void * payload, size_t len);
+
 		//Sends a message to an individual client
 		//(Note: the data transmission will take place on the thread that called WebsocketServer::run())
 		void sendMessage(ClientConnection conn, const Json::Value& arguments);
@@ -67,10 +69,11 @@ class WebsocketServer
 		//Sends a message to all connected clients
 		//(Note: the data transmission will take place on the thread that called WebsocketServer::run())
 		void broadcastMessage(const Json::Value& arguments);
-		
-	protected:
+
 		static Json::Value parseJson(const string& json);
 		static string stringifyJson(const Json::Value& val);
+		
+	protected:
 		
 		void onOpen(ClientConnection conn);
 		void onClose(ClientConnection conn);

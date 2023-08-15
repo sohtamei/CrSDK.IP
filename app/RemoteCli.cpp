@@ -143,3 +143,11 @@ Error:
 void af_shutter(void) {
     camera->af_shutter();
 }
+
+int32_t get_live_view(uint8_t* buf[]) {
+    return camera->get_live_view(buf);
+}
+
+void setup_camera_props(void) {
+    camera->set_live_view_image_quality(0);
+}

@@ -1,6 +1,7 @@
 #include "WebsocketServer.h"
 
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <asio/io_service.hpp>
 
@@ -8,7 +9,13 @@
 #define PORT_NUMBER 8080
 
 int remoteCli_init(void);
+void setup_camera_props(void);
+
 void af_shutter(void);
+int32_t get_live_view(uint8_t* buf[]);
+
+WebsocketServer server;
+ClientConnection conn_;
 
 int main(int argc, char* argv[])
 {
@@ -17,54 +24,72 @@ int main(int argc, char* argv[])
 
 	//Create the event loop for the main thread, and the WebSocket server
 	asio::io_service mainEventLoop;
-	WebsocketServer server;
-	ClientConnection conn_;
 	
 	//Register our network callbacks, ensuring the logic is run on the main thread's event loop
-	server.connect([&mainEventLoop, &server, &conn_](ClientConnection conn)
+	server.connect([&mainEventLoop](ClientConnection conn)
 	{
 		conn_ = conn;
-		mainEventLoop.post([conn, &server]()
+		mainEventLoop.post([conn]()
 		{
 			std::clog << "Connection opened." << std::endl;
 			std::clog << "There are now " << server.numConnections() << " open connections." << std::endl;
 
+			setup_camera_props();
 		//	_main();
 		});
 	});
 
-	server.disconnect([&mainEventLoop, &server](ClientConnection conn)
+	server.disconnect([&mainEventLoop](ClientConnection conn)
 	{
-		mainEventLoop.post([conn, &server]()
+		mainEventLoop.post([conn]()
 		{
 			std::clog << "Connection closed." << std::endl;
 			std::clog << "There are now " << server.numConnections() << " open connections." << std::endl;
 		});
 	});
 
-	server.message([&mainEventLoop, &server](ClientConnection conn, const Json::Value& args)
+	server.message([&mainEventLoop](ClientConnection conn, const Json::Value& args)
 	{
-		mainEventLoop.post([conn, args, &server]()
+		mainEventLoop.post([conn, args]()
 		{
+			std::clog << "Message payload:" << server.stringifyJson(args) << std::endl;
+		/*
 			std::clog << "message handler on the main thread" << std::endl;
 			std::clog << "Message payload:" << std::endl;
 			for (auto key : args.getMemberNames()) {
 				std::clog << "\t" << key << ": " << args[key].asString() << std::endl;
 			}
-			af_shutter();
-			
+		*/
+			switch(args["cmd"].asUInt()) {
+			case 1:
+				af_shutter();
+				break;
+			case 2: {
+				uint8_t* imageBuf = NULL;
+				int imageSize = get_live_view(&imageBuf);
+				if(imageSize > 0) {
+					server.send(conn, imageBuf, imageSize);
+					delete[] imageBuf;
+					return;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+
 			//Echo the message pack to the client
 			server.sendMessage(conn, args);
 		});
 	});
 	
 	//Start the networking thread
-	std::thread serverThread([&server]() {
+	std::thread serverThread([]() {
 		server.run(PORT_NUMBER);
 	});
 	
 	//Start a keyboard input thread that reads from stdin
-	std::thread inputThread([&mainEventLoop, &server, &conn_]()
+	std::thread inputThread([&mainEventLoop]()
 	{
 		string input;
 		while (1)
@@ -89,4 +114,27 @@ int main(int argc, char* argv[])
 	mainEventLoop.run();
 	
 	return 0;
+}
+
+void uploadFile(const wchar_t* filename)
+{
+	std::ifstream ifs(filename, std::ios::in | std::ios::binary);
+	if (!ifs) return;
+
+	ifs.seekg(0, std::ios::end);
+	int filesize = ifs.tellg();
+	ifs.clear();
+	ifs.seekg(0, std::ios::beg);
+
+	uint8_t* filebuf = new uint8_t[filesize];
+	if(!filebuf) {
+		ifs.close();
+		return;
+	}
+	ifs.read((char*)filebuf, filesize);
+	ifs.close();
+
+	server.send(conn_, filebuf, filesize);
+	delete[] filebuf;
+	return;
 }

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-	<title>WebSocket Client Test</title>
+	<title>WebSocket Client imgOutput</title>
 
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js"></script>
 <!--
@@ -21,20 +21,29 @@
 				socket = new WebSocket(document.getElementById('host').value);
 
 				socket.onopen = function(ev) {
-					log("connected");
+					console.log("connected");
 				}
 
 				socket.onmessage = function(ev) {
-					log(ev.data);
+					if(typeof(ev.data) == 'object') {
+						const reader = new FileReader();
+						reader.onload = () => {
+							let img = document.getElementById('imgOutput');
+							img.src = reader.result;
+						}
+						reader.readAsDataURL(ev.data);
+					} else if(typeof(ev.data) == 'string') {
+						console.log(ev.data);
+					}
 				}
 
 				socket.onclose = function(ev) {
-					log("disconnected");
+					console.log("disconnected");
 				}
 
 				socket.onerror = function(ev) {
 					console.log(ev);
-					log("Error");
+					console.log("Error");
 				}
 			});
 
@@ -43,10 +52,11 @@
 			});
 
 			$('#send').click(function () {
-				var payload = JSON.parse($('#message').val());
-
-			//	payload['__MESSAGE__'] = 'message';
-				console.log(JSON.stringify(payload));
+			//	var payload = JSON.parse($('#cmd').val());
+				var payload = {cmd :Number($('#cmd').val())};
+				console.log(payload);
+			//	payload['__MESSAGE__'] = 'cmd';
+			//	console.log(JSON.stringify(payload));
 				return socket.send(JSON.stringify(payload));
 			});
 		});
@@ -58,9 +68,13 @@
 	<button id="connect">connect</button>
 	<button id="disconnect">disconnect</button></p>
 
-	<p><input type="text" id="message" value='{"a":1, "b":2, "c":3}'/>
+	<p><input type="text" id="cmd" value='2'/>
 	<button id="send">send</button></p>
-
+<!--
+	<p><input type="text" id="cmd" value='{"cmd":2, "b":2, "c":3}'/>
+	<canvas id="canvas"></canvas>
+-->
+	<img id="imgOutput" width=640 height=480 />
 	<pre id="output"></pre>
 </body>
 

@@ -1,4 +1,5 @@
 #include "WebsocketServer.h"
+//#include <websocketpp/base64/base64.hpp>
 
 #include <algorithm>
 #include <functional>
@@ -34,6 +35,8 @@ WebsocketServer::WebsocketServer()
 	
 	//Initialise the Asio library, using our own event loop object
 	this->endpoint.init_asio(&(this->eventLoop));
+	this->endpoint.clear_access_channels(websocketpp::log::alevel::all);
+//	this->endpoint.clear_error_channels(websocketpp::log::elevel::all);
 }
 
 void WebsocketServer::run(int port)
@@ -52,6 +55,12 @@ size_t WebsocketServer::numConnections()
 	std::lock_guard<std::mutex> lock(this->connectionListMutex);
 	
 	return this->openConnections.size();
+}
+
+void WebsocketServer::send(ClientConnection conn, const void * payload, size_t len)
+{
+//	this->endpoint.send(conn, websocketpp::base64_encode((unsigned char const*)payload, len), websocketpp::frame::opcode::text);
+	this->endpoint.send(conn, payload, len, websocketpp::frame::opcode::binary);
 }
 
 void WebsocketServer::sendMessage(ClientConnection conn, const Json::Value& arguments)
