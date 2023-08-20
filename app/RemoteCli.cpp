@@ -151,3 +151,12 @@ int32_t get_live_view(uint8_t* buf[]) {
 void setup_camera_props(void) {
     camera->set_live_view_image_quality(0);
 }
+
+int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable) {
+    return camera->GetSelectDeviceProperty(getCode, getData, writable);
+}
+
+int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData) {
+    return camera->SetSelectDeviceProperty(setCode, setData);
+}
+

@@ -34,6 +34,11 @@
 						reader.readAsDataURL(ev.data);
 					} else if(typeof(ev.data) == 'string') {
 						console.log(ev.data);
+						var payload = JSON.parse(ev.data);
+						if(payload.hasOwnProperty('getData')) {
+							let element = document.getElementById('data');
+							element.value = payload.getData.toString(16);
+						}
 					}
 				}
 
@@ -59,6 +64,18 @@
 			//	console.log(JSON.stringify(payload));
 				return socket.send(JSON.stringify(payload));
 			});
+
+			$('#get').click(function () {
+				var payload = {getCode :Number('0x' + $('#code').val())};
+				console.log(payload);
+				return socket.send(JSON.stringify(payload));
+			});
+
+			$('#set').click(function () {
+				var payload = {setCode :Number('0x' + $('#code').val()), setData :Number($('#data').val())};
+				console.log(payload);
+				return socket.send(JSON.stringify(payload));
+			});
 		});
 	</script>
 </head>
@@ -68,8 +85,8 @@
 	<button id="connect">connect</button>
 	<button id="disconnect">disconnect</button></p>
 
-	<p><input type="text" id="cmd" value='2'/>
-	<button id="send">send</button></p>
+	<p>cmd <input type="text" id="cmd" value='2'/> <button id="send">send</button></p>
+	<p>prop <input type="text" id="code" value='1'/> <input type="text" id="data" value='1'/> <button id="get">get</button> <button id="set">set</button></p>
 <!--
 	<p><input type="text" id="cmd" value='{"cmd":2, "b":2, "c":3}'/>
 	<canvas id="canvas"></canvas>

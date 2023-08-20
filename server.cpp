@@ -13,6 +13,8 @@ void setup_camera_props(void);
 
 void af_shutter(void);
 int32_t get_live_view(uint8_t* buf[]);
+int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData);
+int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable);
 
 WebsocketServer server;
 ClientConnection conn_;
@@ -60,24 +62,45 @@ int main(int argc, char* argv[])
 				std::clog << "\t" << key << ": " << args[key].asString() << std::endl;
 			}
 		*/
-			switch(args["cmd"].asUInt()) {
-			case 1:
-				af_shutter();
-				break;
-			case 2: {
-				uint8_t* imageBuf = NULL;
-				int imageSize = get_live_view(&imageBuf);
-				if(imageSize > 0) {
-					server.send(conn, imageBuf, imageSize);
-					delete[] imageBuf;
-					return;
+			if(args.isMember("cmd")) {
+				switch(args["cmd"].asUInt()) {
+				case 1:
+					af_shutter();
+					break;
+				case 2: {
+					uint8_t* imageBuf = NULL;
+					int imageSize = get_live_view(&imageBuf);
+					if(imageSize > 0) {
+						server.send(conn, imageBuf, imageSize);
+						delete[] imageBuf;
+						return;
+					}
+					break;
 				}
-				break;
-			}
-			default:
-				break;
-			}
+				default:
+					break;
+				}
+			} else if(args.isMember("getCode")) {
+				uint32_t data = 0;
+				uint32_t writable = 0;
+				GetSelectDeviceProperty(args["getCode"].asUInt(), data, writable);
 
+				Json::Value getResult;
+				getResult["getData"] = data;
+				getResult["writable"] = writable;
+				std::clog << "Message payload:" << server.stringifyJson(getResult) << std::endl;
+				server.sendMessage(conn, getResult);
+				return;
+
+			} else if(args.isMember("setCode")) {
+				int ret = 0;//SetSelectDeviceProperty(args["setCode"].asUInt(), args["setData"].asUInt());
+
+				Json::Value getResult;
+				getResult["result"] = ret;
+				std::clog << "Message payload:" << server.stringifyJson(getResult) << std::endl;
+				server.sendMessage(conn, getResult);
+				return;
+			}
 			//Echo the message pack to the client
 			server.sendMessage(conn, args);
 		});

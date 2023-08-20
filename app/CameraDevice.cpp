@@ -5625,4 +5625,89 @@ void CameraDevice::get_mediaprofile()
     }
 }
 
+int32_t CameraDevice::SetSelectDeviceProperty(uint32_t setCode, uint32_t setData)
+{
+	std::int32_t nprop = 0;
+	SDK::CrDeviceProperty* props = nullptr;
+	auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &setCode, &props, &nprop);
+
+	if (CR_FAILED(status)) return -1;
+	if (props && 0 < nprop) {
+		SDK::CrDeviceProperty prop;
+		prop.SetCode(setCode);
+		prop.SetCurrentValue(setData);
+		prop.SetValueType(props[0].GetValueType());
+		SDK::ReleaseDeviceProperties(m_device_handle, props);
+
+		status = SDK::SetDeviceProperty(m_device_handle, &prop);
+		return status;
+	}
+	return -1;
+}
+
+
+int32_t CameraDevice::GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable)
+{
+	std::int32_t nprop = 0;
+	SDK::CrDeviceProperty* props = nullptr;
+	auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &props, &nprop);
+	if (CR_FAILED(status)) return -1;
+	if (props && 0 < nprop) {
+		getData  = props[0].GetCurrentValue();
+		writable = props[0].IsSetEnableCurrentValue();
+		tout << std::hex
+				<< props[0].GetValueType()
+		 << std::dec
+		 << ", " << props[0].GetCurrentValue()
+		 << ", " << props[0].GetValueSize()
+		 << ", " << props[0].IsSetEnableCurrentValue()
+		 << '\n';
+		SDK::ReleaseDeviceProperties(m_device_handle, props);
+		return status;
+	}
+	return -1;
+}
+/*
+	CrDataType GetValueType();
+	CrInt64u GetCurrentValue();
+	CrInt16u* GetCurrentStr();
+	// binary
+	CrInt32u GetValueSize();
+	CrInt8u* GetValues();
+*/
+
+/*
+	nval = prop.GetValueSize() / sizeof(std::uint8_t);
+	m_prop.silent_mode.writable = prop.IsSetEnableCurrentValue();
+	m_prop.silent_mode.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
+	if (0 < nval) {
+	    prop.GetValues(), nval;
+	}
+*/
+/*
+	CrDeviceProperty(const CrDeviceProperty& ref);
+	CrDeviceProperty& operator =(const CrDeviceProperty& ref);
+
+	bool IsSetEnableCurrentValue();
+	void SetCode(CrInt32u code);
+	void SetValueType(CrDataType type);
+	void SetCurrentValue(CrInt64u value);
+	void SetCurrentStr(CrInt16u* str);
+*/
+/*
+	bool IsGetEnableCurrentValue();
+	CrInt32u GetCode();
+	CrDataType GetValueType();
+	CrInt64u GetCurrentValue();
+	CrInt16u* GetCurrentStr();
+	// binary
+	CrInt32u GetValueSize();
+	CrInt8u* GetValues();
+
+
+	CrPropertyEnableFlag GetPropertyEnableFlag();
+	CrPropertyVariableFlag GetPropertyVariableFlag();
+
+    CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_S1;
+*/
 } // namespace cli

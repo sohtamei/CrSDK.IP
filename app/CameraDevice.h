@@ -211,6 +211,8 @@ public:
     bool is_getfingerprint() { return !m_fingerprint.empty(); };
     bool is_setpassword() { return !m_userPassword.empty(); };
 
+    int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData);
+    int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable);
 public:
     // Inherited via IDeviceCallback
     virtual void OnConnected(SCRSDK::DeviceConnectionVersioin version) override;
