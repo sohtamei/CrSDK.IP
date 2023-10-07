@@ -63,22 +63,19 @@ int main(int argc, char* argv[])
 			}
 		*/
 			if(args.isMember("cmd")) {
-				switch(args["cmd"].asUInt()) {
-				case 1:
+				std::string cmd = args["cmd"].asString();
+				if (cmd == "afShutter") {
 					af_shutter();
-					break;
-				case 2: {
+				} else if (cmd == "liveview") {
 					uint8_t* imageBuf = NULL;
 					int imageSize = get_live_view(&imageBuf);
-					if(imageSize > 0) {
+					if (imageSize > 0) {
 						server.send(conn, imageBuf, imageSize);
 						delete[] imageBuf;
 						return;
 					}
-					break;
-				}
-				default:
-					break;
+				} else {
+					std::clog << "unknown command" << std::endl;
 				}
 			} else if(args.isMember("getCode")) {
 				uint32_t data = 0;
