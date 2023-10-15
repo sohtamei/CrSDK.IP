@@ -578,7 +578,7 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
                     file.close();
                 }
 #endif
-                tout << "GetLiveView SUCCESS\n";
+                //tout << "GetLiveView SUCCESS\n";
                 std::int32_t imageSize = image_data->GetImageSize();
                 *buf = new std::uint8_t[imageSize];
                 if(*buf) {
