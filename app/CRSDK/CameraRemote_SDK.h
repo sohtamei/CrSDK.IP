@@ -189,11 +189,11 @@ CrError GetContentsThumbnailImage(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrC
 
 extern "C"
 SCRSDK_API
-CrError DownloadSettingFile(/*in*/ CrDeviceHandle deviceHandle, /*in*/CrDownloadSettingFileType type, CrChar* filePath = 0, CrChar* fileName = 0);
+CrError DownloadSettingFile(/*in*/ CrDeviceHandle deviceHandle, /*in*/CrDownloadSettingFileType type, CrChar* filePath = 0, CrChar* fileName = 0, const char* password = 0);
 
 extern "C"
 SCRSDK_API
-CrError UploadSettingFile(/*in*/ CrDeviceHandle deviceHandle, /*in*/CrUploadSettingFileType type, CrChar* fileName);
+CrError UploadSettingFile(/*in*/ CrDeviceHandle deviceHandle, /*in*/CrUploadSettingFileType type, CrChar* fileName, const char* password = 0);
 
 extern "C"
 SCRSDK_API
@@ -233,7 +233,51 @@ CrError GetLensInformation(/*in*/ CrDeviceHandle deviceHandle, /*out*/ CrLensInf
 
 extern "C"
 SCRSDK_API
-CrError ReleaseLensInformation(/*in*/ CrDeviceHandle deviceHandle, CrLensInformation * list);
+CrError ReleaseLensInformation(/*in*/ CrDeviceHandle deviceHandle, CrLensInformation* list);
+
+extern "C"
+SCRSDK_API
+CrError ImportLUTFile(/*in*/ CrDeviceHandle deviceHandle, CrChar* fileName, CrBaseLookNumber baseLookNumber);
+
+extern "C"
+SCRSDK_API
+CrError RequestFTPServerSettingList(/*in*/ CrDeviceHandle deviceHandle);
+
+extern "C"
+SCRSDK_API
+CrError GetFTPServerSettingList(/*in*/ CrDeviceHandle deviceHandle, /*out*/ CrFTPServerSetting** list, /*out*/ CrInt32u* numOfList);
+
+extern "C"
+SCRSDK_API
+CrError ReleaseFTPServerSettingList(/*in*/ CrDeviceHandle deviceHandle, CrFTPServerSetting* list);
+
+extern "C"
+SCRSDK_API
+CrError SetFTPServerSetting(/*in*/ CrDeviceHandle deviceHandle, CrFTPServerSetting* setting);
+
+extern "C"
+SCRSDK_API
+CrError RequestFTPJobList(/*in*/ CrDeviceHandle deviceHandle);
+	
+extern "C"
+SCRSDK_API
+CrError GetFTPJobList(/*in*/ CrDeviceHandle deviceHandle, /*out*/ CrFTPJobInfo ** list, /*out*/ CrInt32u* numOfList);
+
+extern "C"
+SCRSDK_API
+CrError ReleaseFTPJobList(/*in*/ CrDeviceHandle deviceHandle, CrFTPJobInfo* list);
+
+extern "C"
+SCRSDK_API
+CrError ControlFTPJobList(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrFTPJobControlType control, /*in*/ void* jobList, /*in*/ CrInt32u numOfList, /*in*/ CrFTPJobDeleteType deleteType = CrFTPJobDeleteType_Individual);
+
+extern "C"
+SCRSDK_API
+CrError GetCRSDKOperationResultsSupported(/*in*/ CrDeviceHandle deviceHandle, CrOperationResultSupportedInfo** opeResSupportInfo, /*out*/ CrInt32u* numOfInfo);
+
+extern "C"
+SCRSDK_API
+CrError ReleaseCRSDKOperationResultsSupported(/*in*/ CrDeviceHandle deviceHandle, CrOperationResultSupportedInfo* opeResSupportInfo);
 
 }
 #endif //CAMERAREMOTE_SDK_H

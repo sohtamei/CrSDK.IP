@@ -26,6 +26,8 @@ enum CrCommandId
 	CrCommandId_PictureProfileReset,
 	CrCommandId_CreativeLookReset,
 	CrCommandId_PowerOff,
+	CrCommandId_CancelFocusPosition,
+	CrCommandId_FlickerScan,
 };
 
 enum CrCommandParam : CrInt16u

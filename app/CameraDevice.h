@@ -120,6 +120,7 @@ public:
     bool get_silent_mode_shutter_when_power_off();
     bool get_silent_mode_auto_pixel_mapping();
     bool get_shutter_type();
+    bool get_focus_position_setting();
 
     void set_aperture();
     void set_iso();
@@ -163,6 +164,7 @@ public:
     void set_silent_mode_shutter_when_power_off();
     void set_silent_mode_auto_pixel_mapping();
     void set_shutter_type();
+    void set_focus_position_setting();
 
     void execute_lock_property(CrInt16u code);
     void set_select_media_format();
@@ -181,11 +183,14 @@ public:
     void execute_get_displaystringtypes();
     void execute_get_displaystringlist();
     void execute_focus_bracket();
+    bool execute_focus_position_cancel();
 
     void get_mediaprofile();
 
     bool get_movie_shooting_mode();
     void set_movie_shooting_mode();
+
+    void format_focus_position_value(uint16_t value);
 
     std::int32_t get_number() { return m_number; }
     text get_model() { return text(m_info->GetModel()); }
@@ -218,6 +223,7 @@ public:
     virtual void OnLvPropertyChanged() override;
     virtual void OnCompleteDownload(CrChar* filename, CrInt32u type) override;
     virtual void OnWarning(CrInt32u warning) override;
+    virtual void OnWarningExt(CrInt32u warning, CrInt32 param1, CrInt32 param2, CrInt32 param3) override;
     virtual void OnError(CrInt32u error) override;
     virtual void OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;
     virtual void OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;

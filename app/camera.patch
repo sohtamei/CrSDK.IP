@@ -1,6 +1,6 @@
---- CameraDevice.cpp.org	2023-03-02 15:48:56.000000000 +0900
-+++ CameraDevice.cpp	2023-10-27 16:00:14.919308600 +0900
-@@ -297,6 +297,7 @@
+--- CameraDevice.cpp.org	2023-07-28 10:12:14.000000000 +0900
++++ CameraDevice.cpp	2023-10-27 17:32:49.227173300 +0900
+@@ -296,6 +296,7 @@
  
  void CameraDevice::s1_shooting() const
  {
@@ -8,7 +8,7 @@
      text input;
      tout << "Is the focus mode set to AF? (y/n): ";
      std::getline(tin, input);
-@@ -304,7 +305,7 @@
+@@ -303,7 +304,7 @@
          tout << "Set the focus mode to AF\n";
          return;
      }
@@ -17,7 +17,7 @@
      tout << "S1 shooting...\n";
      tout << "Shutter Half Press down\n";
      SDK::CrDeviceProperty prop;
-@@ -322,6 +323,7 @@
+@@ -321,6 +322,7 @@
  
  void CameraDevice::af_shutter() const
  {
@@ -25,7 +25,7 @@
      text input;
      tout << "Is the focus mode set to AF? (y/n): ";
      std::getline(tin, input);
-@@ -329,7 +331,7 @@
+@@ -328,7 +330,7 @@
          tout << "Set the focus mode to AF\n";
          return;
      }
@@ -34,7 +34,7 @@
      tout << "S1 shooting...\n";
      tout << "Shutter Half Press down\n";
      SDK::CrDeviceProperty prop;
-@@ -3986,11 +3988,14 @@
+@@ -4023,11 +4025,14 @@
  
  void CameraDevice::OnCompleteDownload(CrChar* filename, CrInt32u type )
  {
@@ -44,13 +44,13 @@
      switch (type)
      {
      case SCRSDK::CrDownloadSettingFileType_None:
-        tout << "Complete download. File: " << file.data() << '\n';
+         tout << "Complete download. File: " << file.data() << '\n';
 +        uploadFile(filename);
          break;
      case SCRSDK::CrDownloadSettingFileType_Setup:
          tout << "Complete download. Camera Setting File: " << file.data() << '\n';
-@@ -5580,4 +5585,191 @@
-     }
+@@ -5894,6 +5899,193 @@
+     return true;
  }
  
 +std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
@@ -240,10 +240,12 @@
 +
 +    CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_S1;
 +*/
- } // namespace cli
---- CameraDevice.h.org	2023-03-02 15:48:56.000000000 +0900
-+++ CameraDevice.h	2023-10-27 15:44:08.890563700 +0900
-@@ -249,6 +249,11 @@
+ }
+ // namespace cli
+ 
+--- CameraDevice.h.org	2023-07-28 10:12:14.000000000 +0900
++++ CameraDevice.h	2023-10-27 17:10:53.644122900 +0900
+@@ -255,6 +255,11 @@
      MediaProfileList m_mediaprofileList;
      std::string m_fingerprint;
      std::string m_userPassword;

@@ -8,6 +8,9 @@
 
 namespace cli
 {
+static const int MAX_CURRENT_STR = 255;
+
+
 template <typename T>
 struct PropertyValueEntry
 {
@@ -20,8 +23,21 @@ struct PropertyValueEntry
     }
 };
 
+struct PropertyStringValueEntry
+{
+    int writable; // -1:Iniitial, 0:false, 1:true
+    int  length;
+    text current;
+    CrInt16u* currentStr;
+    PropertyStringValueEntry()
+    {
+        writable = -1;
+    }
+};
+
 struct PropertyValueTable
 {
+    PropertyStringValueEntry lensModelNameStr;
     PropertyValueEntry<std::uint32_t> sdk_mode;
     PropertyValueEntry<std::uint16_t> f_number;
     PropertyValueEntry<std::uint32_t> iso_sensitivity;
@@ -86,6 +102,12 @@ struct PropertyValueTable
     PropertyValueEntry<std::uint8_t> silent_mode_auto_pixel_mapping;
     PropertyValueEntry<std::uint8_t> shutter_type;
     PropertyValueEntry<std::uint16_t> movie_shooting_mode;
+    PropertyValueEntry<std::uint16_t> focus_position_setting;
+    PropertyValueEntry<std::uint16_t> focus_position_current_value;
+    PropertyValueEntry<std::uint8_t> focus_driving_status;
+    PropertyValueEntry<std::uint32_t> zoom_distance;
+	PropertyValueEntry<std::uint8_t>  media_slot1_recording_available_type;
+    PropertyValueEntry<std::uint8_t>  media_slot2_recording_available_type;
 };
 
 std::vector<std::uint16_t> parse_f_number(unsigned char const* buf, std::uint32_t nval);
@@ -139,6 +161,11 @@ std::vector<std::uint8_t> parse_silent_mode_shutter_when_power_off(unsigned char
 std::vector<std::uint8_t> parse_silent_mode_auto_pixel_mapping(unsigned char const* buf, std::uint32_t nval);
 std::vector<std::uint8_t> parse_shutter_type(unsigned char const* buf, std::uint32_t nval);
 std::vector<std::uint16_t> parse_movie_shooting_mode(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint16_t> parse_focus_position(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint8_t> parse_focus_driving_status(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint32_t> parse_zoom_distance(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint8_t> parse_slotx_rec_available(unsigned char const* buf, std::uint32_t nval);
+
 
 text format_f_number(std::uint16_t f_number);
 text format_iso_sensitivity(std::uint32_t iso);
@@ -187,6 +214,8 @@ text format_silent_mode_shutter_when_power_off(std::uint8_t when_power_off);
 text format_silent_mode_auto_pixel_mapping(std::uint8_t auto_pixel_mapping);
 text format_shutter_type(std::uint8_t shutter_type);
 text format_movie_shooting_mode(std::uint16_t movie_shooting_mode);
+text format_focus_driving_status(std::uint8_t focus_driving_status);
+text format_media_slotx_rec_available(std::uint8_t rec_available);
 
 } // namespace cli
 

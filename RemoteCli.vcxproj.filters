@@ -72,13 +72,13 @@
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CRSDK">
-      <UniqueIdentifier>{6D1BFF4E-3C9D-345A-8764-5B6255452EA5}</UniqueIdentifier>
+      <UniqueIdentifier>{032C81B2-17D0-3C67-AC38-EB53F597FC0C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{7D62AA4D-5263-3632-8AB3-CDE86C6109C6}</UniqueIdentifier>
+      <UniqueIdentifier>{04A18B1F-D7CC-36C0-965F-EB102F3AC94C}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{C05DC084-6D26-3F52-B399-C8642A3B12EC}</UniqueIdentifier>
+      <UniqueIdentifier>{C6CFF7F5-9856-3752-856B-B504388EE30B}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

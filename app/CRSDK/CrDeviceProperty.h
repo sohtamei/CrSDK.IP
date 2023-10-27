@@ -33,7 +33,7 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_S1,
 	CrDeviceProperty_AEL,
 	CrDeviceProperty_FEL,
-	CrDeviceProperty_AFL,
+	CrDeviceProperty_Reserved1,
 	CrDeviceProperty_AWBL,
 
 	CrDeviceProperty_FNumber 			= 0x0100,
@@ -43,7 +43,8 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_IsoSensitivity,
 	CrDeviceProperty_ExposureProgramMode,
 	CrDeviceProperty_FileType,
-	CrDeviceProperty_JpegQuality,
+	CrDeviceProperty_JpegQuality,  /* Do not use. Will be removed in the next release. */
+	CrDeviceProperty_StillImageQuality = CrDeviceProperty_JpegQuality,
 	CrDeviceProperty_WhiteBalance,
 	CrDeviceProperty_FocusMode,
 	CrDeviceProperty_MeteringMode,
@@ -64,7 +65,7 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_LiveViewDisplayEffect,
 	CrDeviceProperty_StillImageStoreDestination,
 	CrDeviceProperty_PriorityKeySettings,
-	CrDeviceProperty_reserved5,
+	CrDeviceProperty_AFTrackingSensitivity,
 	CrDeviceProperty_reserved6,
 	CrDeviceProperty_Focus_Magnifier_Setting,
 	CrDeviceProperty_DateTime_Settings,
@@ -83,8 +84,10 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_CompressionFileFormatStill,
 	CrDeviceProperty_MediaSLOT1_FileType,
 	CrDeviceProperty_MediaSLOT2_FileType,
-	CrDeviceProperty_MediaSLOT1_JpegQuality,
-	CrDeviceProperty_MediaSLOT2_JpegQuality,
+	CrDeviceProperty_MediaSLOT1_JpegQuality,  /* Do not use. Will be removed in the next release. */
+	CrDeviceProperty_MediaSLOT1_ImageQuality = CrDeviceProperty_MediaSLOT1_JpegQuality,
+	CrDeviceProperty_MediaSLOT2_JpegQuality,  /* Do not use. Will be removed in the next release. */
+	CrDeviceProperty_MediaSLOT2_ImageQuality = CrDeviceProperty_MediaSLOT2_JpegQuality,
 	CrDeviceProperty_MediaSLOT1_ImageSize,
 	CrDeviceProperty_MediaSLOT2_ImageSize,
 	CrDeviceProperty_RAW_FileCompressionType,
@@ -180,11 +183,13 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_MovieNextButton,
 	CrDeviceProperty_MoviePrevButton,
 	CrDeviceProperty_MovieRecReviewButton,
-	CrDeviceProperty_FaceEyeDetectionAF,
+	CrDeviceProperty_FaceEyeDetectionAF,                         /* Do not use. Will be removed in the next release. */
+	CrDeviceProperty_SubjectRecognitionAF = CrDeviceProperty_FaceEyeDetectionAF,
 	CrDeviceProperty_AFTransitionSpeed,
 	CrDeviceProperty_AFSubjShiftSens,
 	CrDeviceProperty_AFAssist,
-	CrDeviceProperty_NDPresetOrVariableSwitchingSetting,
+	CrDeviceProperty_NDPresetOrVariableSwitchingSetting,         /* Do not use. Will be removed in the next release. */
+	CrDeviceProperty_NDFilterSwitchingSetting = CrDeviceProperty_NDPresetOrVariableSwitchingSetting,
 	CrDeviceProperty_FunctionOfRemoteTouchOperation,
 	CrDeviceProperty_RemoteTouchOperation,
 	CrDeviceProperty_FollowFocusPositionSetting,
@@ -251,6 +256,84 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_ProxyRecordingSetting,
 	CrDeviceProperty_FunctionOfTouchOperation,
 
+	CrDeviceProperty_HighResolutionShutterSpeedSetting,
+	CrDeviceProperty_DeleteUserBaseLook,
+	CrDeviceProperty_SelectUserBaseLookToEdit,
+	CrDeviceProperty_SelectUserBaseLookToSetInPPLUT,
+	CrDeviceProperty_UserBaseLookInput,
+	CrDeviceProperty_UserBaseLookAELevelOffset,
+	CrDeviceProperty_BaseISOSwitchEI,
+	CrDeviceProperty_FlickerLessShooting,
+	CrDeviceProperty_reserved50,
+	CrDeviceProperty_PlaybackVolumeSettings,
+	CrDeviceProperty_AutoReview,
+	CrDeviceProperty_AudioSignals,
+	CrDeviceProperty_HDMIResolutionStillPlay,
+	CrDeviceProperty_Movie_HDMIOutputRecMedia,
+	CrDeviceProperty_Movie_HDMIOutputResolution,
+	CrDeviceProperty_Movie_HDMIOutput4KSetting,
+	CrDeviceProperty_Movie_HDMIOutputRAW,
+	CrDeviceProperty_Movie_HDMIOutputRawSetting,
+	CrDeviceProperty_reserved55,
+	CrDeviceProperty_Movie_HDMIOutputTimeCode,
+	CrDeviceProperty_Movie_HDMIOutputRecControl,
+	CrDeviceProperty_reserved56,
+	CrDeviceProperty_MonitoringOutputDisplayHDMI,
+	CrDeviceProperty_Movie_HDMIOutputAudioCH,
+	CrDeviceProperty_Movie_IntervalRec_IntervalTime,
+	CrDeviceProperty_Movie_IntervalRec_FrameRateSetting,
+	CrDeviceProperty_Movie_IntervalRec_RecordingSetting,
+	CrDeviceProperty_EframingScaleAuto,
+	CrDeviceProperty_EframingSpeedAuto,
+	CrDeviceProperty_EframingModeAuto,
+	CrDeviceProperty_EframingRecordingImageCrop,
+	CrDeviceProperty_EframingHDMICrop,
+	CrDeviceProperty_CameraEframing,
+	CrDeviceProperty_USBPowerSupply,
+	CrDeviceProperty_LongExposureNR,
+	CrDeviceProperty_HighIsoNR,
+	CrDeviceProperty_HLGStillImage,
+	CrDeviceProperty_ColorSpace,
+	CrDeviceProperty_BracketOrder,
+	CrDeviceProperty_FocusBracketOrder,
+	CrDeviceProperty_FocusBracketExposureLock1stImg,
+	CrDeviceProperty_FocusBracketIntervalUntilNextShot,
+	CrDeviceProperty_IntervalRec_ShootingStartTime,
+	CrDeviceProperty_IntervalRec_ShootingInterval,
+	CrDeviceProperty_IntervalRec_ShootIntervalPriority,
+	CrDeviceProperty_IntervalRec_NumberOfShots,
+	CrDeviceProperty_IntervalRec_AETrackingSensitivity,
+	CrDeviceProperty_IntervalRec_ShutterType,
+	CrDeviceProperty_reserved60,
+	CrDeviceProperty_WindNoiseReduct,
+	CrDeviceProperty_RecordingSelfTimer,
+	CrDeviceProperty_RecordingSelfTimerCountTime,
+	CrDeviceProperty_RecordingSelfTimerContinuous,
+	CrDeviceProperty_RecordingSelfTimerStatus,
+	CrDeviceProperty_BulbTimerSetting,
+	CrDeviceProperty_BulbExposureTimeSetting,
+	CrDeviceProperty_AutoSlowShutter,
+	CrDeviceProperty_IsoAutoMinShutterSpeedMode,
+	CrDeviceProperty_IsoAutoMinShutterSpeedManual,
+	CrDeviceProperty_IsoAutoMinShutterSpeedPreset,
+	CrDeviceProperty_FocusPositionSetting,
+	CrDeviceProperty_SoftSkinEffect,
+	CrDeviceProperty_PrioritySetInAF_S,
+	CrDeviceProperty_PrioritySetInAF_C,
+	CrDeviceProperty_FocusMagnificationTime,
+	CrDeviceProperty_SubjectRecognitionInAF,
+	CrDeviceProperty_RecognitionTarget,
+	CrDeviceProperty_RightLeftEyeSelect,
+	CrDeviceProperty_SelectFTPServer,
+	CrDeviceProperty_SelectFTPServerID,
+	CrDeviceProperty_FTP_Function,
+	CrDeviceProperty_FTP_AutoTransfer,
+	CrDeviceProperty_FTP_AutoTransferTarget,
+	CrDeviceProperty_Movie_FTP_AutoTransferTarget,
+	CrDeviceProperty_FTP_TransferTarget,
+	CrDeviceProperty_Movie_FTP_TransferTarget,
+	CrDeviceProperty_FTP_PowerSave,
+
 	CrDeviceProperty_S2 = 0x0500,
 	CrDeviceProperty_reserved10,
 	CrDeviceProperty_reserved11,
@@ -285,8 +368,8 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_MediaSLOT2_RemainingTime,
 	CrDeviceProperty_reserved22,
 	CrDeviceProperty_Media_FormatProgressRate,
-	CrDeviceProperty_reserved24,
-	CrDeviceProperty_reserved25,
+	CrDeviceProperty_FTP_ConnectionStatus,
+	CrDeviceProperty_FTP_ConnectionErrorInfo,
 	CrDeviceProperty_LiveView_Area,
 	CrDeviceProperty_reserved26,
 	CrDeviceProperty_reserved27,
@@ -369,6 +452,29 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_Movie_IntervalRec_CountDownIntervalTime,
 	CrDeviceProperty_Movie_IntervalRec_RecordingDuration,
 
+	CrDeviceProperty_HighResolutionShutterSpeed,
+	CrDeviceProperty_BaseLookImportOperationEnableStatus,
+	CrDeviceProperty_LensModelName,
+	CrDeviceProperty_FocusPositionCurrentValue,
+	CrDeviceProperty_FocusDrivingStatus,
+	CrDeviceProperty_FlickerScanStatus,
+	CrDeviceProperty_FlickerScanEnableStatus,
+	CrDeviceProperty_FTPServerSettingVersion,
+	CrDeviceProperty_FTPServerSettingOperationEnableStatus,
+	CrDeviceProperty_FTPTransferSetting_SaveOperationEnableStatus,
+	CrDeviceProperty_FTPTransferSetting_ReadOperationEnableStatus,
+	CrDeviceProperty_FTPTransferSetting_SaveRead_State,
+	CrDeviceProperty_FTPJobListDataVersion,
+	CrDeviceProperty_CameraShakeStatus,
+	CrDeviceProperty_UpdateBodyStatus,
+	CrDeviceProperty_reserved35,
+	CrDeviceProperty_MediaSLOT1_WritingState,
+	CrDeviceProperty_MediaSLOT2_WritingState,
+	CrDeviceProperty_reserved36,
+	CrDeviceProperty_MediaSLOT1_RecordingAvailableType,
+	CrDeviceProperty_MediaSLOT2_RecordingAvailableType,
+	CrDeviceProperty_reserved37,
+
 	CrDeviceProperty_MaxVal	= 0x1000,
 };
 
@@ -388,7 +494,7 @@ enum CrSdkControlMode : CrInt32u
 	CrSdkControlMode_ContentsTransfer,
 };
 
-// =========================== S1, AEL, FEL, AFL, AWBL ===========================
+// =========================== S1, S2, AEL, FEL, AWBL ===========================
 enum CrLockIndicator : CrInt16u
 {
 	CrLockIndicator_Unknown = 0x0000,
@@ -423,7 +529,7 @@ enum CrFnumberSet : CrInt16u
 
 // ShutterSpeed
 // type: CrDataType_UInt32
-// value = low-order word / high-order word
+// value: upper two bytes = numerator, lower two bytes = denominator.
 enum CrShutterSpeedSet : CrInt32u
 {
 	CrShutterSpeed_Bulb = 0x00000000,
@@ -560,11 +666,21 @@ enum CrFileType : CrInt16u
 // JpegQuality
 enum CrJpegQuality : CrInt16u
 {
-	CrJpegQuality_Unknown  = 0x0000,
+	CrJpegQuality_Unknown = 0x0000,
 	CrJpegQuality_Light,
 	CrJpegQuality_Standard,
 	CrJpegQuality_Fine,
 	CrJpegQuality_ExFine,
+};  /* Do not use. Will be removed in the next release. */
+
+// ImageQuality
+enum CrImageQuality : CrInt16u
+{
+	CrImageQuality_Unknown  = 0x0000,
+	CrImageQuality_Light,
+	CrImageQuality_Standard,
+	CrImageQuality_Fine,
+	CrImageQuality_ExFine,
 };
 
 // WhiteBalance
@@ -979,7 +1095,7 @@ enum CrIntervalRecMode : CrInt16u
 // 0~100: percentage of the battery residual quantity.
 static const CrInt16u CrBatteryRemain_Untaken = 0xFFFF;
 
-// Battery LV
+// Battery Level Indicator
 enum CrBatteryLevel : CrInt32u
 {
 	CrBatteryLevel_PreEndBattery	= 0x00000001,
@@ -1030,7 +1146,7 @@ enum CrFocusIndicator : CrInt32u
 	CrFocusIndicator_TrackingSubject_AF_C = 0x00000303,
 };
 
-// MediaSLOT_Status
+// Media SLOT Status
 enum CrSlotStatus : CrInt16u
 {
 	CrSlotStatus_OK = 0x0000,
@@ -1074,7 +1190,7 @@ enum CrFocusFrameState : CrInt16u
 // FaceFrameInfoSelectState
 enum CrFocusFrameSelectState : CrInt8u
 {
-	CrFocusFrameSelectState_Unknown = 0x0000,
+	CrFocusFrameSelectState_Unknown = 0x00,
 };
 
 enum CrTrackingFrameType : CrInt16u
@@ -1182,7 +1298,7 @@ enum CrFileFormatMovie : CrInt8u
 	CrFileFormatMovie_XAVC_S_I_DCI_4K,
 };
 
-// Recording Setting(Movie), S&Q Recording Setting
+// Recording Setting(Movie), S&Q Recording Setting, Interval REC(Movie) Record Setting
 enum CrRecordingSettingMovie : CrInt16u
 {
 	CrRecordingSettingMovie_Invalid = 0x0000,	
@@ -1258,6 +1374,7 @@ enum CrRecordingSettingMovie : CrInt16u
 };
 
 // Recording Frame Rate Setting(Movie), Recording Frame Rate Proxy Setting(Movie), S&Q Recording Frame Rate Setting
+// Interval REC(Movie) Frame Rate
 enum CrRecordingFrameRateSettingMovie : CrInt8u
 {
 	CrRecordingFrameRateSettingMovie_120p = 0x01,
@@ -1385,14 +1502,14 @@ enum CrCameraSettingSaveReadState : CrInt8u
 enum CrDownloadSettingFileType : CrInt32u
 {
 	CrDownloadSettingFileType_Setup = 0x00000000,
-	CrDownloadSettingFileType_Reserve =0x00000002,
+	CrDownloadSettingFileType_FTPTransferSetting =0x00000002,
 	CrDownloadSettingFileType_None = 0xFFFFFFFF,
 };
 
 enum CrUploadSettingFileType : CrInt32u
 {
 	CrUploadSettingFileType_Setup = 0x00001000,
-	CrUploadSettingFileType_Reserve = 0x00001002,
+	CrUploadSettingFileType_FTPTransferSetting = 0x00001002,
 };
 
 // Playback Media
@@ -1512,14 +1629,17 @@ enum CrDisplayStringType : CrInt32u
 	CrDisplayStringType_Video_EIGain_Display = 0x00000009,
 	CrDisplayStringType_Button_Assign_Display = 0x0000000A,
 	CrDisplayStringType_Button_Assign_ShortDisplay = 0x0000000B,
-	CrDisplayStringType_Reserved1 = 0x0000000C,
-	CrDisplayStringType_Reserved2 = 0x0000000D,
-	CrDisplayStringType_Reserved3 = 0x0000000E,
+	CrDisplayStringType_FTP_ServerName_Display = 0x0000000C,
+	CrDisplayStringType_FTP_UpLoadDirectory_Display = 0x0000000D,
+	CrDisplayStringType_FTP_JobStatus_Display = 0x0000000E,
 	CrDisplayStringType_Reserved4 = 0x0000000F,
 	CrDisplayStringType_Reserved5 = 0x00000010,
 	CrDisplayStringType_Reserved6 = 0x00000011,
 	CrDisplayStringType_Reserved7 = 0x00000012,
 	CrDisplayStringType_CreativeLook_Name_Display = 0x00000013,
+	CrDisplayStringType_Reserved9 = 0x00000014,
+	CrDisplayStringType_Reserved10 = 0x00000015,
+	CrDisplayStringType_Reserved11 = 0x00000016,
 };
 
 // Image ID (Numerical Value) Setting
@@ -1627,7 +1747,7 @@ enum CrNDFilterMode : CrInt8u
 	CrNDFilterMode_VariableClear,
 };
 
-// Media SLOT1/2 Player
+// Media SLOT Player
 enum CrMediaPlayer : CrInt8u
 {
 	CrMediaPlayer_None = 0x00,
@@ -1850,12 +1970,21 @@ enum CrMovieRecButtonToggleEnableStatus : CrInt8u
     CrMovieRecButtonToggle_Enable,
 };
 
-// Face Eye Detection AF
+// Do not use. Will be removed in the next release. Please use CrFaceEyeDetectionAF from now on.
+//// Face Eye Detection AF
 enum CrFaceEyeDetectionAF : CrInt8u
 {
-    CrFaceEyeDetectionAF_Off                = 0x01,
-    CrFaceEyeDetectionAF_FaceEyeOnlyAF,
-    CrFaceEyeDetectionAF_FaceEyePriorityAF,
+	CrFaceEyeDetectionAF_Off = 0x01,
+	CrFaceEyeDetectionAF_FaceEyeOnlyAF,
+	CrFaceEyeDetectionAF_FaceEyePriorityAF,
+};
+
+// Subject Recognition AF
+enum CrSubjectRecognitionAF : CrInt8u
+{
+	CrSubjectRecognitionAF_Off = 0x01,
+	CrSubjectRecognitionAF_OnlyAF,
+	CrSubjectRecognitionAF_PriorityAF,
 };
 
 // AF Assist
@@ -1865,11 +1994,19 @@ enum CrAFAssist : CrInt8u
     CrAFAssist_On,
 };
 
-// ND PRESET or VARIABLE Switching Setting
+// Do not use. Will be removed in the next release. Please use CrNDFilterSwitchingSetting from now on.
+//// ND PRESET or VARIABLE Switching Setting
 enum CrNDPresetOrVariableSwitchingSetting : CrInt8u
 {
-    CrNDPresetOrVariableSwitchingSetting_Preset   = 0x01,
-    CrNDPresetOrVariableSwitchingSetting_Variable,
+	CrNDPresetOrVariableSwitchingSetting_Preset = 0x01,
+	CrNDPresetOrVariableSwitchingSetting_Variable,
+}; // Do not use. Will be removed in the next release.
+
+// ND Filter Switching Setting
+enum CrNDFilterSwitchingSetting : CrInt8u
+{
+	CrNDFilterSwitchingSetting_Preset = 0x01,
+	CrNDFilterSwitchingSetting_Variable,
 };
 
 // Lens Information of Type 
@@ -1920,7 +2057,6 @@ enum CrSQFrameRate : CrInt16u
 {
 	CrSQFrameRate_Invalid = 0x0000
 };
-
 
 // Audio Recording
 enum CrAudioRecording : CrInt8u
@@ -2181,7 +2317,7 @@ enum CrDeviceOverheatingState : CrInt8u
 // Function Of Touch Operation
 enum CrFunctionOfTouchOperation : CrInt8u
 {
-	CrFunctionOfTouchOperation_Off = 0x0001,
+	CrFunctionOfTouchOperation_Off = 0x01,
 	CrFunctionOfTouchOperation_Shutter,
 	CrFunctionOfTouchOperation_Focus,
 	CrFunctionOfTouchOperation_Tracking,
@@ -2192,6 +2328,843 @@ enum CrFunctionOfTouchOperation : CrInt8u
 	CrFunctionOfTouchOperation_FocusAndAEOff,
 	CrFunctionOfTouchOperation_TrackingAndAEOn,
 	CrFunctionOfTouchOperation_TrackingAndAEOff,
+};
+
+
+// AF Tracking Sensitivity
+enum CrAFTrackingSensitivity : CrInt8u
+{
+	CrAFTrackingSensitivity_1 = 0x01,
+	CrAFTrackingSensitivity_2,
+	CrAFTrackingSensitivity_3,
+	CrAFTrackingSensitivity_4,
+	CrAFTrackingSensitivity_5,
+};
+
+// BaseLookImport Operation Enable Status
+enum CrBaseLookImportOperationEnableStatus : CrInt8u
+{
+	CrBaseLookImportOperation_Disable = 0x00,
+	CrBaseLookImportOperation_Enable,
+};
+
+// Delete UserBaseLook
+enum CrDeleteUserBaseLook : CrInt16u
+{
+	CrDeleteUserBaseLook_Invalid = 0x0000,
+	CrDeleteUserBaseLook_All = 0xFFFF,
+};
+
+// Select UserBaseLook to Edit
+enum CrSelectUserBaseLookToEdit : CrInt16u
+{
+	CrSelectUserBaseLookToEdit_Invalid = 0x0000,
+};
+
+// Select UserBaseLook to Set in PPLUT
+enum CrSelectUserBaseLookToSetInPPLUT : CrInt16u
+{
+	CrSelectUserBaseLookToSetInPPLUT_Invalid = 0x0000,
+};
+
+// UserBaseLook Input
+enum CrUserBaseLookInput : CrInt8u
+{
+	CrUserBaseLookInput_S_Gamut3_SLog3 = 0x01,
+	CrUserBaseLookInput_S_Gamut3_Cine_SLog3
+};
+
+// UserBaseLook AE Level Offset
+// CrDataType_UInt16Array
+// e.g.) 0x0203 means 2/3EV
+
+// LUTFile Import BaseLookNumber
+enum CrBaseLookNumber : CrInt16u
+{
+	CrBaseLookNumber_1 = 0x0001,
+	CrBaseLookNumber_2,
+	CrBaseLookNumber_3,
+	CrBaseLookNumber_4,
+	CrBaseLookNumber_5,
+	CrBaseLookNumber_6,
+	CrBaseLookNumber_7,
+	CrBaseLookNumber_8,
+	CrBaseLookNumber_9,
+	CrBaseLookNumber_10,
+	CrBaseLookNumber_11,
+	CrBaseLookNumber_12,
+	CrBaseLookNumber_13,
+	CrBaseLookNumber_14,
+	CrBaseLookNumber_15,
+	CrBaseLookNumber_16,
+};
+
+// Base ISO Switch EI
+// CrDataType_UInt16Array
+// e.g.) If setting with "1600EI", set 0x0640
+
+// Flicker Less Shooting
+enum CrFlickerLessShooting : CrInt8u
+{
+	CrFlickerLessShooting_Off = 0x01,
+	CrFlickerLessShooting_On,
+};
+
+// Auto Review
+enum CrAutoReview : CrInt8u
+{
+	CrAutoReview_Off = 0x00,
+};
+
+// Audio Signals
+enum CrAudioSignals : CrInt8u
+{
+	CrAudioSignals_Off = 0x01,
+	CrAudioSignals_On,
+	CrAudioSignals_OnShutterOnly,
+	CrAudioSignals_OnWithoutShutter,
+};
+
+// HDMI Resolution(Still/Play)
+// HDMI Output Resolution(Movie)
+enum CrHDMIResolution : CrInt16u
+{
+	CrHDMIResolution_4320p_2160p = 0x0001,
+	CrHDMIResolution_2160p,
+	CrHDMIResolution_2160p_1080p,
+	CrHDMIResolution_1080p,
+	CrHDMIResolution_720p,
+	CrHDMIResolution_480p,
+	CrHDMIResolution_576p,
+	CrHDMIResolution_1080i = 0x0104,
+	CrHDMIResolution_480i  = 0x0106,
+	CrHDMIResolution_576i  = 0x0107,
+	CrHDMIResolution_Auto  = 0xFFFF,
+};
+
+// HDMI Output Rec Media(Movie)
+enum CrHDMIOutputRecMediaMovie : CrInt8u
+{
+	CrHDMIOutputRecMediaMovie_Off = 0x01, // HDMI only
+	CrHDMIOutputRecMediaMovie_On,
+};
+
+// HDMI Output 4K Set(Movie)
+enum CrHDMIOutput4KSettingMovie : CrInt16u
+{
+	CrHDMIOutput4KSettingMovie_59_94p_10bit = 0x0001,
+	CrHDMIOutput4KSettingMovie_50_00p_10bit,
+	CrHDMIOutput4KSettingMovie_29_97p_10bit,
+	CrHDMIOutput4KSettingMovie_25_00p_10bit,
+	CrHDMIOutput4KSettingMovie_24_00p_10bit,
+	CrHDMIOutput4KSettingMovie_23_98p_10bit,
+	CrHDMIOutput4KSettingMovie_59_94p_8bit  = 0x0101,
+	CrHDMIOutput4KSettingMovie_50_00p_8bit,
+	CrHDMIOutput4KSettingMovie_29_97p_8bit,
+	CrHDMIOutput4KSettingMovie_25_00p_8bit,
+	CrHDMIOutput4KSettingMovie_23_98p_8bit  = 0x0106,
+};
+
+// HDMI Output RAW(Movie)
+enum CrHDMIOutputRAWMovie : CrInt8u
+{
+	CrHDMIOutputRAWMovie_Off = 0x01,
+	CrHDMIOutputRAWMovie_On,
+};
+
+// HDMI Output Raw Setting(Movie)
+enum CrHDMIOutputRawSettingMovie : CrInt8u
+{
+	CrHDMIOutputRawSettingMovie_59_94p = 0x01,
+	CrHDMIOutputRawSettingMovie_50_00p,
+	CrHDMIOutputRawSettingMovie_29_97p,
+	CrHDMIOutputRawSettingMovie_25_00p,
+	CrHDMIOutputRawSettingMovie_24_00p,
+	CrHDMIOutputRawSettingMovie_23_98p,
+};
+
+// HDMI Output Time Code(Movie)
+enum CrHDMIOutputTimeCodeMovie : CrInt8u
+{
+	CrHDMIOutputTimeCodeMovie_Off = 0x01,
+	CrHDMIOutputTimeCodeMovie_On,
+};
+
+// HDMI Output Rec Control(Movie)
+enum CrHDMIOutputRecControlMovie : CrInt8u
+{
+	CrHDMIOutputRecControlMovie_Off = 0x01,
+	CrHDMIOutputRecControlMovie_On,
+};
+
+// Monitoring Output Display HDMI
+enum CrMonitoringOutputDisplayHDMI : CrInt8u
+{
+	CrMonitoringOutputDisplayHDMI_Off = 0x01,
+	CrMonitoringOutputDisplayHDMI_On,
+};
+
+// Audio Output HDMI Monitor CH
+enum CrHDMIOutputAudioCH : CrInt16u
+{
+	CrHDMIOutputAudioCH_CH1CH2 = 0x0003,
+	CrHDMIOutputAudioCH_CH3CH4 = 0x000C,
+};
+
+// Interval Rec Time(Movie)
+enum CrIntervalRecTimeMovie : CrInt32u
+{
+	CrIntervalRecTimeMovie_1sec     = 0x00000001,
+	CrIntervalRecTimeMovie_2sec,
+	CrIntervalRecTimeMovie_3sec,
+	CrIntervalRecTimeMovie_4sec,
+	CrIntervalRecTimeMovie_5sec,
+	CrIntervalRecTimeMovie_6sec,
+	CrIntervalRecTimeMovie_7sec,
+	CrIntervalRecTimeMovie_8sec,
+	CrIntervalRecTimeMovie_9sec,
+	CrIntervalRecTimeMovie_10sec,
+	CrIntervalRecTimeMovie_15sec     = 0x0000000F,
+	CrIntervalRecTimeMovie_20sec     = 0x00000014,
+	CrIntervalRecTimeMovie_30sec     = 0x0000001E,
+	CrIntervalRecTimeMovie_40sec     = 0x00000028,
+	CrIntervalRecTimeMovie_50sec     = 0x00000032,
+	CrIntervalRecTimeMovie_1min      = 0x0000003C,
+	CrIntervalRecTimeMovie_2min      = 0x00000078,
+	CrIntervalRecTimeMovie_3min      = 0x000000B4,
+	CrIntervalRecTimeMovie_4min      = 0x000000F0,
+	CrIntervalRecTimeMovie_5min      = 0x0000012C,
+	CrIntervalRecTimeMovie_6min      = 0x00000168,
+	CrIntervalRecTimeMovie_7min      = 0x000001A4,
+	CrIntervalRecTimeMovie_8min      = 0x000001E0,
+	CrIntervalRecTimeMovie_9min      = 0x0000021C,
+	CrIntervalRecTimeMovie_10min     = 0x00000258,
+	CrIntervalRecTimeMovie_15min     = 0x00000384,
+	CrIntervalRecTimeMovie_20min     = 0x000004B0,
+	CrIntervalRecTimeMovie_30min     = 0x00000708,
+	CrIntervalRecTimeMovie_40min     = 0x00000960,
+	CrIntervalRecTimeMovie_50min     = 0x00000BB8,
+	CrIntervalRecTimeMovie_1hour     = 0x00000E10,
+	CrIntervalRecTimeMovie_2hour     = 0x00001C20,
+	CrIntervalRecTimeMovie_3hour     = 0x00002A30,
+	CrIntervalRecTimeMovie_4hour     = 0x00003840,
+	CrIntervalRecTimeMovie_6hour     = 0x00005460,
+	CrIntervalRecTimeMovie_12hour    = 0x0000A8C0,
+	CrIntervalRecTimeMovie_24hour    = 0x00015180,
+};
+
+// Camera Eframing
+enum CrCameraEframing : CrInt8u
+{
+	CrCameraEframing_Off   = 0x01,
+	CrCameraEframing_On,
+};
+
+// Eframing Scale(Auto)
+enum CrEframingScaleAuto : CrInt8u
+{
+	CrEframingScaleAuto_Low    = 0x01,
+	CrEframingScaleAuto_Mid,
+	CrEframingScaleAuto_High,
+};
+
+// Eframing Speed(Auto)
+// CrDataType_UInt8Range
+
+// Eframing Mode(Auto)
+enum CrEframingModeAuto : CrInt8u
+{
+	CrEframingModeAuto_Auto    = 0x01,
+	CrEframingModeAuto_TouchKick,
+	CrEframingModeAuto_TimeSequenceA,
+	CrEframingModeAuto_TimeSequenceB,
+};
+
+// Eframing Recording Image Crop
+enum CrEframingRecordingImageCrop : CrInt8u
+{
+	CrEframingRecordingImageCrop_Off    = 0x01,
+	CrEframingRecordingImageCrop_On,
+};
+
+// Eframing HDMI Crop
+enum CrEframingHDMICrop : CrInt8u
+{
+	CrEframingHDMICrop_Off    = 0x01,
+	CrEframingHDMICrop_On,
+};
+
+// USB Power Supply
+enum CrUSBPowerSupply : CrInt8u
+{
+	CrUSBPowerSupply_Off = 0x01,
+	CrUSBPowerSupply_On,
+};
+
+// Long Exposure NR
+enum CrLongExposureNR : CrInt8u
+{
+	CrLongExposureNR_Off = 0x01,
+	CrLongExposureNR_On,
+};
+
+// High ISO NR
+enum CrHighIsoNR : CrInt8u
+{
+	CrHighIsoNR_Off = 0x01,
+	CrHighIsoNR_Low,
+	CrHighIsoNR_Normal,
+	CrHighIsoNR_High,
+};
+
+// HLG Still Image
+enum CrHLGStillImage : CrInt8u
+{
+	CrHLGStillImage_Off = 0x01,
+	CrHLGStillImage_On,
+};
+
+// Color Space (Still Image)
+enum CrColorSpace : CrInt8u
+{
+	CrColorSpace_SRGB = 0x01,
+	CrColorSpace_AdobeRGB,
+};
+
+// Bracket Order
+enum CrBracketOrder : CrInt8u
+{
+	CrBracketOrder_0ToMinusToPlus = 0x01,
+	CrBracketOrder_MinusTo0ToPlus,
+};
+
+// Focus Bracket Order
+enum CrFocusBracketOrder : CrInt8u
+{
+	CrFocusBracketOrder_0ToMinusToPlus = 0x01,
+	CrFocusBracketOrder_0ToPlus,
+};
+
+// Focus Bracket Exposure Lock 1st Img
+enum CrFocusBracketExposureLock1stImg : CrInt8u
+{
+	CrFocusBracketExposureLock1stImg_Off = 0x01,
+	CrFocusBracketExposureLock1stImg_On,
+};
+
+// Focus Bracket Interval Until Next Shot
+// CrDataType_UInt16Array
+// value : 10times the real value of interval in seconds.
+//         0x03E8 approximately equal 100.0 seconds.
+enum CrFocusBracketIntervalUntilNextShot : CrInt16u
+{
+	CrFocusBracketIntervalUntilNextShot_Invalid = 0x0000,
+	CrFocusBracketIntervalUntilNextShot_ShortestInterval = 0xFFFF,
+};
+
+// IntervalREC(Still) Shooting Start Time
+// CrDataType_UInt16Range
+//
+
+// IntervalREC(Still) Shooting Interval
+// CrDataType_UInt16Range
+//
+
+// IntervalREC(Still) Shooting Interval Priority
+enum CrIntervalRecShootIntervalPriority : CrInt8u
+{
+	CrIntervalRecShootIntervalPriority_Off = 0x01,
+	CrIntervalRecShootIntervalPriority_On
+};
+
+// IntervalREC(Still) Number of Shots
+// CrDataType_UInt16Range
+//
+
+// IntervalREC(Still) AE Tracking Sensitivity
+enum CrIntervalRecAETrackingSensitivity : CrInt8u
+{
+	CrIntervalRecAETrackingSensitivity_Off = 0x01,
+	CrIntervalRecAETrackingSensitivity_Low,
+	CrIntervalRecAETrackingSensitivity_Mid,
+	CrIntervalRecAETrackingSensitivity_High,
+};
+
+// IntervalREC(Still) Shutter Type
+enum CrIntervalRecShutterType : CrInt8u
+{
+	CrIntervalRecShutterType_Auto = 0x01,
+	CrIntervalRecShutterType_MechanicalShutter,
+	CrIntervalRecShutterType_ElectronicShutter,
+};
+
+// High Resolution Shutter Speed Setting
+enum CrHighResolutionShutterSpeedSetting : CrInt8u
+{
+	CrHighResolutionShutterSpeedSetting_Off = 0x00,
+	CrHighResolutionShutterSpeedSetting_On
+};
+
+// High Resolution Shutter Speed
+// CrDataType_UInt64Range
+// Upper four bytes: numerator, Lower four bytes: denominator.
+
+// Wind Noise Reduction
+enum CrWindNoiseReduction : CrInt8u
+{
+	CrWindNoiseReduction_Off = 0x01,
+	CrWindNoiseReduction_On,
+	CrWindNoiseReduction_Auto
+};
+
+// Movie Recording Self timer
+enum CrMovieRecordingSelfTimer : CrInt8u
+{
+	CrMovieRecordingSelfTimer_Off = 0x00,
+	CrMovieRecordingSelfTimer_On,
+};
+
+// Movie Recording Self timer Count time
+enum CrMovieRecordingSelfTimerCountTime : CrInt16u
+{
+	CrMovieRecordingSelfTimerCountTime_None = 0x0000, // Not counting down
+};
+
+// Movie Recording Self timer Continuous
+enum CrMovieRecordingSelfTimerContinuous : CrInt8u
+{
+	CrMovieRecordingSelfTimerContinuous_Off = 0x00,
+	CrMovieRecordingSelfTimerContinuous_On,
+};
+
+// Movie Recording Self timer Status
+enum CrMovieRecordingSelfTimerStatus : CrInt8u
+{
+	CrMovieRecordingSelfTimerStatus_Idle = 0x00,
+	CrMovieRecordingSelfTimerStatus_CountingDown,
+};
+
+// Bulb Timer Setting
+enum CrBulbTimerSetting : CrInt8u
+{
+	CrBulbTimerSetting_Off = 0x00,
+	CrBulbTimerSetting_On,
+};
+
+// Bulb Exposure Time Setting
+// CrDataType_UInt16Range
+//
+
+// Auto Slow Shutter
+enum CrAutoSlowShutter : CrInt8u
+{
+	CrAutoSlowShutter_Off = 0x01,
+	CrAutoSlowShutter_On,
+};
+
+// ISO Auto Min Shutter Speed Mode
+enum CrIsoAutoMinShutterSpeedMode : CrInt8u
+{
+	CrIsoAutoMinShutterSpeedMode_Preset = 0x01,
+	CrIsoAutoMinShutterSpeedMode_Manual,
+};
+
+// ISO Auto Min Shutter Speed Manual
+// CrDataType_UInt64Array
+// Upper two bytes: numerator, Lower two bytes: denominator
+// In the case of the shutter speed is displayed as "Real Number" on the camera, the denominator is fixed 0x0000000A.
+// e.g.) 0x0000000F0000000A: 0x0000000F (means 15) / 0x00000000A (means 10) = 1.5"
+// In the case of the shutter speed is displayed as "Fraction Number" on the camera, the numerator is fixed 0x00000001.
+// e.g.) 0x00000001000003E8: 0x00000001 (means 1) / 0x000003E8 (means 1000) = 1/1000
+enum CrIsoAutoMinShutterSpeedManual : CrInt64u
+{
+	CrIsoAutoMinShutterSpeedManual_Invalid = 0x0000000000000000,
+};
+
+// ISO Auto Min Shutter Speed Preset
+enum CrIsoAutoMinShutterSpeedPreset : CrInt8u
+{
+	CrIsoAutoMinShutterSpeedPreset_Slower = 0x01,
+	CrIsoAutoMinShutterSpeedPreset_Slow,
+	CrIsoAutoMinShutterSpeedPreset_Standard,
+	CrIsoAutoMinShutterSpeedPreset_Fast,
+	CrIsoAutoMinShutterSpeedPreset_Faster,
+};
+
+// Focus Position Setting
+// CrDataType_UInt16Range
+
+// Focus Position Current Value
+// CrDataType_UInt16Range
+
+// Focus Driving Status
+enum CrFocusDrivingStatus : CrInt8u
+{
+	CrFocusDrivingStatus_NotDriving = 0x01,
+	CrFocusDrivingStatus_Driving,
+};
+
+// Soft Skin Effect
+enum CrSoftSkinEffect : CrInt8u
+{
+	CrSoftSkinEffect_Off = 0x01,
+	CrSoftSkinEffect_Low,
+	CrSoftSkinEffect_Mid,
+	CrSoftSkinEffect_High,
+};
+
+// Priority Set in AF-S/AF-C
+enum CrPrioritySetInAF : CrInt8u
+{
+	CrPrioritySetInAF_AF = 0x01,
+	CrPrioritySetInAF_Release,
+	CrPrioritySetInAF_BalancedEmphasis,
+};
+
+// Focus Magnification Time
+enum CrFocusMagnificationTime : CrInt8u
+{
+	CrFocusMagnificationTime_NoLimit  = 0xFF,
+};
+
+// Subject Recognition in AF
+enum CrSubjectRecognitionInAF : CrInt8u
+{
+	CrSubjectRecognitionInAF_Off = 0x01,
+	CrSubjectRecognitionInAF_On,
+};
+
+// Recognition Target
+enum CrRecognitionTarget : CrInt16u
+{
+	CrRecognitionTarget_Person = 0x0001,
+	CrRecognitionTarget_AnimalBird,
+	CrRecognitionTarget_Animal,
+	CrRecognitionTarget_Bird,
+	CrRecognitionTarget_Insect,
+	CrRecognitionTarget_CarTrain,
+	CrRecognitionTarget_Plane,
+};
+
+// Right/Left Eye Select
+enum CrRightLeftEyeSelect : CrInt8u
+{
+	CrRightLeftEyeSelect_Auto = 0x01,
+	CrRightLeftEyeSelect_RightEye,
+	CrRightLeftEyeSelect_LeftEye,
+};
+
+// Select FTP Server
+// CrDataType_UInt8Array
+
+// Select FTP ServerID (ILME-FX6)
+// CrDataType_UInt32Array
+enum CrSelectFTPServerID : CrInt32u
+{
+	CrSelectFTPServerID_Nothing = 0xFFFFFFFF, // Nothing to display
+};
+
+// FTP Connection Status
+enum CrFTPConnectionStatus : CrInt8u
+{
+	CrFTPConnectionStatus_Connecting = 0x01,
+	CrFTPConnectionStatus_Connected,
+	CrFTPConnectionStatus_Connected_ServerError,
+	CrFTPConnectionStatus_ConnectionError,
+};
+
+// FTP Connection Error Info
+enum CrFTPConnectionErrorInfo : CrInt16u
+{
+	CrFTPConnectionErrorInfo_Unknown = 0xFFFF,
+	CrFTPConnectionErrorInfo_NoError = 0x0000,
+	CrFTPConnectionErrorInfo_CameraSystemError,
+	CrFTPConnectionErrorInfo_WiFi_HardwareError,
+	CrFTPConnectionErrorInfo_WiredLAN_HardwareError,
+	CrFTPConnectionErrorInfo_AP_NotReg,
+	CrFTPConnectionErrorInfo_AP_NotFound,
+	CrFTPConnectionErrorInfo_AP_ConnectionError,
+	CrFTPConnectionErrorInfo_AP_PasswordError,
+	CrFTPConnectionErrorInfo_InvalidKeyError_WEP_StaticIPAddrSettingError,
+	CrFTPConnectionErrorInfo_InvalidKeyError_WEP_IPAddrAcquisitionError,
+	CrFTPConnectionErrorInfo_DHCP_IPAddrAcquisitionError,
+	CrFTPConnectionErrorInfo_DNS_IPAddrAcquisitionError,
+	CrFTPConnectionErrorInfo_AirplaneModeON,
+	CrFTPConnectionErrorInfo_LANCableError,
+	CrFTPConnectionErrorInfo_FTPServerSettingNotSet,
+	CrFTPConnectionErrorInfo_FTPServerSettingError,
+	CrFTPConnectionErrorInfo_FTPServerSevered,
+	CrFTPConnectionErrorInfo_CertificateError,
+	CrFTPConnectionErrorInfo_DirectoryCreateError,
+	CrFTPConnectionErrorInfo_AuthorityError_FTPServerOverCapacity,
+	CrFTPConnectionErrorInfo_CantRecognizeUSBAdapter,
+	CrFTPConnectionErrorInfo_CantRecognizeUSBDevice,
+	CrFTPConnectionErrorInfo_CheckConnectDevice,
+	CrFTPConnectionErrorInfo_Reconnecting_FailedConnectServer,
+	CrFTPConnectionErrorInfo_Reconnecting_CantTransfer,
+};
+
+// FTP Server Setting Version, FTP Job List Data Version
+// CrDataType_UInt16
+// value = Version * 100. 0x0064 = 1.00
+
+// FTP Server Setting Operation Enable Status
+enum CrFTPServerSettingOperationEnableStatus : CrInt8u
+{
+	CrFTPServerSettingOperation_Disable = 0x00,
+	CrFTPServerSettingOperation_Enable,
+};
+
+// FTP Transfer Setting Save Operation Enable Status
+enum CrFTPTransferSettingSaveOperationEnableStatus : CrInt8u
+{
+	CrFTPTransferSettingSaveOperation_Disable = 0x00,
+	CrFTPTransferSettingSaveOperation_Enable,
+};
+
+// FTP Transfer Setting Read Operation Enable Status
+enum CrFTPTransferSettingReadOperationEnableStatus : CrInt8u
+{
+	CrFTPTransferSettingReadOperation_Disable = 0x00,
+	CrFTPTransferSettingReadOperation_Enable,
+};
+
+// FTP Transfer Setting Save/Read State
+enum CrFTPTransferSettingSaveReadState : CrInt8u
+{
+	CrFTPTransferSettingSaveReadState_Idle = 0x00,
+	CrFTPTransferSettingSaveReadState_Reading,
+};
+
+//	FTP Function
+enum CrFTPFunction : CrInt8u
+{
+	CrFTPFunction_Off = 0x01,
+	CrFTPFunction_On,
+};
+
+//	Auto FTP Transfer
+enum CrFTPAutoTransfer : CrInt8u
+{
+	CrFTPAutoTransfer_Off = 0x01,
+	CrFTPAutoTransfer_On,
+};
+
+//	Auto FTP Transfer Target(Still/Movie)
+enum CrFTPAutoTransferTarget : CrInt8u
+{
+	CrFTPAutoTransferTarget_StillOnly = 0x01,
+	CrFTPAutoTransferTarget_MovieOnly,
+	CrFTPAutoTransferTarget_StillAndMovie,
+};
+
+//	Auto FTP Transfer Target(Movie)
+enum CrFTPAutoTransferTargetMovie : CrInt8u
+{
+	CrFTPAutoTransferTargetMovie_All = 0x01,
+	CrFTPAutoTransferTargetMovie_OnlyShotMark,
+};
+
+//	FTP Transfer Target(Still)
+enum CrFTPTransferTargetStill : CrInt8u
+{
+	CrFTPTransferTargetStill_JpegHeifOnly = 0x01,
+	CrFTPTransferTargetStill_RawOnly,
+	CrFTPTransferTargetStill_RawAndJpegHeif,
+};
+
+//	FTP Transfer Target(Movie)
+enum CrFTPTransferTargetMovie : CrInt8u
+{
+	CrFTPTransferTargetMovie_ProxyOnly = 0x01,
+	CrFTPTransferTargetMovie_OriginalOnly,
+	CrFTPTransferTargetMovie_OriginalAndProxy,
+};
+
+//	FTP Power Save
+enum CrFTPPowerSave : CrInt8u
+{
+	CrFTPPowerSave_Off = 0x01,
+	CrFTPPowerSave_On,
+};
+
+// Flicker Scan Status
+enum CrFlickerScanStatus : CrInt8u
+{
+	CrFlickerScanStatus_Invalid = 0x00,
+	CrFlickerScanStatus_Idle,
+	CrFlickerScanStatus_FlickerScanning,
+};
+
+// Flicker Scan Enable Status
+enum CrFlickerScanEnableStatus : CrInt8u
+{
+	CrFlickerScan_Disable = 0x00,
+	CrFlickerScan_Enable,
+};
+
+// CameraShakeStatus 
+enum CrCameraShakeStatus : CrInt8u
+{
+	CrCameraShakeStatus_NoError = 0x01,
+	CrCameraShakeStatus_Error
+};
+
+// UpdateBodyStatus
+enum CrUpdateStatus : CrInt16u
+{
+	CrUpdateStatus_NoError                 = 0x0001,
+	CrUpdateStatus_OtherError              = 0x0101,
+	CrUpdateStatus_NoUpdateFileInMedia,
+	CrUpdateStatus_FileVersionOlder,
+	CrUpdateStatus_FileDamaged,
+	CrUpdateStatus_FileInvalidData,
+	CrUpdateStatus_FileModelNotMatch,
+	CrUpdateStatus_FileRegionNotMatch,
+	CrUpdateStatus_FileVersionNotMatch,
+	CrUpdateStatus_LowBattery,
+	CrUpdateStatus_UnsupportedBattery,
+};
+
+// Media SLOT Writing State
+enum CrMediaSlotWritingState : CrInt8u
+{
+	CrMediaSlotWritingState_NotWriting = 0x01,
+	CrMediaSlotWritingState_ContentsWriting
+};
+
+// Media SLOT Recording Avaialble Type
+enum CrMediaSlotRecordingAvailableType : CrInt8u
+{
+	CrMediaSlotRecordingAvailableType_None = 0x00,
+	CrMediaSlotRecordingAvailableType_Main,
+	CrMediaSlotRecordingAvailableType_Proxy,
+	CrMediaSlotRecordingAvailableType_MainAndProxy,
+};
+
+//	FTP Server Service Type
+enum CrFTPServerServiceType : CrInt8u
+{
+	CrFTPServerServiceType_Invalid = 0x00,
+	CrFTPServerServiceType_FTP,
+};
+
+//	FTP Server Password Exists
+enum CrFTPServerPasswordExists : CrInt8u
+{
+	CrFTPServerPassword_NotUse = 0x00,
+	CrFTPServerPassword_Use,
+};
+
+//	FTP Server Passive Mode
+enum CrFTPServerPassiveMode : CrInt8u
+{
+	CrFTPServerPassiveMode_Invalid = 0x00,
+	CrFTPServerPassiveMode_Off,
+	CrFTPServerPassiveMode_On,
+};
+
+//	FTP Server using Secure Protocol
+enum CrFTPServerUsingSecureProtocol : CrInt8u
+{
+	CrFTPServerUsingSecureProtocol_Invalid = 0x00,
+	CrFTPServerUsingSecureProtocol_Off,
+	CrFTPServerUsingSecureProtocol_On,
+};
+
+//	FTP Server Directory Hierarchy Type
+enum CrFTPServerDirectoryHierarchyType : CrInt8u
+{
+	CrFTPServerDirectoryHierarchyType_Invalid = 0x00,
+	CrFTPServerDirectoryHierarchyType_Standard,
+	CrFTPServerDirectoryHierarchyType_SameAsInCamera,
+};
+
+//	FTP Server Same Name File Overwrite Type
+enum CrFTPServerSameNameFileOverwriteType : CrInt8u
+{
+	CrFTPServerSameNameFileOverwriteType_Invalid = 0x00,
+	CrFTPServerSameNameFileOverwriteType_Overwrite,
+	CrFTPServerSameNameFileOverwriteType_NotOverwrite,
+};
+
+//	FTP Server Root Certificate Error Setting
+enum CrFTPServerRootCertificateErrorSetting : CrInt8u
+{
+	CrFTPServerRootCertificateErrorSetting_Invalid = 0x00,
+	CrFTPServerRootCertificateErrorSetting_Connect,
+	CrFTPServerRootCertificateErrorSetting_NotConnect,
+};
+
+// FTP Job Trim Type
+enum CrFTPJobTrimType : CrInt32u
+{
+	CrFTPJobTrimType_NoTrim = 0x00000000, // original
+	CrFTPJobTrimType_Trim,
+};
+
+// FTP Job Slot ID
+enum CrFTPJobSlotId : CrInt32
+{
+	CrFTPJobSlotId_Invalid    = 0x00000000,
+	CrFTPJobSlotId_Slot1,
+	CrFTPJobSlotId_Slot2,
+};
+
+// FTP Job Status
+enum CrFTPJobStatus : CrInt32
+{
+	CrFTPJobStatus_Invalid              = 0x00000000,
+	CrFTPJobStatus_Waiting              = 0x00000100,
+	CrFTPJobStatus_Transferring         = 0x00000200,
+	CrFTPJobStatus_Completed            = 0x00000400,
+	CrFTPJobStatus_Aborted              = 0x00000800,
+	CrFTPJobStatus_OtherErr             = 0x00010000,
+	CrFTPJobStatus_DestAuthFailed       = 0x00010001,
+	CrFTPJobStatus_ServerCapacityOver   = 0x00010002,
+	CrFTPJobStatus_FileAccessErr        = 0x00010003,
+	CrFTPJobStatus_DestCertErr          = 0x00010004,
+	CrFTPJobStatus_MediaAccessErr       = 0x00010005,
+	CrFTPJobStatus_DestConnErr          = 0x00010006,
+	CrFTPJobStatus_DestServerErr        = 0x00010007,
+	CrFTPJobStatus_UploadErr            = 0x00010008,
+	CrFTPJobStatus_DestCertNotValid     = 0x00010009,
+	CrFTPJobStatus_DestCertExpired      = 0x0001000A,
+	CrFTPJobStatus_PASVNotSupport       = 0x0001000B,
+	CrFTPJobStatus_ChunkTransErr        = 0x0001000C,
+};
+
+// FTP Job Control Type
+enum CrFTPJobControlType : CrInt32u
+{
+	CrFTPJobControlType_Add      = 0x00000001,
+	CrFTPJobControlType_Delete,
+	CrFTPJobControlType_Suspend,
+	CrFTPJobControlType_Resume,
+};
+
+// FTP Job Delete Type
+enum CrFTPJobDeleteType : CrInt32u
+{
+	CrFTPJobDeleteType_Individual      = 0x00000000,
+	CrFTPJobDeleteType_All,
+	CrFTPJobDeleteType_FinishedAll,
+};
+
+// FTP Job Complete Action
+enum CrFTPJobCompleteAction : CrInt8
+{
+	CrFTPJobCompleteAction_Invalid        = 0x00,
+	CrFTPJobCompleteAction_NoAction,
+	CrFTPJobCompleteAction_DeleteFile,
+};
+
+// FTP Job Delete Action
+enum CrFTPJobDeleteAction : CrInt8
+{
+	CrFTPJobDeleteAction_Invalid        = 0x00,
+	CrFTPJobDeleteAction_NoAction,
+	CrFTPJobDeleteAction_DeleteFile,
 };
 
 class SCRSDK_API CrDeviceProperty
@@ -2517,6 +3490,11 @@ public:
 	CrInt8u* proxyVideoType;
 	CrInt8u* proxyAudioType;
 	CrInt8u* thumbnailUrl;
+	CrInt8u* metaUrl;
+	CrInt8u  umid[32];
+	CrInt32u duration;
+	CrInt32u restrictionFrame;
+	bool     isTrimmingAvailable;
 };
 #pragma pack()
 
@@ -2535,6 +3513,100 @@ public:
 	CrInt32u focusPosition;
 };
 
+#pragma pack(1)
+class SCRSDK_API CrFTPServerSetting
+{
+public:
+	CrFTPServerSetting();
+	~CrFTPServerSetting();
+	CrFTPServerSetting(const CrFTPServerSetting& ref);
+	CrFTPServerSetting& operator = (const CrFTPServerSetting& ref);
+
+public:
+	CrInt16u                               serverId;
+	CrInt8u*                               displayName;    // Not required, Display for Camera menu
+	CrFTPServerServiceType                 serviceType;
+	CrInt8u*                               hostName;       // The first 2bytes are String length
+	CrInt16u                               portNumber;
+	CrInt8u*                               userName;       // The first 2bytes are String length
+	CrFTPServerPasswordExists              passwordExists;
+	CrInt8u*                               password;       // The first 2bytes are String length
+	CrFTPServerPassiveMode                 passiveMode;
+	CrInt8u*                               destinationDir; // The first 2bytes are String length
+	CrFTPServerUsingSecureProtocol         secureProtocol;
+	CrFTPServerDirectoryHierarchyType      directoryHierarchyType;
+	CrFTPServerSameNameFileOverwriteType   overwriteType;
+	CrFTPServerRootCertificateErrorSetting rootCertificateErrorSetting; // Available only when FTPS
+};
+#pragma pack()
+
+class CrOperationResultSupportedInfo
+{
+public:
+	CrOperationResultSupportedInfo();
+	~CrOperationResultSupportedInfo();
+public:
+	CrSdkApi api;
+	CrInt32u code;
+};
+
+// Used by GetFTPJobList API
+#pragma pack(1)
+class SCRSDK_API CrFTPJobInfo
+{
+public:
+	CrFTPJobInfo();
+	~CrFTPJobInfo();
+	CrFTPJobInfo(const CrFTPJobInfo& ref);
+	CrFTPJobInfo& operator =(const CrFTPJobInfo& ref);
+
+public:
+	CrInt32u serverId;
+	CrInt32u jobId;
+	CrFTPJobSlotId slotId;
+	CrFTPJobStatus jobStatus;
+	CrInt32  chunkNum;
+	CrInt64u fileSize;
+	CrInt64u transferSize;
+	CrInt8u* clipName;      // The first 2bytes are String length
+	CrInt8u* mainName;      // The first 2bytes are String length
+	CrInt8u* metaName;      // The first 2bytes are String length
+};
+#pragma pack()
+
+// Used by ControlFTPJobList API
+const CrInt32u CrFTPJOBLIST_MAX = 500;
+const CrInt16u CrFTPJOBLIST_ADD_CLIP_PATH_MAX_LEN = 129;
+const CrInt16u CrFTPJOBLIST_ADD_META_PATH_MAX_LEN = 129;
+const CrInt16u CrFTPJOBLIST_ADD_TRANSFER_DIR_MAX_LEN = 513;
+const CrInt16u CrFTPJOBLIST_ADD_DEST_CLIP_NAME_MAX_LEN = 129;
+#pragma pack(1)
+class SCRSDK_API CrFTPJobSetting
+{
+public:
+	CrFTPJobSetting();
+	~CrFTPJobSetting();
+	CrFTPJobSetting(const CrFTPJobSetting& ref);
+	CrFTPJobSetting(CrFTPJobSetting&& ref) noexcept;
+	CrFTPJobSetting& operator = (const CrFTPJobSetting& ref);
+
+public:
+	CrFTPJobTrimType                       trimType;
+	CrInt32u                               serverId;
+	CrFTPJobSlotId                         slotId;
+	CrInt8u*                               clipPath;       // The first 2bytes are String length
+	CrInt8u*                               metaPath;       // The first 2bytes are String length
+	CrInt8u*                               transferDir;    // The first 2bytes are String length
+	CrInt32u                               inFrame;
+	CrInt32u                               outFrame;
+	CrInt32u                               duration;
+	CrInt8u*                               destClipName;   // The first 2bytes are String length
+	CrInt8u                                umid[32];
+	CrInt8u*                               videoType;      // The first 2bytes are String length
+	CrFTPJobCompleteAction                 compJobAction;
+	CrFTPJobDeleteAction                   deleteJobAction;
+};
+#pragma pack()
 
 }
 

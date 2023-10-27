@@ -7,8 +7,8 @@ namespace SCRSDK
 	enum
 	{
 		// 16bit	always 1
-		// 9Å`15bit	category of error
-		// 1Å`8bit	error detail in category
+		// 9~15bit	category of error
+		// 1~8bit	error detail in category
 		CrError_None								= 0x0000,
 		CrError_Generic								= 0x8000,
 		CrError_Genric								= 0x8000, /* Do not use. Will be removed in the next release. */
@@ -75,7 +75,7 @@ namespace SCRSDK
 		// Connection related
 		CrError_Connect_Unknown						= CrError_Connect,
 		CrError_Connect_Connect,
-		CrError_Connect_Reserved1,
+		CrError_Connect_ConnectIP,
 		CrError_Connect_Release,
 		CrError_Connect_GetProperty,
 		CrError_Connect_SendCommand,
@@ -117,6 +117,8 @@ namespace SCRSDK
 		CrError_Api_InvalidSerialNumber,
 		CrError_Api_InvalidIpAddress,	
 		CrError_Api_InvalidMacAddress,
+		CrError_Api_PasswordLengthOverMax,
+		CrError_Api_PasswordIncludesInvalidCharacter,
 
 		CrError_Polling_Unknown						= CrError_Polling,
 		CrError_Polling_InvalidVal_Intervals,
@@ -163,11 +165,11 @@ namespace SCRSDK
 		CrWarning_Format_Failed,
 		CrWarning_Format_Invalid,
 		CrWarning_Format_Complete,
-		CrWarning_Reserved1,
-		CrWarning_Reserved2,
-		CrWarning_Reserved3,
-		CrWarning_Reserved4,
-		CrWarning_Reserved5,
+		CrWarning_FTPTransferSetting_Read_Result_Invalid,
+		CrWarning_FTPTransferSetting_Read_Result_OK,
+		CrWarning_FTPTransferSetting_Read_Result_NG,
+		CrWarning_FTPTransferSetting_Read_Result_NG_password,
+		CrWarning_FTPTransferSetting_Read_Result_DeviceBusy,
 		CrWarning_Exposure_Started, /* Do not use. Will be removed in the next release. */
 		CrNotify_Captured_Event = CrWarning_Exposure_Started,
 		CrWarning_DateTime_Setting_Result_Invalid,
@@ -217,7 +219,70 @@ namespace SCRSDK
 		CrWarning_DisplayListChanged_CreativeLook_NameDisplayList,
 		CrWarning_CustomWBCapture_Result_Invalid,
 		CrWarning_CustomWBCapture_Result_OK,
-		CrWarning_CustomWBCapture_Result_NG
+		CrWarning_CustomWBCapture_Result_NG,
+		CrWarning_ImportLUTFile_Result_Invalid,
+		CrWarning_ImportLUTFile_Result_OK,
+		CrWarning_ImportLUTFile_Result_NG,
+		CrWarning_ImportLUTFile_Result_InvalidFileName,
+		CrWarning_ImportLUTFile_Result_DeviceBusy,
+		CrWarning_ImportLUTFile_Result_DeviceStorageFull,
+		CrWarning_ImportLUTFile_Result_InvalidParameter,
+		CrWarning_ImportLUTFile_Result_InvalidFile,
+		CrWarning_FTPTransferSetting_Save_Result_NG,
+		CrWarning_FTPTransferSetting_Save_Result_DeviceBusy,
+		CrWarning_FTPTransferSetting_SaveRead_PasswordLengthOverMax,
+		CrWarning_FTPTransferSetting_SaveRead_PasswordIncludesInvalidCharacter,
+		CrWarning_RequestFTPServerSettingList_Success,
+		CrWarning_RequestFTPServerSettingList_DeviceBusy,
+		CrWarning_RequestFTPServerSettingList_Error,
+		CrWarning_SetFTPServerSetting_Result_Invalid,
+		CrWarning_SetFTPServerSetting_Result_OK,
+		CrWarning_SetFTPServerSetting_Result_NG,
+		CrWarning_SetFTPServerSetting_Result_DeviceBusy,
+		CrWarning_RequestFTPJobList_Result_Success,
+		CrWarning_RequestFTPJobList_Result_DeviceBusy,
+		CrWarning_RequestFTPJobList_Result_Error,
+		CrWarning_ControlFTPJobList_Set_Result_Invalid,
+		CrWarning_ControlFTPJobList_Set_Result_OK, 
+		CrWarning_ControlFTPJobList_Set_Result_NG,
+		CrWarning_ControlFTPJobList_Set_Result_DeviceBusy,
+		CrWarning_ControlFTPJobList_Delete_Result_Invalid,
+		CrWarning_ControlFTPJobList_Delete_Result_OK, 
+		CrWarning_ControlFTPJobList_Delete_Result_NG,
+		CrWarning_ControlFTPJobList_Delete_Result_DeviceBusy,
+		CrWarning_ControlFTPJobList_Suspend_Result_Invalid,
+		CrWarning_ControlFTPJobList_Suspend_Result_OK, 
+		CrWarning_ControlFTPJobList_Suspend_Result_NG,
+		CrWarning_ControlFTPJobList_Suspend_Result_DeviceBusy,
+		CrWarning_ControlFTPJobList_Resume_Result_Invalid,
+		CrWarning_ControlFTPJobList_Resume_Result_OK, 
+		CrWarning_ControlFTPJobList_Resume_Result_NG,
+		CrWarning_ControlFTPJobList_Resume_Result_DeviceBusy,
+		CrWarning_MovieRecordingOperation_Result_Invalid,
+		CrWarning_MovieRecordingOperation_Result_OK,
+		CrWarning_MovieRecordingOperation_Result_NG,
+		CrWarning_FocusPosition_Result_Invalid,
+		CrWarning_FocusPosition_Result_OK,
+		CrWarning_FocusPosition_Result_NG,
+		CrWarning_Reserved1,
+		CrWarning_DisplayListChanged_FTP_ServerNameDisplayList,
+		CrWarning_DisplayListChanged_FTP_UpLoadDirectoryDisplayList,
+		CrWarning_DisplayListChanged_FTP_JobStatusDisplayList,
+		//CrWarning_Reserved2,
+		//CrWarning_Reserved3,
+		//CrWarning_Reserved4,
+		//CrWarning_Reserved5,
+
+		CrWarningExt_Unknown = 0x00060000,
+		CrWarningExt_AFStatus,
+		CrWarningExt_OperationResults,
+	};
+
+	enum CrWarningExt_OperationResultsParam : CrInt32
+	{
+		CrWarningExt_OperationResultsParam_Invalid = 0x00000000,
+		CrWarningExt_OperationResultsParam_OK,
+		CrWarningExt_OperationResultsParam_NG,
 	};
 
 	#define CR_SUCCEEDED(e)	(SCRSDK::CrError_None == (e))

@@ -105,6 +105,9 @@ namespace SCRSDK
 		CrCameraDeviceModel_ILME_FX6,
 		CrCameraDeviceModel_ILCE_7RM5,
 		CrCameraDeviceModel_ZV_E1,
+		CrCameraDeviceModel_ILCE_6700,
+		CrCameraDeviceModel_ILCE_7CM2,
+		CrCameraDeviceModel_ILCE_7CR,
 	};
 
 	enum CrReconnectingSet : CrInt32u
@@ -141,6 +144,17 @@ namespace SCRSDK
 		CrDeviceSetting_Disable = 0,
 		CrDeviceSetting_Enable,
 	};
+
+	const CrInt32u CrFTPTRANSFERSETTING_SAVEREAD_PASSWORD_MAX = 33; // 32 + 1(null termination)
+
+	enum CrSdkApi : CrInt32u
+	{
+		CrSdkApi_Unknown = 0x00000000,
+		CrSdkApi_Invalid,
+		CrSdkApi_SetDeviceProperty,
+		CrSdkApi_SendCommand,
+	};
+
 }
 
 #endif //CRDEFINES_H

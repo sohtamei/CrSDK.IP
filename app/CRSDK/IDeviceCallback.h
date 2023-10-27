@@ -27,6 +27,8 @@ public:
 
 	virtual void OnWarning(CrInt32u warning) = 0;
 
+	virtual void OnWarningExt(CrInt32u warning, CrInt32 param1, CrInt32 param2, CrInt32 param3) = 0;
+
 	virtual void OnError(CrInt32u error) = 0;
 };
 

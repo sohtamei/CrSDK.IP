@@ -660,6 +660,54 @@ std::vector<std::uint16_t> parse_movie_shooting_mode(unsigned char const* buf, s
     return result;
 }
 
+std::vector<std::uint16_t> parse_focus_position(unsigned char const* buf, std::uint32_t nval)
+{
+    using TargetType = std::uint16_t;
+    constexpr std::size_t const type_size = sizeof(TargetType);
+    TargetType const* source = reinterpret_cast<TargetType const*>(buf);
+    std::vector<TargetType> result(nval);
+    for (std::uint32_t i = 0; i < nval; ++i, ++source) {
+        MemCpyEx(&result[i], source, type_size);
+    }
+    return result;
+}
+
+std::vector<std::uint8_t> parse_focus_driving_status(unsigned char const* buf, std::uint32_t nval)
+{
+    using TargetType = std::uint8_t;
+    constexpr std::size_t const type_size = sizeof(TargetType);
+    TargetType const* source = reinterpret_cast<TargetType const*>(buf);
+    std::vector<TargetType> result(nval);
+    for (std::uint32_t i = 0; i < nval; ++i, ++source) {
+        MemCpyEx(&result[i], source, type_size);
+    }
+    return result;
+}
+
+std::vector<std::uint32_t> parse_zoom_distance(unsigned char const* buf, std::uint32_t nval)
+{
+    using TargetType = std::uint32_t;
+    constexpr std::size_t const type_size = sizeof(TargetType);
+    TargetType const* source = reinterpret_cast<TargetType const*>(buf);
+    std::vector<TargetType> result(nval);
+    for (std::uint32_t i = 0; i < nval; ++i, ++source) {
+        MemCpyEx(&result[i], source, type_size);
+    }
+    return result;
+}
+
+std::vector<std::uint8_t> parse_slotx_rec_available(unsigned char const* buf, std::uint32_t nval)
+{
+    using TargetType = std::uint8_t;
+    constexpr std::size_t const type_size = sizeof(TargetType);
+    TargetType const* source = reinterpret_cast<TargetType const*>(buf);
+    std::vector<TargetType> result(nval);
+    for (std::uint32_t i = 0; i < nval; ++i, ++source) {
+        MemCpyEx(&result[i], source, type_size);
+    }
+    return result;
+}
+
 text format_f_number(std::uint16_t f_number)
 {
     text_stringstream ts;
@@ -2494,4 +2542,43 @@ text format_movie_shooting_mode(std::uint16_t movie_shooting_mode)
     return ts.str();
 }
 
+text format_focus_driving_status(std::uint8_t focus_driving_status)
+{
+    text_stringstream ts;
+
+    switch (focus_driving_status) {
+    case SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_NotDriving:
+        ts << "Not Driving";
+        break;
+    case SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving:
+        ts << "Driving";
+        break;
+    default:
+        break;
+    }
+    return ts.str();
+}
+
+text format_media_slotx_rec_available(std::uint8_t rec_available)
+{
+    text_stringstream ts;
+
+    switch (rec_available) {
+    case SDK::CrMediaSlotRecordingAvailableType::CrMediaSlotRecordingAvailableType_None:
+        ts << "None";
+        break;
+    case SDK::CrMediaSlotRecordingAvailableType::CrMediaSlotRecordingAvailableType_Main:
+        ts << "Main";
+        break;
+    case SDK::CrMediaSlotRecordingAvailableType::CrMediaSlotRecordingAvailableType_Proxy:
+        ts << "Proxy";
+        break;
+    case SDK::CrMediaSlotRecordingAvailableType::CrMediaSlotRecordingAvailableType_MainAndProxy:
+        ts << "Main and Proxy";
+        break;
+    default:
+        break;
+    }
+    return ts.str();
+}
 } // namespace cli

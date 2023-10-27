@@ -57,7 +57,6 @@ enum Password_Key {
 
 };
 
-
 #if defined(__APPLE__) || defined(__linux__)
 /* reads from keypress, doesn't echo */
 int getch_for_Nix(void)
@@ -621,39 +620,62 @@ void CameraDevice::get_zoom_operation()
     load_properties();
     tout << "Zoom Operation Status: " << format_zoom_operation_status(m_prop.zoom_operation_status.current) << '\n';
     if (m_prop.zoom_setting_type.current > 0) {
-        tout << "Zoom Setting Type: " << format_zoom_setting_type(m_prop.zoom_setting_type.current) << '\n';
+        tout << "Zoom Setting Type    : " << format_zoom_setting_type(m_prop.zoom_setting_type.current) << '\n';
     }
     if (m_prop.zoom_types_status.current > 0) {
-        tout << "Zoom Type Status: " << format_zoom_types_status(m_prop.zoom_types_status.current) << '\n';
+        tout << "Zoom Type Status     : " << format_zoom_types_status(m_prop.zoom_types_status.current) << '\n';
     }
 
     // Zoom Speed Range is not supported
     if (m_prop.zoom_speed_range.possible.size() < 2) {
-        tout << "Zoom Speed Range: -1 to 1" << std::endl 
-             << "Zoom Speed Type: " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
+        tout << "Zoom Speed Range     : -1 to 1" << std::endl 
+             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
     }
     else {
-        tout << "Zoom Speed Range: " << (int)m_prop.zoom_speed_range.possible.at(0) << " to " << (int)m_prop.zoom_speed_range.possible.at(1) << std::endl
-             << "Zoom Speed Type: " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
+        tout << "Zoom Speed Range     : " << (int)m_prop.zoom_speed_range.possible.at(0) << " to " << (int)m_prop.zoom_speed_range.possible.at(1) << std::endl
+             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
     }
 
+    // Zoom Bar Information
     std::int32_t nprop = 0;
     SDK::CrDeviceProperty* prop_list = nullptr;
     CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Bar_Information;
     auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &prop_list, &nprop);
-
     if (CR_FAILED(status)) {
         tout << "Failed to get Zoom Bar Information.\n";
         return;
     }
-
     if (prop_list && 0 < nprop) {
         auto prop = prop_list[0];
         if (SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Bar_Information == prop.GetCode())
         {
-            tout << "Zoom Bar Information: 0x" << std::hex << prop.GetCurrentValue() << std::dec << '\n';
+            tout << "Zoom Bar Information : 0x" << std::hex << prop.GetCurrentValue() << std::dec << '\n';
         }
         SDK::ReleaseDeviceProperties(m_device_handle, prop_list);
+    }
+
+    // Zoom Distance
+    if (-1 == m_prop.zoom_distance.writable) {
+        tout << "Zoom Distance is not supported.\n";
+    }
+    else {
+        tout << "Zoom Distance Current Value : " << m_prop.zoom_distance.current << std::endl;
+        tout << "Zoom Distance min    : " << m_prop.zoom_distance.possible.at(0) << std::endl;
+        tout << "Zoom Distance max    : " << m_prop.zoom_distance.possible.at(1) << std::endl;
+        tout << "Zoom Distance step   : " << m_prop.zoom_distance.possible.at(2) << std::endl;
+    }
+
+    // Lens Model Name
+    if (-1 == m_prop.lensModelNameStr.writable) {
+        tout << "Lens Model Name is not supported.\n";
+    }
+    else {
+        if (0 < m_prop.lensModelNameStr.length) {
+            tout << "\nLens Model Name : " << m_prop.lensModelNameStr.current.c_str() << std::endl;
+        }
+        else {
+            tout << "Lens Model Name could not be obtained.\n";
+        }
     }
 }
 
@@ -886,11 +908,27 @@ bool CameraDevice::get_white_balance_tint()
 void CameraDevice::get_media_slot_status()
 {
     load_properties();
-    tout << "Media SLOT1 Status: " << format_media_slotx_status(m_prop.media_slot1_status.current) << std::endl;
-    if(m_prop.media_slot2_status.writable == -1)
+
+    // SLOT1
+    tout << "Media SLOT1 Status                  : " << format_media_slotx_status(m_prop.media_slot1_status.current) << std::endl;
+    if (0 <= m_prop.media_slot1_recording_available_type.writable)
+    {
+        tout << "Media SLOT1 Recording Available Type: " << format_media_slotx_rec_available(m_prop.media_slot1_recording_available_type.current) << std::endl;
+    }
+
+    // SLOT2
+    if (-1 == m_prop.media_slot2_status.writable)
+    {
         tout << "Media SLOT2 Status is not supported.\n";
+    }
     else
-        tout << "Media SLOT2 Status: " << format_media_slotx_status(m_prop.media_slot2_status.current) << std::endl;
+    {
+        tout << "Media SLOT2 Status                  : " << format_media_slotx_status(m_prop.media_slot2_status.current) << std::endl;
+        if (0 <= m_prop.media_slot2_recording_available_type.writable)
+        {
+            tout << "Media SLOT2 Recording Available Type: " << format_media_slotx_rec_available(m_prop.media_slot2_recording_available_type.current) << std::endl;
+        }
+    }
 }
 
 bool CameraDevice::get_movie_rec_button_toggle_enable_status()
@@ -1010,7 +1048,6 @@ bool CameraDevice::get_shutter_type()
     tout << "Shutter Type: " << format_shutter_type(m_prop.shutter_type.current) << '\n';
     return true;
 }
-
 
 bool CameraDevice::get_movie_shooting_mode()
 {
@@ -3529,7 +3566,7 @@ void CameraDevice::execute_preset_focus()
         code = SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomAndFocusPosition_Load;
     }
     else {
-        tout << "The Selected operation is not supported.\n";
+        tout << "Input cancelled.\n";
         return;
     }
 
@@ -3994,7 +4031,7 @@ void CameraDevice::OnCompleteDownload(CrChar* filename, CrInt32u type )
     switch (type)
     {
     case SCRSDK::CrDownloadSettingFileType_None:
-       tout << "Complete download. File: " << file.data() << '\n';
+        tout << "Complete download. File: " << file.data() << '\n';
         uploadFile(filename);
         break;
     case SCRSDK::CrDownloadSettingFileType_Setup:
@@ -4072,9 +4109,46 @@ void CameraDevice::OnWarning(CrInt32u warning)
     case SDK::CrWarning_CustomWBCapture_Result_NG:
         tout << "\nCustom WB capture failure.\n\n";
         break;
+    case SDK::CrWarning_FocusPosition_Result_Invalid:
+        tout << "\nFocus Position Result Invalid.\n\n";
+        break;
+    case SDK::CrWarning_FocusPosition_Result_OK:
+        tout << "\nFocus Position Result OK.\n\n";
+        break;
+    case SDK::CrWarning_FocusPosition_Result_NG:
+        tout << "\nFocus Position Result NG.\n\n";
+        break;
     default:
         return;
     }
+}
+
+void CameraDevice::OnWarningExt(CrInt32u warning, CrInt32 param1, CrInt32 param2, CrInt32 param3)
+{
+    tout << "<Receive>\n";
+#if defined(_WIN64)
+    printf_s("warning: 0x%08X\n", warning);
+    printf_s(" param1: 0x%08X\n", param1);
+    printf_s(" param2: 0x%08X\n", param2);
+    printf_s(" param3: 0x%08X\n", param3);
+#else // temporary
+    printf("warning: 0x%08X\n", warning);
+    printf(" param1: 0x%08X\n", param1);
+    printf(" param2: 0x%08X\n", param2);
+    printf(" param3: 0x%08X\n", param3);
+#endif
+    tout << "\n<warning>\n";
+    tout << " 0x00060001: CrWarningExt_AFStatus\n";
+    tout << "             <param1> Focus Indication\n";
+    tout << " 0x00060002: CrWarningExt_OperationResults\n";
+    tout << "             <param1> enum CrSdkApi\n";
+    tout << "                      0x00000002: CrSdkApi_SetDeviceProperty\n";
+    tout << "                      0x00000003: CrSdkApi_SendCommand\n";
+    tout << "             <param2> CrDevicePropertyCode or CrCommandId\n";
+    tout << "             <param3> enum CrWarningExt_OperationResultsParam\n";
+    tout << "                      0x00000000: CrWarningExt_OperationResultsParam_Invalid\n";
+    tout << "                      0x00000001: CrWarningExt_OperationResultsParam_OK\n";
+    tout << "                      0x00000002: CrWarningExt_OperationResultsParam_NG\n";
 }
 
 void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
@@ -4814,6 +4888,84 @@ void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
                     m_prop.movie_shooting_mode.possible.swap(parsed_values);
                 }
                 break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting:
+                nval = prop.GetValueSize() / sizeof(std::uint16_t);
+                m_prop.focus_position_setting.writable = prop.IsSetEnableCurrentValue();
+                m_prop.focus_position_setting.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_focus_position(prop.GetValues(), nval);
+                    m_prop.focus_position_setting.possible.swap(parsed_values);
+                }
+                break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionCurrentValue:
+                nval = prop.GetValueSize() / sizeof(std::uint16_t);
+                m_prop.focus_position_current_value.writable = prop.IsSetEnableCurrentValue();
+                m_prop.focus_position_current_value.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_focus_position(prop.GetValues(), nval);
+                    m_prop.focus_position_current_value.possible.swap(parsed_values);
+                }
+                break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusDrivingStatus:
+                nval = prop.GetValueSize() / sizeof(std::uint8_t);
+                m_prop.focus_driving_status.writable = prop.IsSetEnableCurrentValue();
+                m_prop.focus_driving_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_focus_driving_status(prop.GetValues(), nval);
+                    m_prop.focus_driving_status.possible.swap(parsed_values);
+                }
+                break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomDistance:
+                nval = prop.GetValueSize() / sizeof(std::uint32_t);
+                m_prop.zoom_distance.writable = prop.IsSetEnableCurrentValue();
+                m_prop.zoom_distance.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_zoom_distance(prop.GetValues(), nval);
+                    m_prop.zoom_distance.possible.swap(parsed_values);
+                }
+                break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_LensModelName:
+            {
+                m_prop.lensModelNameStr.writable = prop.IsSetEnableCurrentValue();
+                CrInt16u* pCurrentStr = prop.GetCurrentStr();
+                if (pCurrentStr)
+                {
+                    m_prop.lensModelNameStr.length = (int)*pCurrentStr;
+#if defined(WIN32) || defined(_WIN64)//#if defined(_UNICODE) || defined(UNICODE)
+                    m_prop.lensModelNameStr.current = text((CrChar*)&pCurrentStr[1]);
+#else
+                    char buff[128];
+                    memset(buff, 0, sizeof(buff));
+                    pCurrentStr++;
+                    for (int i = 0; i < (m_prop.lensModelNameStr.length - 1); ++i,pCurrentStr++)
+                    {
+                        wctomb(&buff[i], (wchar_t)*pCurrentStr);
+                    }
+                    if (0 < strlen(buff))
+                    {
+                        m_prop.lensModelNameStr.current = text((CrChar*)buff);
+                    }
+#endif
+                }
+            }                break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType:
+                nval = prop.GetValueSize() / sizeof(std::uint8_t);
+                m_prop.media_slot1_recording_available_type.writable = prop.IsSetEnableCurrentValue();
+                m_prop.media_slot1_recording_available_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_slotx_rec_available(prop.GetValues(), nval);
+                    m_prop.media_slot1_recording_available_type.possible.swap(parsed_values);
+                }
+                break;
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType:
+                nval = prop.GetValueSize() / sizeof(std::uint8_t);
+                m_prop.media_slot2_recording_available_type.writable = prop.IsSetEnableCurrentValue();
+                m_prop.media_slot2_recording_available_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_slotx_rec_available(prop.GetValues(), nval);
+                    m_prop.media_slot2_recording_available_type.possible.swap(parsed_values);
+                }
+                break;
             default:
                 break;
             }
@@ -5310,14 +5462,14 @@ text CameraDevice::format_display_string_type(SDK::CrDisplayStringType type) {
     case SCRSDK::CrDisplayStringType_Button_Assign_ShortDisplay:
         ts << "[Button Assign] ShortDisplay";
         break;
-    case SCRSDK::CrDisplayStringType_Reserved1:
-        ts << "reserved";
+    case SCRSDK::CrDisplayStringType_FTP_ServerName_Display:
+        ts << "[FTP] Server Name Display";
         break;
-    case SCRSDK::CrDisplayStringType_Reserved2:
-        ts << "reserved";
+    case SCRSDK::CrDisplayStringType_FTP_UpLoadDirectory_Display:
+        ts << "[FTP] UpLoad Directory Display";
         break;
-    case SCRSDK::CrDisplayStringType_Reserved3:
-        ts << "reserved";
+    case SCRSDK::CrDisplayStringType_FTP_JobStatus_Display:
+        ts << "[FTP] Job Status Display";
         break;
     case SCRSDK::CrDisplayStringType_Reserved4:
         ts << "reserved";
@@ -5476,9 +5628,13 @@ void CameraDevice::get_mediaprofile()
     if (m_mediaprofileList.size() > 0) m_mediaprofileList.clear();
 
     get_media_slot_status();
-    if (((SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot1_status.current) && (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot2_status.current))
-        || ((SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot1_status.current) && (-1 == m_prop.media_slot2_status.writable))) {
-        tout << "\nMedia SLOT1/2 Status is Disable. Can not get media profile.\n";
+
+    // If there are no slots with OK status, exit
+    if ((0 <= m_prop.media_slot1_status.writable) && (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot1_status.current) 
+        &&
+        (0 <= m_prop.media_slot2_status.writable) && (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot2_status.current)) 
+    {
+        tout << "\nThere is no SLOT that can display Media profile.\n";
         return;
     }
 
@@ -5494,14 +5650,16 @@ void CameraDevice::get_mediaprofile()
     ss >> selected_index;
     SCRSDK::CrMediaProfile slot;
 
-    bool slotsts = false;
+    bool canExec = false;
     load_properties();
     switch (selected_index)
     {
     case 1:
         slot = SCRSDK::CrMediaProfile_Slot1;
-        if (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot1_status.current) 
-            slotsts = true;
+        if ((SDK::CrSlotStatus::CrSlotStatus_OK == m_prop.media_slot1_status.current) 
+            &&
+            (-1 != m_prop.media_slot1_recording_available_type.writable))
+            canExec = true;
         break;
     case 2:
         slot = SCRSDK::CrMediaProfile_Slot2;
@@ -5509,8 +5667,10 @@ void CameraDevice::get_mediaprofile()
             tout << "Media SLOT2 is not supported.\n";
             selected_index = -1;
         }
-        if (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot2_status.current)
-            slotsts = true;
+        else if ((SDK::CrSlotStatus::CrSlotStatus_OK == m_prop.media_slot2_status.current)
+            &&
+            (-1 != m_prop.media_slot2_recording_available_type.writable))
+            canExec = true;
         break;
     default:
         selected_index = -1;
@@ -5521,8 +5681,8 @@ void CameraDevice::get_mediaprofile()
         tout << "Input cancelled.\n";
         return;
     }
-    if (slotsts) {
-        tout << "Slot Status is not OK.\n";
+    if (false == canExec) {
+        tout << "The specified slot is invalid.\n";
         return;
     }
     CrInt32u nums = 0;
@@ -5533,26 +5693,32 @@ void CameraDevice::get_mediaprofile()
         for (int i = 0; i < nums; i++)
         {
             auto pItem = new SCRSDK::CrMediaProfileInfo();
-            CrInt32u len = strlen((char*)mediaProfileList[i].contentUrl);
+            CrInt32u len = strlen((char*)mediaProfileList[i].contentName);
+
+            len = (len + 1) * sizeof(CrChar);
+            pItem->contentName = new CrInt8u[len];
+            MemCpyEx(pItem->contentName, mediaProfileList[i].contentName, len);
+
+            len = strlen((char*)mediaProfileList[i].contentUrl);
             len = (len + 1) * sizeof(CrChar);
             pItem->contentUrl = new CrInt8u[len];
             MemCpyEx(pItem->contentUrl, mediaProfileList[i].contentUrl, len);
-            if (mediaProfileList[i].proxyUrl != NULL)
+
+            if (NULL != mediaProfileList[i].proxyUrl)
             {
                 len = strlen((char*)mediaProfileList[i].proxyUrl);
                 len = (len + 1) * sizeof(CrChar);
                 pItem->proxyUrl = new CrInt8u[len];
                 MemCpyEx(pItem->proxyUrl, mediaProfileList[i].proxyUrl, len);
             }
-            len = strlen((char*)mediaProfileList[i].thumbnailUrl);
-            len = (len + 1) * sizeof(CrChar);
-            pItem->thumbnailUrl = new CrInt8u[len];
-            MemCpyEx(pItem->thumbnailUrl, mediaProfileList[i].thumbnailUrl, len);
 
-            len = strlen((char*)mediaProfileList[i].contentName);
-            len = (len + 1) * sizeof(CrChar);
-            pItem->contentName = new CrInt8u[len];
-            MemCpyEx(pItem->contentName, mediaProfileList[i].contentName, len);
+            if (NULL != mediaProfileList[i].thumbnailUrl)
+            {
+                len = strlen((char*)mediaProfileList[i].thumbnailUrl);
+                len = (len + 1) * sizeof(CrChar);
+                pItem->thumbnailUrl = new CrInt8u[len];
+                MemCpyEx(pItem->thumbnailUrl, mediaProfileList[i].thumbnailUrl, len);
+            }
             m_mediaprofileList.push_back(pItem);
         }
         SCRSDK::ReleaseMediaProfile(m_device_handle, mediaProfileList);
@@ -5567,14 +5733,20 @@ void CameraDevice::get_mediaprofile()
                 tout.width(3);
                 tout <<  i + 1 << ": " << (char*) m_mediaprofileList[i]->contentName << "\n";
                 tout << "      Clip URL      : " << (char*) m_mediaprofileList[i]->contentUrl << "\n";
-                tout << "      Thumbnail URL : " << (char*) m_mediaprofileList[i]->thumbnailUrl << "\n";
-                tout << "      Proxy URL     : ";
-
-                if (m_mediaprofileList[i]->proxyUrl != NULL) {
-                    tout << (char*) m_mediaprofileList[i]->proxyUrl << "\n";
+                tout << "      Thumbnail URL : ";
+                if (NULL == m_mediaprofileList[i]->thumbnailUrl) {
+                    tout << "-\n";
                 }
                 else {
+                    tout << (char*)m_mediaprofileList[i]->thumbnailUrl << "\n";
+                }
+
+                tout << "      Proxy URL     : ";
+                if (NULL == m_mediaprofileList[i]->proxyUrl) {
                     tout << "-\n";
+                }
+                else {
+                    tout << (char*)m_mediaprofileList[i]->proxyUrl << "\n";
                 }
             }
         }
@@ -5583,6 +5755,148 @@ void CameraDevice::get_mediaprofile()
     {
         tout << "Media Profile data is empty or GetMediaProfile is not supported.\n";
     }
+}
+
+bool CameraDevice::get_focus_position_setting()
+{
+    load_properties();
+    if (m_prop.focus_position_setting.possible.size() < 1) {
+        tout << "Focus Position Setting is not supported.\n";
+        return false;
+    }
+
+    tout << "Focus Position Current Value : ";
+    format_focus_position_value(m_prop.focus_position_current_value.current);
+    tout << "Focus Position Setting min   : ";
+    format_focus_position_value(m_prop.focus_position_setting.possible.at(0));
+    tout << "Focus Position Setting max   : ";
+    format_focus_position_value(m_prop.focus_position_setting.possible.at(1));
+    tout << "Focus Position Setting Step  : ";
+    format_focus_position_value(m_prop.focus_position_setting.possible.at(2));
+
+    tout << "Focus Driving Status: " << format_focus_driving_status(m_prop.focus_driving_status.current) << std::endl;
+    return true;
+}
+
+void CameraDevice::format_focus_position_value(uint16_t value)
+{
+    char dspValue[10];
+#if defined (WIN32) || defined(WIN64)
+    sprintf_s(dspValue, sizeof(dspValue), "0x%04X", value);
+#else
+    snprintf(dspValue, sizeof(dspValue), "0x%04X", value);
+#endif
+    tout << dspValue << std::endl;
+}
+
+void CameraDevice::set_focus_position_setting()
+{
+    char keyin[100];
+    int len;
+    char* errPtr;
+    int value = 0;
+
+    if (false == get_focus_position_setting())
+        return;
+
+    if (1 != m_prop.focus_position_setting.writable) {
+        // Not a settable property
+        tout << "Focus Position Setting is not writable\n";
+        return;
+    }
+
+    text input;
+    tout << "\nWould you like to set a Focus Position Setting ? (y/n): ";
+    std::getline(tin, input);
+    if (input != TEXT("y")) {
+        tout << "Skip.\n";
+        return;
+    }
+
+    tout << std::endl << "Set a value within the Focus Position Setting (hex)" << std::endl;
+    tout << "[-1] Cancel input\n" << std::endl;
+    tout << "input> ";
+
+    fgets(keyin, sizeof(keyin), stdin);
+
+    len = strlen(keyin);
+    if (keyin[len - 1] == '\n') {
+        keyin[len - 1] = '\0';
+    }
+    value = strtol(keyin, &errPtr, 16);      // hex
+
+    if (value == -1) {
+        tout << "Input cancelled.\n";
+        return;
+    }
+    if (*errPtr != '\0') {
+        tout << std::endl << "Focus Position Setting FAILED\n" << std::endl;
+        return;
+    }
+
+    if (((int)m_prop.focus_position_setting.possible.at(0) > value) || ((int)m_prop.focus_position_setting.possible.at(1) < value)) {
+        tout << "\nThe set value is out of range.\n";
+        return;
+    }
+
+    tout << "Set the Focus Position Setting value: ";
+    format_focus_position_value(value);
+
+    SDK::CrDeviceProperty prop;
+    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting);
+    prop.SetCurrentValue((CrInt64u)value);
+    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16);
+    SDK::SetDeviceProperty(m_device_handle, &prop);
+
+    tout << "Setting focus position settings...";
+    std::this_thread::sleep_for(500ms);
+    while (1)
+    {
+        load_properties();
+        tout << "Focus Position Current Value : ";
+        format_focus_position_value(m_prop.focus_position_current_value.current);
+        if (m_prop.focus_driving_status.current != SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving)
+        {
+            break;
+        }
+        if (m_prop.focus_driving_status.current == SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving)
+        {
+            if (true == execute_focus_position_cancel())
+            {
+                return;
+            }
+        }
+        tout << "Setting focus position settings...";
+        std::this_thread::sleep_for(500ms);
+    }
+    tout << std::endl << "Finish Focus Position Setting\n";
+}
+
+bool CameraDevice::execute_focus_position_cancel()
+{
+    text input;
+    tout << std::endl << "Do you want to continue with Setting Focus Position?" << std::endl;
+    tout << "[0] Continue" << std::endl;
+    tout << "[1] Cancel" << std::endl;
+    tout << "input> ";
+    std::getline(tin, input);
+    if (input != TEXT("1")) {
+        return false;
+    }
+
+    load_properties();
+    if (m_prop.focus_driving_status.current == SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving) {
+        SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_CancelFocusPosition, SDK::CrCommandParam::CrCommandParam_Down);
+        //std::this_thread::sleep_for(10ms);
+        SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_CancelFocusPosition, SDK::CrCommandParam::CrCommandParam_Up);
+
+        tout << std::endl << "Execute Cancel Focus Position Setting\n";
+    }
+    else
+    {
+        tout << "Finish Focus Position Setting\n";
+    }
+    return true;
 }
 
 std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
@@ -5772,4 +6086,6 @@ int32_t CameraDevice::GetSelectDeviceProperty(uint32_t getCode, uint32_t& getDat
 
     CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_S1;
 */
-} // namespace cli
+}
+// namespace cli
+

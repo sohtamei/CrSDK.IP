@@ -65,6 +65,7 @@ namespace cli
 
         {SCRSDK::CrError_Connect_Unknown, TEXT("Other errors classified as connection except below")},
         {SCRSDK::CrError_Connect_Connect, TEXT("A connection request failed through the USB")},
+        {SCRSDK::CrError_Connect_ConnectIP, TEXT("A connection request failed through the Ethernet")},
         {SCRSDK::CrError_Connect_Release, TEXT("Release failed")},
         {SCRSDK::CrError_Connect_GetProperty, TEXT("Getting property failed")},
         {SCRSDK::CrError_Connect_SendCommand, TEXT("Sending command failed")},
@@ -101,6 +102,8 @@ namespace cli
         {SCRSDK::CrError_Api_InvalidSerialNumber, TEXT("Invalid SerialNumber")},
         {SCRSDK::CrError_Api_InvalidIpAddress, TEXT("Invalid IP Address")},
         {SCRSDK::CrError_Api_InvalidMacAddress, TEXT("Invalid MAC Address")},
+        {SCRSDK::CrError_Api_PasswordLengthOverMax, TEXT("Password length exceeds the max length")},
+        {SCRSDK::CrError_Api_PasswordIncludesInvalidCharacter, TEXT("Invalid characters in password")},
 
         {SCRSDK::CrError_Polling_Unknown, TEXT("Unknown polling error")},
         {SCRSDK::CrError_Polling_InvalidVal_Intervals, TEXT("Invalid polling interval setting value")},

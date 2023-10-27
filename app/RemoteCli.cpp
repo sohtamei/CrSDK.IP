@@ -28,12 +28,13 @@ CameraDeviceList cameraList; // all
 int remoteCli_init(void)
 {
     // Change global locale to native locale
-    // Make the stream's locale the same as the current global locale
     std::locale::global(std::locale(""));
+
+    // Make the stream's locale the same as the current global locale
     cli::tin.imbue(std::locale());
     cli::tout.imbue(std::locale());
 
-    cli::tout << "RemoteSampleApp v1.08.00 running...\n\n";
+    cli::tout << "RemoteSampleApp v1.10.00 running...\n\n";
 
     auto init_success = SDK::Init();
     if (!init_success) {
