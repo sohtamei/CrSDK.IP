@@ -84,7 +84,7 @@ public:
     void get_still_capture_mode();
     void get_focus_mode();
     void get_focus_area();
-    std::int32_t get_live_view(uint8_t* buf[]);
+    void get_live_view();
     void get_live_view_image_quality();
     void get_af_area_position();
     void get_select_media_format();
@@ -130,7 +130,6 @@ public:
     void set_still_capture_mode();
     void set_focus_mode();
     void set_focus_area();
-    void set_live_view_image_quality(std::int32_t index);
     void set_live_view_image_quality();
     void set_af_area_position();
     void set_white_balance();
@@ -211,8 +210,6 @@ public:
     bool is_getfingerprint() { return !m_fingerprint.empty(); };
     bool is_setpassword() { return !m_userPassword.empty(); };
 
-    int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData);
-    int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable);
 public:
     // Inherited via IDeviceCallback
     virtual void OnConnected(SCRSDK::DeviceConnectionVersioin version) override;
@@ -252,6 +249,11 @@ private:
     MediaProfileList m_mediaprofileList;
     std::string m_fingerprint;
     std::string m_userPassword;
+public:
+    std::int32_t get_live_view(uint8_t* buf[]);
+    void set_live_view_image_quality(std::int32_t index);
+    int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData);
+    int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable);
 };
 } // namespace cli
 

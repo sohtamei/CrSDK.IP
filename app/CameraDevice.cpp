@@ -43,8 +43,6 @@ namespace fs = std::filesystem;
 #include <conio.h>
 #endif
 
-void uploadFile(const wchar_t* filename);
-
 
 // Enumerator
 enum Password_Key {
@@ -473,26 +471,16 @@ void CameraDevice::get_focus_area()
     tout << "Focus Area: " << format_focus_area(m_prop.focus_area.current) << '\n';
 }
 
-std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
+void CameraDevice::get_live_view()
 {
-    //tout << "GetLiveView...\n";
-/*
-    std::int32_t nprop = 0;
-    SDK::CrDeviceProperty* prop_list = nullptr;
-    CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_S1;
-    auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &prop_list, &nprop);
-    if (CR_FAILED(status)) return -1;
-    if (prop_list && 0 < nprop) {
-        tout << prop_list[0].GetCurrentValue() << '\n';
-        SDK::ReleaseDeviceProperties(m_device_handle, prop_list);
-    }
-*/
+    tout << "GetLiveView...\n";
+
     CrInt32 num = 0;
     SDK::CrLiveViewProperty* property = nullptr;
     auto err = SDK::GetLiveViewProperties(m_device_handle, &property, &num);
     if (CR_FAILED(err)) {
         tout << "GetLiveView FAILED\n";
-        return -1;
+        return;
     }
     SDK::ReleaseLiveViewProperties(m_device_handle, property);
 
@@ -500,7 +488,7 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
     err = SDK::GetLiveViewImageInfo(m_device_handle, &inf);
     if (CR_FAILED(err)) {
         tout << "GetLiveView FAILED\n";
-        return -1;
+        return;
     }
 
     CrInt32u bufSize = inf.GetBufferSize();
@@ -514,14 +502,14 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
         if (!image_data)
         {
             tout << "GetLiveView FAILED (new CrImageDataBlock class)\n";
-            return -1;
+            return;
         }
         CrInt8u* image_buff = new CrInt8u[bufSize];
         if (!image_buff)
         {
             delete image_data;
             tout << "GetLiveView FAILED (new Image buffer)\n";
-            return -1;
+            return;
         }
         image_data->SetSize(bufSize);
         image_data->SetData(image_buff);
@@ -545,7 +533,6 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
             {
                 // Display
                 // etc.
-#if 0
 #if defined(__APPLE__)
                 char path[MAC_MAX_PATH]; /*MAX_PATH*/
                 memset(path, 0, sizeof(path));
@@ -554,7 +541,7 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
                     delete[] image_buff; // Release
                     delete image_data; // Release
                     tout << "Folder path is too long.\n";
-                    return -1;
+                    return;
                 }
                 char filename[] ="/LiveView000000.JPG";
                 if(strlen(path) + strlen(filename) > MAC_MAX_PATH){
@@ -562,7 +549,7 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
                     delete[] image_buff; // Release
                     delete image_data; // Release
                     tout << "Failed to create save path.\n";
-                    return -1;
+                    return;
                 }
                 strncat(path, filename, strlen(filename));
 #else
@@ -577,18 +564,9 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
                     file.write((char*)image_data->GetImageData(), image_data->GetImageSize());
                     file.close();
                 }
-#endif
-                //tout << "GetLiveView SUCCESS\n";
-                std::int32_t imageSize = image_data->GetImageSize();
-                *buf = new std::uint8_t[imageSize];
-                if(*buf) {
-                    MemCpyEx(*buf, image_data->GetImageData(), imageSize);
-                } else {
-                    imageSize = -1;
-                }
+                tout << "GetLiveView SUCCESS\n";
                 delete[] image_buff; // Release
                 delete image_data; // Release
-                return imageSize;
             }
             else
             {
@@ -598,7 +576,6 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
             }
         }
     }
-    return -1;
 }
 
 void CameraDevice::get_live_view_image_quality()
@@ -1436,25 +1413,6 @@ void CameraDevice::set_focus_area()
     prop.SetCurrentValue(values[selected_index]);
     prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
 
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_live_view_image_quality(std::int32_t index)
-{
-    load_properties();
-    if (1 != m_prop.live_view_image_quality.writable) {
-        // Not a settable property
-        tout << "Live View Image Quality is not writable\n";
-        return;
-    }
-
-    auto& values = m_prop.live_view_image_quality.possible;
-    tout << "image quality :" << format_live_view_image_quality(values[index]) << '\n';
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality);
-    prop.SetCurrentValue(values[index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
     SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
@@ -4030,11 +3988,13 @@ void CameraDevice::OnLvPropertyChanged()
 
 void CameraDevice::OnCompleteDownload(CrChar* filename, CrInt32u type )
 {
+    void uploadFile(const wchar_t* filename);
+
     text file(filename);
     switch (type)
     {
     case SCRSDK::CrDownloadSettingFileType_None:
-        tout << "Complete download. File: " << file.data() << '\n';
+       tout << "Complete download. File: " << file.data() << '\n';
         uploadFile(filename);
         break;
     case SCRSDK::CrDownloadSettingFileType_Setup:
@@ -5623,6 +5583,108 @@ void CameraDevice::get_mediaprofile()
     {
         tout << "Media Profile data is empty or GetMediaProfile is not supported.\n";
     }
+}
+
+std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
+{
+    CrInt32 num = 0;
+    SDK::CrLiveViewProperty* property = nullptr;
+    auto err = SDK::GetLiveViewProperties(m_device_handle, &property, &num);
+    if (CR_FAILED(err)) {
+        tout << "GetLiveView FAILED\n";
+        return -1;
+    }
+    SDK::ReleaseLiveViewProperties(m_device_handle, property);
+
+    SDK::CrImageInfo inf;
+    err = SDK::GetLiveViewImageInfo(m_device_handle, &inf);
+    if (CR_FAILED(err)) {
+        tout << "GetLiveView FAILED\n";
+        return -1;
+    }
+
+    CrInt32u bufSize = inf.GetBufferSize();
+    if (bufSize < 1)
+    {
+        tout << "GetLiveView FAILED \n";
+    }
+    else
+    {
+        auto* image_data = new SDK::CrImageDataBlock();
+        if (!image_data)
+        {
+            tout << "GetLiveView FAILED (new CrImageDataBlock class)\n";
+            return -1;
+        }
+        CrInt8u* image_buff = new CrInt8u[bufSize];
+        if (!image_buff)
+        {
+            delete image_data;
+            tout << "GetLiveView FAILED (new Image buffer)\n";
+            return -1;
+        }
+        image_data->SetSize(bufSize);
+        image_data->SetData(image_buff);
+
+        err = SDK::GetLiveViewImage(m_device_handle, image_data);
+        if (CR_FAILED(err))
+        {
+            // FAILED
+            if (err == SDK::CrWarning_Frame_NotUpdated) {
+                tout << "Warning. GetLiveView Frame NotUpdate\n";
+            }
+            else if (err == SDK::CrError_Memory_Insufficient) {
+                tout << "Warning. GetLiveView Memory insufficient\n";
+            }
+            delete[] image_buff; // Release
+            delete image_data; // Release
+        }
+        else
+        {
+            if (0 < image_data->GetSize())
+            {
+                // Display
+                // etc.
+                //tout << "GetLiveView SUCCESS\n";
+                std::int32_t imageSize = image_data->GetImageSize();
+                *buf = new std::uint8_t[imageSize];
+                if(*buf) {
+                    MemCpyEx(*buf, image_data->GetImageData(), imageSize);
+                } else {
+                    imageSize = -1;
+                }
+                delete[] image_buff; // Release
+                delete image_data; // Release
+                return imageSize;
+            }
+            else
+            {
+                // FAILED
+                delete[] image_buff; // Release
+                delete image_data; // Release
+            }
+        }
+    }
+    return -1;
+}
+
+void CameraDevice::set_live_view_image_quality(std::int32_t index)
+{
+    load_properties();
+    if (1 != m_prop.live_view_image_quality.writable) {
+        // Not a settable property
+        tout << "Live View Image Quality is not writable\n";
+        return;
+    }
+
+    auto& values = m_prop.live_view_image_quality.possible;
+    tout << "image quality :" << format_live_view_image_quality(values[index]) << '\n';
+
+    SDK::CrDeviceProperty prop;
+    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality);
+    prop.SetCurrentValue(values[index]);
+    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
+    SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
 int32_t CameraDevice::SetSelectDeviceProperty(uint32_t setCode, uint32_t setData)
