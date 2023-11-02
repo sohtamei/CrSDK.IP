@@ -13,6 +13,13 @@
 #include <string>
 #include <thread>
 #include <fstream>
+#include <locale>
+#include <codecvt>
+#include <chrono>
+
+#include <iomanip>
+#include "app/CRSDK/CameraRemote_SDK.h"
+#include "app/CameraDevice.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
@@ -21,29 +28,216 @@ namespace asio = boost::asio;           // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 namespace pt = boost::property_tree;
 
-#if 1
+using namespace std::chrono_literals;   // xx ms
+
+extern std::shared_ptr<cli::CameraDevice> camera;
+
 int remoteCli_init(void);
-void setup_camera_props(void);
-
-void af_shutter(void);
-int32_t get_live_view(uint8_t* buf[]);
-int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData);
-int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable);
-#else
-static int remoteCli_init(void) {return 0;}
-static void setup_camera_props(void) {;}
-
-static void af_shutter(void) {;}
-static int32_t get_live_view(uint8_t* buf[]) {return 0;}
-static int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData) {return 0;}
-static int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable) {return 0;}
-#endif
 
 std::string address = "0.0.0.0";
 unsigned short portWS = 8080;
 unsigned short portHttp = 81;
 
 websocket::stream<tcp::socket> *p_ws = NULL;
+std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
+
+
+void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
+{
+	std::stringstream resp_stream;
+	pt::write_json(resp_stream, resp_tree);
+	beast::flat_buffer resp_buffer;
+	boost::beast::ostream(resp_buffer) << resp_stream.str();
+	std::clog << resp_stream.str() << std::endl;
+	ws.text(true);
+	ws.write(resp_buffer.data());
+}
+
+void getAperture(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	uint16_t current;
+	std::vector<std::uint16_t> possible;
+	int writable;
+	camera->GetAperture(current, possible, writable);
+
+	pt::ptree resp_tree;
+	pt::ptree item_tree;
+	item_tree.put("text", wstring_convert.to_bytes(cli::format_f_number(current)));
+	item_tree.put("value", std::to_string(current));
+	resp_tree.add_child("current", item_tree);
+
+	pt::ptree sub_tree;
+	int index = -1;
+	for(int i = 0; i < possible.size(); i++) {
+		if(current == possible[i]) index = i;
+		item_tree.put("text", wstring_convert.to_bytes(cli::format_f_number(possible[i])));
+		item_tree.put("value", std::to_string(possible[i]));
+		sub_tree.push_back(std::make_pair("", item_tree));
+	}
+	if(sendPossible)
+		resp_tree.add_child("possible", sub_tree);
+
+	std::string incrementable = "none";
+	if(writable != 1)
+		;
+	else if(index == 0)
+		incrementable = "inc";
+	else if(index == possible.size()-1)
+		incrementable = "dec";
+	else if(index > 0 && index < possible.size()-1)
+		incrementable = "incdec";
+	resp_tree.put("incrementable", incrementable);
+
+	write_json(ws, resp_tree);
+}
+
+void incAperture(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	uint16_t current;
+	std::vector<std::uint16_t> possible;
+	int writable;
+	camera->GetAperture(current, possible, writable);
+
+	if(writable == 1) {
+		for(int i = 0; i < possible.size(); i++) {
+			if(current == possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= possible.size()-1) {
+					camera->SetAperture(possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(300ms);
+	getAperture(ws, false);
+}
+
+void getShutterSpeed(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	uint32_t current;
+	std::vector<std::uint32_t> possible;
+	int writable;
+	camera->GetShutterSpeed(current, possible, writable);
+
+	pt::ptree resp_tree;
+	pt::ptree item_tree;
+	item_tree.put("text", wstring_convert.to_bytes(cli::format_shutter_speed(current)));
+	item_tree.put("value", std::to_string(current));
+	resp_tree.add_child("current", item_tree);
+
+	pt::ptree sub_tree;
+	int index = -1;
+	for(int i = 0; i < possible.size(); i++) {
+		if(current == possible[i]) index = i;
+		item_tree.put("text", wstring_convert.to_bytes(cli::format_shutter_speed(possible[i])));
+		item_tree.put("value", std::to_string(possible[i]));
+		sub_tree.push_back(std::make_pair("", item_tree));
+	}
+	if(sendPossible)
+		resp_tree.add_child("possible", sub_tree);
+
+	std::string incrementable = "none";
+	if(writable != 1)
+		;
+	else if(index == 0)
+		incrementable = "inc";
+	else if(index == possible.size()-1)
+		incrementable = "dec";
+	else if(index > 0 && index < possible.size()-1)
+		incrementable = "incdec";
+	resp_tree.put("incrementable", incrementable);
+
+	write_json(ws, resp_tree);
+}
+
+void incShutterSpeed(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	uint32_t current;
+	std::vector<std::uint32_t> possible;
+	int writable;
+	camera->GetShutterSpeed(current, possible, writable);
+
+	if(writable == 1) {
+		for(int i = 0; i < possible.size(); i++) {
+			if(current == possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= possible.size()-1) {
+					camera->SetShutterSpeed(possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(300ms);
+	getShutterSpeed(ws, false);
+}
+
+void getIso(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	uint32_t current;
+	std::vector<std::uint32_t> possible;
+	int writable;
+	camera->GetIso(current, possible, writable);
+
+	pt::ptree resp_tree;
+	pt::ptree item_tree;
+	item_tree.put("text", wstring_convert.to_bytes(cli::format_iso_sensitivity(current)));
+	item_tree.put("value", std::to_string(current));
+	resp_tree.add_child("current", item_tree);
+
+	pt::ptree sub_tree;
+	int index = -1;
+	for(int i = 0; i < possible.size(); i++) {
+		if(current == possible[i]) index = i;
+		item_tree.put("text", wstring_convert.to_bytes(cli::format_iso_sensitivity(possible[i])));
+		item_tree.put("value", std::to_string(possible[i]));
+		sub_tree.push_back(std::make_pair("", item_tree));
+	}
+	if(sendPossible)
+		resp_tree.add_child("possible", sub_tree);
+
+	std::string incrementable = "none";
+	if(writable != 1)
+		;
+	else if(index == 0)
+		incrementable = "inc";
+	else if(index == possible.size()-1)
+		incrementable = "dec";
+	else if(index > 0 && index < possible.size()-1)
+		incrementable = "incdec";
+	resp_tree.put("incrementable", incrementable);
+
+	write_json(ws, resp_tree);
+}
+
+void incIso(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	uint32_t current;
+	std::vector<std::uint32_t> possible;
+	int writable;
+	camera->GetIso(current, possible, writable);
+
+	if(writable == 1) {
+		for(int i = 0; i < possible.size(); i++) {
+			if(current == possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= possible.size()-1) {
+					camera->SetIso(possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(300ms);
+	getIso(ws, false);
+}
 
 void
 do_session(void)
@@ -85,20 +279,20 @@ do_session(void)
 				if (ws.got_text()) {
 					std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
 
-					std::string json_data(beast::buffers_to_string(buffer.data()));
-					std::istringstream is(json_data);
-					pt::ptree json_tree;
-					pt::read_json(is, json_tree);
+					std::string cmd_data(beast::buffers_to_string(buffer.data()));
+					std::istringstream cmd_is(cmd_data);
+					pt::ptree cmd_tree;
+					pt::read_json(cmd_is, cmd_tree);
 
-					std::cout << "Received JSON: " << json_tree.get<std::string>("cmd") << std::endl;
+					std::cout << "Received JSON: " << cmd_tree.get<std::string>("cmd") << std::endl;
 
-					if(json_tree.get_child_optional("cmd")) {
-						std::string cmd = json_tree.get<std::string>("cmd");
+					if(cmd_tree.get_child_optional("cmd")) {
+						std::string cmd = cmd_tree.get<std::string>("cmd");
 						if (cmd == "afShutter") {
-							af_shutter();
+							camera->af_shutter();
 						} else if (cmd == "liveview") {
 							uint8_t* imageBuf = NULL;
-							int imageSize = get_live_view(&imageBuf);
+							int imageSize = camera->get_live_view(&imageBuf);
 							if (imageSize > 0) {
 							//	server.send(conn, imageBuf, imageSize);
 								std::vector<uint8_t> v_buffer(imageBuf, imageBuf+imageSize);
@@ -107,6 +301,47 @@ do_session(void)
 								ws.write(asio::buffer(v_buffer));
 								continue;
 							}
+						} else if (cmd == "aperture") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getAperture(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incAperture(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incAperture(ws, false/*inc_dec*/);
+							}
+							continue;
+						} else if (cmd == "shutterSpeed") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getShutterSpeed(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incShutterSpeed(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incShutterSpeed(ws, false/*inc_dec*/);
+							}
+							continue;
+						} else if (cmd == "iso") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getIso(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incIso(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incIso(ws, false/*inc_dec*/);
+							}
+							continue;
+						} else if (cmd == "setAperture") {
+							std::uint16_t value = cmd_tree.get<std::uint16_t>("value");
+							camera->SetAperture(value);
+
+						} else if (cmd == "setShutterSpeed") {
+							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
+							camera->SetShutterSpeed(value);
+
+						} else if (cmd == "setIso") {
+							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
+							camera->SetIso(value);
 						} else {
 							std::clog << "unknown command" << std::endl;
 						}
@@ -114,7 +349,7 @@ do_session(void)
 					} else if(json_tree.get_child_optional("getCode")) {
 						uint32_t data = 0;
 						uint32_t writable = 0;
-						GetSelectDeviceProperty(json_tree.get<uint32_t>("getCode"), data, writable);
+						camera->GetSelectDeviceProperty(json_tree.get<uint32_t>("getCode"), data, writable);
 						Json::Value getResult;
 						getResult["getData"] = data;
 						getResult["writable"] = writable;
@@ -122,7 +357,7 @@ do_session(void)
 						server.sendMessage(conn, getResult);
 						return;
 					} else if(json_tree.get_child_optional("setCode")) {
-						int ret = 0;//SetSelectDeviceProperty(args["setCode"].asUInt(), args["setData"].asUInt());
+						int ret = 0;//camera->SetSelectDeviceProperty(args["setCode"].asUInt(), args["setData"].asUInt());
 						Json::Value getResult;
 						getResult["result"] = ret;
 						std::clog << "Message payload:" << server.stringifyJson(getResult) << std::endl;
@@ -226,7 +461,7 @@ void do_session2(void)
 
 			while(true) {
 				uint8_t* imageBuf = NULL;
-				int imageSize = get_live_view(&imageBuf);
+				int imageSize = camera->get_live_view(&imageBuf);
 				if (imageSize > 0) {
 				//	std::cout << ".";
 
@@ -262,13 +497,15 @@ int main(int argc, char* argv[])
 	int ret = remoteCli_init();
 	if(ret) return -1;
 
+	std::locale utf8_locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
+
 	asio::io_context ioContext;
 	asio::steady_timer timer(ioContext);
 	timer.expires_after(std::chrono::milliseconds(1000));
 	timer.async_wait([](const boost::system::error_code& error) {
 		if (error) std::cerr << "error." << std::endl;
 
-		setup_camera_props();
+		camera->set_live_view_image_quality(0);
 
 		std::thread serverThread1(do_session);
 		std::thread serverThread2(do_session2);

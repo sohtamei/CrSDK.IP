@@ -6001,7 +6001,7 @@ void CameraDevice::set_live_view_image_quality(std::int32_t index)
     SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-int32_t CameraDevice::SetSelectDeviceProperty(uint32_t setCode, uint32_t setData)
+std::int32_t CameraDevice::SetSelectDeviceProperty(uint32_t setCode, uint32_t setData)
 {
 	std::int32_t nprop = 0;
 	SDK::CrDeviceProperty* props = nullptr;
@@ -6022,7 +6022,7 @@ int32_t CameraDevice::SetSelectDeviceProperty(uint32_t setCode, uint32_t setData
 }
 
 
-int32_t CameraDevice::GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable)
+std::int32_t CameraDevice::GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable)
 {
 	std::int32_t nprop = 0;
 	SDK::CrDeviceProperty* props = nullptr;
@@ -6043,6 +6043,73 @@ int32_t CameraDevice::GetSelectDeviceProperty(uint32_t getCode, uint32_t& getDat
 	}
 	return -1;
 }
+
+void CameraDevice::GetAperture(uint16_t& current, std::vector<std::uint16_t>& possible, int& writable)
+{
+	load_properties();
+	current = m_prop.f_number.current;
+	possible = m_prop.f_number.possible;
+	writable = m_prop.f_number.writable;
+}
+
+void CameraDevice::GetShutterSpeed(uint32_t& current, std::vector<std::uint32_t>& possible, int& writable)
+{
+	load_properties();
+	current = m_prop.shutter_speed.current;
+	possible = m_prop.shutter_speed.possible;
+	writable = m_prop.f_number.writable;
+}
+
+void CameraDevice::GetIso(uint32_t& current, std::vector<std::uint32_t>& possible, int& writable)
+{
+	load_properties();
+	current = m_prop.iso_sensitivity.current;
+	possible = m_prop.iso_sensitivity.possible;
+	writable = m_prop.f_number.writable;
+}
+
+std::int32_t CameraDevice::SetAperture(uint16_t value)
+{
+	if (1 != m_prop.f_number.writable) {
+		tout << "Aperture is not writable\n";
+		return -1;
+	}
+
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
+
+std::int32_t CameraDevice::SetShutterSpeed(uint32_t value)
+{
+	if (1 != m_prop.shutter_speed.writable) {
+		tout << "Shutter Speed is not writable\n";
+		return -1;
+	}
+
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
+
+std::int32_t CameraDevice::SetIso(uint32_t value)
+{
+	if (1 != m_prop.iso_sensitivity.writable) {
+		tout << "ISO is not writable\n";
+		return -1;
+	}
+
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
+
 /*
 	CrDataType GetValueType();
 	CrInt64u GetCurrentValue();
