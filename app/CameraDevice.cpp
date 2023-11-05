@@ -6001,72 +6001,48 @@ void CameraDevice::set_live_view_image_quality(std::int32_t index)
     SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-std::int32_t CameraDevice::SetSelectDeviceProperty(uint32_t setCode, uint32_t setData)
-{
-	std::int32_t nprop = 0;
-	SDK::CrDeviceProperty* props = nullptr;
-	auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &setCode, &props, &nprop);
-
-	if (CR_FAILED(status)) return -1;
-	if (props && 0 < nprop) {
-		SDK::CrDeviceProperty prop;
-		prop.SetCode(setCode);
-		prop.SetCurrentValue(setData);
-		prop.SetValueType(props[0].GetValueType());
-		SDK::ReleaseDeviceProperties(m_device_handle, props);
-
-		status = SDK::SetDeviceProperty(m_device_handle, &prop);
-		return status;
-	}
-	return -1;
-}
-
-
-std::int32_t CameraDevice::GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable)
-{
-	std::int32_t nprop = 0;
-	SDK::CrDeviceProperty* props = nullptr;
-	auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &props, &nprop);
-	if (CR_FAILED(status)) return -1;
-	if (props && 0 < nprop) {
-		getData  = props[0].GetCurrentValue();
-		writable = props[0].IsSetEnableCurrentValue();
-		tout << std::hex
-				<< props[0].GetValueType()
-		 << std::dec
-		 << ", " << props[0].GetCurrentValue()
-		 << ", " << props[0].GetValueSize()
-		 << ", " << props[0].IsSetEnableCurrentValue()
-		 << '\n';
-		SDK::ReleaseDeviceProperties(m_device_handle, props);
-		return status;
-	}
-	return -1;
-}
-
-void CameraDevice::GetAperture(uint16_t& current, std::vector<std::uint16_t>& possible, int& writable)
+void CameraDevice::GetAperture(PropertyValueEntry<std::uint16_t>& prop)
 {
 	load_properties();
-	current = m_prop.f_number.current;
-	possible = m_prop.f_number.possible;
-	writable = m_prop.f_number.writable;
+	prop = m_prop.f_number;
 }
 
-void CameraDevice::GetShutterSpeed(uint32_t& current, std::vector<std::uint32_t>& possible, int& writable)
+void CameraDevice::GetShutterSpeed(PropertyValueEntry<std::uint32_t>& prop)
 {
 	load_properties();
-	current = m_prop.shutter_speed.current;
-	possible = m_prop.shutter_speed.possible;
-	writable = m_prop.f_number.writable;
+	prop = m_prop.shutter_speed;
 }
 
-void CameraDevice::GetIso(uint32_t& current, std::vector<std::uint32_t>& possible, int& writable)
+void CameraDevice::GetIso(PropertyValueEntry<std::uint32_t>& prop)
 {
 	load_properties();
-	current = m_prop.iso_sensitivity.current;
-	possible = m_prop.iso_sensitivity.possible;
-	writable = m_prop.f_number.writable;
+	prop = m_prop.iso_sensitivity;
 }
+
+void CameraDevice::GetDriveMode(PropertyValueEntry<std::uint32_t>& prop)
+{
+	load_properties();
+	prop = m_prop.still_capture_mode;
+}
+
+void CameraDevice::GetExposureProgramMode(PropertyValueEntry<std::uint32_t>& prop)
+{
+	load_properties();
+	prop = m_prop.exposure_program_mode;
+}
+
+void CameraDevice::GetWhiteBalance(PropertyValueEntry<std::uint16_t>& prop)
+{
+	load_properties();
+	prop = m_prop.white_balance;
+}
+
+void CameraDevice::GetFocusMode(PropertyValueEntry<std::uint16_t>& prop)
+{
+	load_properties();
+	prop = m_prop.focus_mode;
+}
+
 
 std::int32_t CameraDevice::SetAperture(uint16_t value)
 {
@@ -6110,49 +6086,61 @@ std::int32_t CameraDevice::SetIso(uint32_t value)
 	return SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-/*
-	CrDataType GetValueType();
-	CrInt64u GetCurrentValue();
-	CrInt16u* GetCurrentStr();
-	// binary
-	CrInt32u GetValueSize();
-	CrInt8u* GetValues();
-*/
-
-/*
-	nval = prop.GetValueSize() / sizeof(std::uint8_t);
-	m_prop.silent_mode.writable = prop.IsSetEnableCurrentValue();
-	m_prop.silent_mode.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-	if (0 < nval) {
-	    prop.GetValues(), nval;
+std::int32_t CameraDevice::SetDriveMode(uint32_t value)
+{
+	if (1 != m_prop.still_capture_mode.writable) {
+		tout << "not writable\n";
+		return -1;
 	}
-*/
-/*
-	CrDeviceProperty(const CrDeviceProperty& ref);
-	CrDeviceProperty& operator =(const CrDeviceProperty& ref);
 
-	bool IsSetEnableCurrentValue();
-	void SetCode(CrInt32u code);
-	void SetValueType(CrDataType type);
-	void SetCurrentValue(CrInt64u value);
-	void SetCurrentStr(CrInt16u* str);
-*/
-/*
-	bool IsGetEnableCurrentValue();
-	CrInt32u GetCode();
-	CrDataType GetValueType();
-	CrInt64u GetCurrentValue();
-	CrInt16u* GetCurrentStr();
-	// binary
-	CrInt32u GetValueSize();
-	CrInt8u* GetValues();
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
 
+std::int32_t CameraDevice::SetExposureProgramMode(uint32_t value)
+{
+	if (1 != m_prop.exposure_program_mode.writable) {
+		tout << "not writable\n";
+		return -1;
+	}
 
-	CrPropertyEnableFlag GetPropertyEnableFlag();
-	CrPropertyVariableFlag GetPropertyVariableFlag();
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
 
-    CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_S1;
-*/
+std::int32_t CameraDevice::SetWhiteBalance(uint16_t value)
+{
+	if (1 != m_prop.white_balance.writable) {
+		tout << "not writable\n";
+		return -1;
+	}
+
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
+
+std::int32_t CameraDevice::SetFocusMode(uint16_t value)
+{
+	if (1 != m_prop.focus_mode.writable) {
+		tout << "not writable\n";
+		return -1;
+	}
+
+	SDK::CrDeviceProperty prop;
+	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode);
+	prop.SetCurrentValue(value);
+	prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
+	return SDK::SetDeviceProperty(m_device_handle, &prop);
+}
 }
 // namespace cli
 

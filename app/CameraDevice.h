@@ -258,15 +258,22 @@ private:
 public:
     std::int32_t get_live_view(uint8_t* buf[]);
     void set_live_view_image_quality(std::int32_t index);
-    std::int32_t SetSelectDeviceProperty(uint32_t setCode, uint32_t setData);
-    std::int32_t GetSelectDeviceProperty(uint32_t getCode, uint32_t& getData, uint32_t& writable);
-    
-    void GetAperture(uint16_t& current, std::vector<std::uint16_t>& possible, int& writable);
-    std::int32_t SetAperture(uint16_t value);
-    void GetShutterSpeed(uint32_t& current, std::vector<std::uint32_t>& possible, int& writable);
-    std::int32_t SetShutterSpeed(uint32_t value);
-    void GetIso(uint32_t& current, std::vector<std::uint32_t>& possible, int& writable);
-    std::int32_t SetIso(uint32_t value);
+
+	void GetAperture(PropertyValueEntry<std::uint16_t>& prop);
+	void GetShutterSpeed(PropertyValueEntry<std::uint32_t>& prop);
+	void GetIso(PropertyValueEntry<std::uint32_t>& prop);
+	void GetDriveMode(PropertyValueEntry<std::uint32_t>& prop);
+	void GetExposureProgramMode(PropertyValueEntry<std::uint32_t>& prop);
+	void GetWhiteBalance(PropertyValueEntry<std::uint16_t>& prop);
+	void GetFocusMode(PropertyValueEntry<std::uint16_t>& prop);
+
+	std::int32_t SetAperture(uint16_t value);
+	std::int32_t SetShutterSpeed(uint32_t value);
+	std::int32_t SetIso(uint32_t value);
+	std::int32_t SetDriveMode(uint32_t value);
+	std::int32_t SetExposureProgramMode(uint32_t value);
+	std::int32_t SetWhiteBalance(uint16_t value);
+	std::int32_t SetFocusMode(uint16_t value);
 };
 } // namespace cli
 

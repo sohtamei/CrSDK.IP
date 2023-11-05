@@ -16,8 +16,9 @@
 #include <locale>
 #include <codecvt>
 #include <chrono>
-
 #include <iomanip>
+#include <mutex>
+
 #include "app/CRSDK/CameraRemote_SDK.h"
 #include "app/CameraDevice.h"
 
@@ -27,8 +28,6 @@ namespace websocket = beast::websocket; // from <boost/beast/websocket.hpp>
 namespace asio = boost::asio;           // from <boost/asio.hpp>
 using tcp = boost::asio::ip::tcp;       // from <boost/asio/ip/tcp.hpp>
 namespace pt = boost::property_tree;
-
-using namespace std::chrono_literals;   // xx ms
 
 extern std::shared_ptr<cli::CameraDevice> camera;
 
@@ -42,6 +41,8 @@ websocket::stream<tcp::socket> *p_ws = NULL;
 std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
 
 
+std::mutex crsdk_mtx;
+
 void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 {
 	std::stringstream resp_stream;
@@ -53,201 +54,289 @@ void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 	ws.write(resp_buffer.data());
 }
 
-void getAperture(websocket::stream<tcp::socket>& ws, bool sendPossible)
+void getProp(websocket::stream<tcp::socket>& ws,
+	bool sendPossible, 
+	cli::PropertyValueEntry<std::uint16_t>& prop,
+	cli::text (*format_func)(std::uint16_t))
 {
-	uint16_t current;
-	std::vector<std::uint16_t> possible;
-	int writable;
-	camera->GetAperture(current, possible, writable);
-
 	pt::ptree resp_tree;
 	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(cli::format_f_number(current)));
-	item_tree.put("value", std::to_string(current));
+	item_tree.put("text", wstring_convert.to_bytes(format_func(prop.current)));
+	item_tree.put("value", std::to_string(prop.current));
 	resp_tree.add_child("current", item_tree);
 
 	pt::ptree sub_tree;
 	int index = -1;
-	for(int i = 0; i < possible.size(); i++) {
-		if(current == possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(cli::format_f_number(possible[i])));
-		item_tree.put("value", std::to_string(possible[i]));
+	for(int i = 0; i < prop.possible.size(); i++) {
+		if(prop.current == prop.possible[i]) index = i;
+		item_tree.put("text", wstring_convert.to_bytes(format_func(prop.possible[i])));
+		item_tree.put("value", std::to_string(prop.possible[i]));
 		sub_tree.push_back(std::make_pair("", item_tree));
 	}
 	if(sendPossible)
 		resp_tree.add_child("possible", sub_tree);
 
 	std::string incrementable = "none";
-	if(writable != 1)
+	if(prop.writable != 1)
 		;
 	else if(index == 0)
 		incrementable = "inc";
-	else if(index == possible.size()-1)
+	else if(index == prop.possible.size()-1)
 		incrementable = "dec";
-	else if(index > 0 && index < possible.size()-1)
+	else if(index > 0 && index < prop.possible.size()-1)
 		incrementable = "incdec";
 	resp_tree.put("incrementable", incrementable);
 
 	write_json(ws, resp_tree);
 }
 
-void incAperture(websocket::stream<tcp::socket>& ws, bool inc_dec)
+void getProp(websocket::stream<tcp::socket>& ws,
+	bool sendPossible, 
+	cli::PropertyValueEntry<std::uint32_t>& prop,
+	cli::text (*format_func)(std::uint32_t))
 {
-	uint16_t current;
-	std::vector<std::uint16_t> possible;
-	int writable;
-	camera->GetAperture(current, possible, writable);
+	pt::ptree resp_tree;
+	pt::ptree item_tree;
+	item_tree.put("text", wstring_convert.to_bytes(format_func(prop.current)));
+	item_tree.put("value", std::to_string(prop.current));
+	resp_tree.add_child("current", item_tree);
 
-	if(writable == 1) {
-		for(int i = 0; i < possible.size(); i++) {
-			if(current == possible[i]) {
-				int index = i;
-				if(inc_dec) index++;
-				else index--;
-				if(index >= 0 && index <= possible.size()-1) {
-					camera->SetAperture(possible[index]);
-				}
-				break;
-			}
-		}
+	pt::ptree sub_tree;
+	int index = -1;
+	for(int i = 0; i < prop.possible.size(); i++) {
+		if(prop.current == prop.possible[i]) index = i;
+		item_tree.put("text", wstring_convert.to_bytes(format_func(prop.possible[i])));
+		item_tree.put("value", std::to_string(prop.possible[i]));
+		sub_tree.push_back(std::make_pair("", item_tree));
 	}
-	std::this_thread::sleep_for(300ms);
-	getAperture(ws, false);
+	if(sendPossible)
+		resp_tree.add_child("possible", sub_tree);
+
+	std::string incrementable = "none";
+	if(prop.writable != 1)
+		;
+	else if(index == 0)
+		incrementable = "inc";
+	else if(index == prop.possible.size()-1)
+		incrementable = "dec";
+	else if(index > 0 && index < prop.possible.size()-1)
+		incrementable = "incdec";
+	resp_tree.put("incrementable", incrementable);
+
+	write_json(ws, resp_tree);
+}
+
+void getAperture(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	cli::PropertyValueEntry<std::uint16_t> prop;
+	camera->GetAperture(prop);
+	getProp(ws, sendPossible, prop, cli::format_f_number);
 }
 
 void getShutterSpeed(websocket::stream<tcp::socket>& ws, bool sendPossible)
 {
-	uint32_t current;
-	std::vector<std::uint32_t> possible;
-	int writable;
-	camera->GetShutterSpeed(current, possible, writable);
-
-	pt::ptree resp_tree;
-	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(cli::format_shutter_speed(current)));
-	item_tree.put("value", std::to_string(current));
-	resp_tree.add_child("current", item_tree);
-
-	pt::ptree sub_tree;
-	int index = -1;
-	for(int i = 0; i < possible.size(); i++) {
-		if(current == possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(cli::format_shutter_speed(possible[i])));
-		item_tree.put("value", std::to_string(possible[i]));
-		sub_tree.push_back(std::make_pair("", item_tree));
-	}
-	if(sendPossible)
-		resp_tree.add_child("possible", sub_tree);
-
-	std::string incrementable = "none";
-	if(writable != 1)
-		;
-	else if(index == 0)
-		incrementable = "inc";
-	else if(index == possible.size()-1)
-		incrementable = "dec";
-	else if(index > 0 && index < possible.size()-1)
-		incrementable = "incdec";
-	resp_tree.put("incrementable", incrementable);
-
-	write_json(ws, resp_tree);
-}
-
-void incShutterSpeed(websocket::stream<tcp::socket>& ws, bool inc_dec)
-{
-	uint32_t current;
-	std::vector<std::uint32_t> possible;
-	int writable;
-	camera->GetShutterSpeed(current, possible, writable);
-
-	if(writable == 1) {
-		for(int i = 0; i < possible.size(); i++) {
-			if(current == possible[i]) {
-				int index = i;
-				if(inc_dec) index++;
-				else index--;
-				if(index >= 0 && index <= possible.size()-1) {
-					camera->SetShutterSpeed(possible[index]);
-				}
-				break;
-			}
-		}
-	}
-	std::this_thread::sleep_for(300ms);
-	getShutterSpeed(ws, false);
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetShutterSpeed(prop);
+	getProp(ws, sendPossible, prop, cli::format_shutter_speed);
 }
 
 void getIso(websocket::stream<tcp::socket>& ws, bool sendPossible)
 {
-	uint32_t current;
-	std::vector<std::uint32_t> possible;
-	int writable;
-	camera->GetIso(current, possible, writable);
-
-	pt::ptree resp_tree;
-	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(cli::format_iso_sensitivity(current)));
-	item_tree.put("value", std::to_string(current));
-	resp_tree.add_child("current", item_tree);
-
-	pt::ptree sub_tree;
-	int index = -1;
-	for(int i = 0; i < possible.size(); i++) {
-		if(current == possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(cli::format_iso_sensitivity(possible[i])));
-		item_tree.put("value", std::to_string(possible[i]));
-		sub_tree.push_back(std::make_pair("", item_tree));
-	}
-	if(sendPossible)
-		resp_tree.add_child("possible", sub_tree);
-
-	std::string incrementable = "none";
-	if(writable != 1)
-		;
-	else if(index == 0)
-		incrementable = "inc";
-	else if(index == possible.size()-1)
-		incrementable = "dec";
-	else if(index > 0 && index < possible.size()-1)
-		incrementable = "incdec";
-	resp_tree.put("incrementable", incrementable);
-
-	write_json(ws, resp_tree);
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetIso(prop);
+	getProp(ws, sendPossible, prop, cli::format_iso_sensitivity);
 }
 
-void incIso(websocket::stream<tcp::socket>& ws, bool inc_dec)
+void getDriveMode(websocket::stream<tcp::socket>& ws, bool sendPossible)
 {
-	uint32_t current;
-	std::vector<std::uint32_t> possible;
-	int writable;
-	camera->GetIso(current, possible, writable);
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetDriveMode(prop);
+	getProp(ws, sendPossible, prop, cli::format_still_capture_mode);
+}
 
-	if(writable == 1) {
-		for(int i = 0; i < possible.size(); i++) {
-			if(current == possible[i]) {
+void getExposureProgramMode(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetExposureProgramMode(prop);
+	getProp(ws, sendPossible, prop, cli::format_exposure_program_mode);
+}
+
+void getWhiteBalance(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	cli::PropertyValueEntry<std::uint16_t> prop;
+	camera->GetWhiteBalance(prop);
+	getProp(ws, sendPossible, prop, cli::format_white_balance);
+}
+
+void getFocusMode(websocket::stream<tcp::socket>& ws, bool sendPossible)
+{
+	cli::PropertyValueEntry<std::uint16_t> prop;
+	camera->GetFocusMode(prop);
+	getProp(ws, sendPossible, prop, cli::format_focus_mode);
+}
+
+void incAperture(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint16_t> prop;
+	camera->GetAperture(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
 				int index = i;
 				if(inc_dec) index++;
 				else index--;
-				if(index >= 0 && index <= possible.size()-1) {
-					camera->SetIso(possible[index]);
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetAperture(prop.possible[index]);
 				}
 				break;
 			}
 		}
 	}
-	std::this_thread::sleep_for(300ms);
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	getAperture(ws, false);
+}
+
+void incShutterSpeed(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetShutterSpeed(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetShutterSpeed(prop.possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	getShutterSpeed(ws, false);
+}
+
+void incIso(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetIso(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetIso(prop.possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
 	getIso(ws, false);
 }
 
-void
-do_session(void)
+void incDriveMode(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetDriveMode(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetDriveMode(prop.possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	getDriveMode(ws, false);
+}
+
+void incExposureProgramMode(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint32_t> prop;
+	camera->GetExposureProgramMode(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetExposureProgramMode(prop.possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	getExposureProgramMode(ws, false);
+}
+
+void incWhiteBalance(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint16_t> prop;
+	camera->GetWhiteBalance(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetWhiteBalance(prop.possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	getWhiteBalance(ws, false);
+}
+
+void incFocusMode(websocket::stream<tcp::socket>& ws, bool inc_dec)
+{
+	cli::PropertyValueEntry<std::uint16_t> prop;
+	camera->GetFocusMode(prop);
+
+	if(prop.writable == 1) {
+		for(int i = 0; i < prop.possible.size(); i++) {
+			if(prop.current == prop.possible[i]) {
+				int index = i;
+				if(inc_dec) index++;
+				else index--;
+				if(index >= 0 && index <= prop.possible.size()-1) {
+					camera->SetFocusMode(prop.possible[index]);
+				}
+				break;
+			}
+		}
+	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	getFocusMode(ws, false);
+}
+
+
+void do_thread_ws(void)
 {
 	asio::io_context ioc;
 	tcp::endpoint endpoint(asio::ip::make_address(address), portWS);
 	tcp::acceptor acceptor(ioc, endpoint);
 
 	beast::error_code err;
-//	beast::flat_buffer read_buf;
 
 	while(true)
 	{
@@ -277,6 +366,8 @@ do_session(void)
 				if(err) break;
 
 				if (ws.got_text()) {
+					std::unique_lock<std::mutex> crsdk_lock(crsdk_mtx);		// CrSDK mutex
+
 					std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
 
 					std::string cmd_data(beast::buffers_to_string(buffer.data()));
@@ -331,6 +422,46 @@ do_session(void)
 								incIso(ws, false/*inc_dec*/);
 							}
 							continue;
+						} else if (cmd == "driveMode") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getDriveMode(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incDriveMode(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incDriveMode(ws, false/*inc_dec*/);
+							}
+							continue;
+						} else if (cmd == "exposureProgramMode") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getExposureProgramMode(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incExposureProgramMode(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incExposureProgramMode(ws, false/*inc_dec*/);
+							}
+							continue;
+						} else if (cmd == "whiteBalance") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getWhiteBalance(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incWhiteBalance(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incWhiteBalance(ws, false/*inc_dec*/);
+							}
+							continue;
+						} else if (cmd == "focusMode") {
+							std::string ope = cmd_tree.get<std::string>("ope");
+							if(ope == "get") {
+								getFocusMode(ws, true/*sendPossible*/);
+							} else if(ope == "inc") {
+								incFocusMode(ws, true/*inc_dec*/);
+							} else if(ope == "dec") {
+								incFocusMode(ws, false/*inc_dec*/);
+							}
+							continue;
 						} else if (cmd == "setAperture") {
 							std::uint16_t value = cmd_tree.get<std::uint16_t>("value");
 							camera->SetAperture(value);
@@ -345,25 +476,6 @@ do_session(void)
 						} else {
 							std::clog << "unknown command" << std::endl;
 						}
-	/*
-					} else if(json_tree.get_child_optional("getCode")) {
-						uint32_t data = 0;
-						uint32_t writable = 0;
-						camera->GetSelectDeviceProperty(json_tree.get<uint32_t>("getCode"), data, writable);
-						Json::Value getResult;
-						getResult["getData"] = data;
-						getResult["writable"] = writable;
-						std::clog << "Message payload:" << server.stringifyJson(getResult) << std::endl;
-						server.sendMessage(conn, getResult);
-						return;
-					} else if(json_tree.get_child_optional("setCode")) {
-						int ret = 0;//camera->SetSelectDeviceProperty(args["setCode"].asUInt(), args["setData"].asUInt());
-						Json::Value getResult;
-						getResult["result"] = ret;
-						std::clog << "Message payload:" << server.stringifyJson(getResult) << std::endl;
-						server.sendMessage(conn, getResult);
-						return;
-	*/
 					}
 				}
 				//Echo the message pack to the client
@@ -426,7 +538,7 @@ fail(beast::error_code err, char const* what)
 }
 
 // Handles an HTTP server connection
-void do_session2(void)
+void do_thread_http(void)
 {
 	asio::io_context ioc;
 	tcp::endpoint endpoint(asio::ip::make_address(address), portHttp);
@@ -461,7 +573,11 @@ void do_session2(void)
 
 			while(true) {
 				uint8_t* imageBuf = NULL;
-				int imageSize = camera->get_live_view(&imageBuf);
+				int imageSize = 0;
+				{
+					std::unique_lock<std::mutex> crsdk_lock(crsdk_mtx);		// CrSDK mutex
+					imageSize = camera->get_live_view(&imageBuf);
+				}
 				if (imageSize > 0) {
 				//	std::cout << ".";
 
@@ -507,13 +623,11 @@ int main(int argc, char* argv[])
 
 		camera->set_live_view_image_quality(0);
 
-		std::thread serverThread1(do_session);
-		std::thread serverThread2(do_session2);
+		std::thread serverThread1(do_thread_ws);
+		std::thread serverThread2(do_thread_http);
 
-		// スレッドが実行し続けるようにメインスレッドを待機
 		serverThread1.join();
 		serverThread2.join();
-
 	});
 	ioContext.run();
 
