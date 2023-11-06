@@ -259,21 +259,17 @@ public:
     std::int32_t get_live_view(uint8_t* buf[]);
     void set_live_view_image_quality(std::int32_t index);
 
-	void GetAperture(PropertyValueEntry<std::uint16_t>& prop);
-	void GetShutterSpeed(PropertyValueEntry<std::uint32_t>& prop);
-	void GetIso(PropertyValueEntry<std::uint32_t>& prop);
-	void GetDriveMode(PropertyValueEntry<std::uint32_t>& prop);
-	void GetExposureProgramMode(PropertyValueEntry<std::uint32_t>& prop);
-	void GetWhiteBalance(PropertyValueEntry<std::uint16_t>& prop);
-	void GetFocusMode(PropertyValueEntry<std::uint16_t>& prop);
+	text GetFormatMsg(SCRSDK::CrDevicePropertyCode id, std::uint32_t value);
+	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
+	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
+	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
+	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
+	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
+	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint8_t value);
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint16_t value);
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint32_t value);
 
-	std::int32_t SetAperture(uint16_t value);
-	std::int32_t SetShutterSpeed(uint32_t value);
-	std::int32_t SetIso(uint32_t value);
-	std::int32_t SetDriveMode(uint32_t value);
-	std::int32_t SetExposureProgramMode(uint32_t value);
-	std::int32_t SetWhiteBalance(uint16_t value);
-	std::int32_t SetFocusMode(uint16_t value);
 };
 } // namespace cli
 

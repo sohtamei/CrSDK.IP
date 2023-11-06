@@ -6001,146 +6001,179 @@ void CameraDevice::set_live_view_image_quality(std::int32_t index)
     SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-void CameraDevice::GetAperture(PropertyValueEntry<std::uint16_t>& prop)
-{
-	load_properties();
-	prop = m_prop.f_number;
-}
 
-void CameraDevice::GetShutterSpeed(PropertyValueEntry<std::uint32_t>& prop)
+text CameraDevice::GetFormatMsg(SDK::CrDevicePropertyCode id, std::uint32_t value)
 {
-	load_properties();
-	prop = m_prop.shutter_speed;
-}
+	switch(id) {
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type:		return format_remocon_zoom_speed_type(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia:					return format_playback_media(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity:			return format_gain_base_sensitivity(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity:		return format_gain_base_iso_sensitivity(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting:				return format_monitor_lut_setting(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting:				return format_iris_mode_setting(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting:			return format_shutter_mode_setting(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting:			return format_gain_control_setting(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType:				return format_exposure_control_type(value);
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_GaindBValue:					return format_なし(value);
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTint:				return format_なし(value);
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketFocusRange:		return format_なし(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot:	return format_image_stabilization_steady_shot(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot: return format_movie_image_stabilization_steady_shot(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode:					return format_silent_mode(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF:	return format_silent_mode_aperture_drive_in_af(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff:	return format_silent_mode_shutter_when_power_off(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping:	return format_silent_mode_auto_pixel_mapping(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType:					return format_shutter_type(value);
 
-void CameraDevice::GetIso(PropertyValueEntry<std::uint32_t>& prop)
-{
-	load_properties();
-	prop = m_prop.iso_sensitivity;
-}
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber:						return format_f_number(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings:			return format_position_key_setting(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode:						return format_focus_mode(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea:						return format_focus_area(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality:		return format_live_view_image_quality(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance:					return format_white_balance(value);
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureIndex:					return format_exposure_index(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue:					return format_baselook_value(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting:		return format_recording_setting(value);
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketShotNumber:		return format_なし(value);
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting:			return format_focus_position_setting(value);
 
-void CameraDevice::GetDriveMode(PropertyValueEntry<std::uint32_t>& prop)
-{
-	load_properties();
-	prop = m_prop.still_capture_mode;
-}
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity:				return format_iso_sensitivity(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed:					return format_shutter_speed(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:			return format_exposure_program_mode(value);
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:						return format_still_capture_mode(value);
 
-void CameraDevice::GetExposureProgramMode(PropertyValueEntry<std::uint32_t>& prop)
-{
-	load_properties();
-	prop = m_prop.exposure_program_mode;
-}
-
-void CameraDevice::GetWhiteBalance(PropertyValueEntry<std::uint16_t>& prop)
-{
-	load_properties();
-	prop = m_prop.white_balance;
-}
-
-void CameraDevice::GetFocusMode(PropertyValueEntry<std::uint16_t>& prop)
-{
-	load_properties();
-	prop = m_prop.focus_mode;
-}
-
-
-std::int32_t CameraDevice::SetAperture(uint16_t value)
-{
-	if (1 != m_prop.f_number.writable) {
-		tout << "Aperture is not writable\n";
-		return -1;
+	default:
+		return TEXT("");
 	}
-
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-std::int32_t CameraDevice::SetShutterSpeed(uint32_t value)
+void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop)
 {
-	if (1 != m_prop.shutter_speed.writable) {
-		tout << "Shutter Speed is not writable\n";
-		return -1;
+	switch(id) {
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type:		prop = m_prop.remocon_zoom_speed_type; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia:					prop = m_prop.playback_media; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity:			prop = m_prop.gain_base_sensitivity; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity:		prop = m_prop.gain_base_iso_sensitivity; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting:				prop = m_prop.monitor_lut_setting; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting:				prop = m_prop.iris_mode_setting; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting:			prop = m_prop.shutter_mode_setting; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting:			prop = m_prop.gain_control_setting; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType:				prop = m_prop.exposure_control_type; break;
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_GaindBValue:					prop = m_prop.gain_db_value; break;
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTint:				prop = m_prop.white_balance_tint; break;
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketFocusRange:		prop = m_prop.focus_bracket_focus_range; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot:	prop = m_prop.image_stabilization_steady_shot; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot:prop = m_prop.movie_image_stabilization_steady_shot; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode:					prop = m_prop.silent_mode; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF:	prop = m_prop.silent_mode_aperture_drive_in_af; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff:	prop = m_prop.silent_mode_shutter_when_power_off; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping:	prop = m_prop.silent_mode_auto_pixel_mapping; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType:					prop = m_prop.shutter_type; break;
+	default:
+        tout << "unknown(" << __LINE__ << ")\n";
+		break;
 	}
-
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-std::int32_t CameraDevice::SetIso(uint32_t value)
+void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop)
 {
-	if (1 != m_prop.iso_sensitivity.writable) {
-		tout << "ISO is not writable\n";
-		return -1;
+	switch(id) {
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber:						prop = m_prop.f_number; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings:			prop = m_prop.position_key_setting; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode:						prop = m_prop.focus_mode; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea:						prop = m_prop.focus_area; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality:		prop = m_prop.live_view_image_quality; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance:					prop = m_prop.white_balance; break;
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureIndex:					prop = m_prop.exposure_index; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue:					prop = m_prop.baselook_value; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting:		prop = m_prop.recording_setting; break;
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketShotNumber:		prop = m_prop.focus_bracket_shot_num; break;
+//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting:			prop = m_prop.focus_position_setting; break;
+	default:
+        tout << "unknown(" << __LINE__ << ")\n";
+		break;
 	}
-
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-std::int32_t CameraDevice::SetDriveMode(uint32_t value)
+void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop)
 {
-	if (1 != m_prop.still_capture_mode.writable) {
+	switch(id) {
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity:				prop = m_prop.iso_sensitivity; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed:					prop = m_prop.shutter_speed; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:			prop = m_prop.exposure_program_mode; break;
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:						prop = m_prop.still_capture_mode; break;
+	default:
+        tout << "unknown(" << __LINE__ << ")\n";
+		break;
+	}
+}
+
+void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop)
+{
+	load_properties();
+	CameraDevice::_getProp(id, prop);
+}
+
+void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop)
+{
+	load_properties();
+	CameraDevice::_getProp(id, prop);
+}
+
+void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop)
+{
+	load_properties();
+	CameraDevice::_getProp(id, prop);
+}
+
+std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint8_t value)
+{
+	PropertyValueEntry<std::uint8_t> prop;
+	CameraDevice::_getProp(id, prop);
+	if (1 != prop.writable) {
 		tout << "not writable\n";
 		return -1;
 	}
 
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
+	SDK::CrDeviceProperty devProp;
+	devProp.SetCode(id);
+	devProp.SetCurrentValue(value);
+	devProp.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
+	return SDK::SetDeviceProperty(m_device_handle, &devProp);
 }
 
-std::int32_t CameraDevice::SetExposureProgramMode(uint32_t value)
+std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint16_t value)
 {
-	if (1 != m_prop.exposure_program_mode.writable) {
+	PropertyValueEntry<std::uint16_t> prop;
+	CameraDevice::_getProp(id, prop);
+	if (1 != prop.writable) {
 		tout << "not writable\n";
 		return -1;
 	}
 
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
+	SDK::CrDeviceProperty devProp;
+	devProp.SetCode(id);
+	devProp.SetCurrentValue(value);
+	devProp.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
+	return SDK::SetDeviceProperty(m_device_handle, &devProp);
 }
 
-std::int32_t CameraDevice::SetWhiteBalance(uint16_t value)
+std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint32_t value)
 {
-	if (1 != m_prop.white_balance.writable) {
+	PropertyValueEntry<std::uint32_t> prop;
+	CameraDevice::_getProp(id, prop);
+	if (1 != prop.writable) {
 		tout << "not writable\n";
 		return -1;
 	}
 
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
+	SDK::CrDeviceProperty devProp;
+	devProp.SetCode(id);
+	devProp.SetCurrentValue(value);
+	devProp.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+	return SDK::SetDeviceProperty(m_device_handle, &devProp);
 }
 
-std::int32_t CameraDevice::SetFocusMode(uint16_t value)
-{
-	if (1 != m_prop.focus_mode.writable) {
-		tout << "not writable\n";
-		return -1;
-	}
-
-	SDK::CrDeviceProperty prop;
-	prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode);
-	prop.SetCurrentValue(value);
-	prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-	return SDK::SetDeviceProperty(m_device_handle, &prop);
-}
 }
 // namespace cli
 
