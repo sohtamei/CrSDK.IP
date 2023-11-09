@@ -330,7 +330,12 @@ void do_thread_ws(void)
 					if(cmd_tree.get_child_optional("cmd")) {
 						std::string cmd = cmd_tree.get<std::string>("cmd");
 						if (cmd == "afShutter") {
-							camera->af_shutter();
+							uint32_t delay_ms = 500;
+							if(cmd_tree.get_child_optional("delay"))
+								delay_ms = cmd_tree.get<std::uint32_t>("delay");
+							camera->af_shutter(delay_ms);
+						} else if (cmd == "afHalfShutter") {
+							camera->s1_shooting();
 						} else if (cmd == "liveview") {
 							uint8_t* imageBuf = NULL;
 							int imageSize = camera->get_live_view(&imageBuf);
@@ -342,6 +347,10 @@ void do_thread_ws(void)
 								ws.write(asio::buffer(v_buffer));
 								continue;
 							}
+						} else if (cmd == "setSaveInfo") {
+							std::string prefix = cmd_tree.get<std::string>("prefix");
+							camera->set_save_info(wstring_convert.from_bytes(prefix));
+
 						} else if (cmd == "setAperture") {
 							std::uint16_t value = cmd_tree.get<std::uint16_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FNumber, value);

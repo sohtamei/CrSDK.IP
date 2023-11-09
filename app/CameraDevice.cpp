@@ -320,7 +320,7 @@ void CameraDevice::s1_shooting() const
     SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
-void CameraDevice::af_shutter() const
+void CameraDevice::af_shutter(std::uint32_t delay_ms) const
 {
 /*
     text input;
@@ -340,7 +340,7 @@ void CameraDevice::af_shutter() const
     SDK::SetDeviceProperty(m_device_handle, &prop);
 
     // Wait, then send shutter down
-    std::this_thread::sleep_for(500ms);
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
     tout << "Shutter down\n";
     SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
 
@@ -5895,6 +5895,20 @@ bool CameraDevice::execute_focus_position_cancel()
     else
     {
         tout << "Finish Focus Position Setting\n";
+    }
+    return true;
+}
+
+bool CameraDevice::set_save_info(text prefix) const
+{
+    text path = fs::current_path().native();
+    tout << path.data() << '\n';
+
+    auto save_status = SDK::SetSaveInfo(m_device_handle
+        , const_cast<text_char*>(path.data()), const_cast<text_char*>(prefix.data()), ImageSaveAutoStartNo);
+    if (CR_FAILED(save_status)) {
+        tout << "Failed to set save path.\n";
+        return false;
     }
     return true;
 }

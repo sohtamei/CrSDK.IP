@@ -70,7 +70,7 @@ public:
 
     void capture_image() const;
     void s1_shooting() const;
-    void af_shutter() const;
+    void af_shutter(std::uint32_t delay_ms) const;
     void continuous_shooting();
 
     /*** Property operations ***/
@@ -255,21 +255,25 @@ private:
     MediaProfileList m_mediaprofileList;
     std::string m_fingerprint;
     std::string m_userPassword;
+
+private:
+	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
+	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
+	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
+
 public:
+	bool set_save_info(text prefix) const;
+
     std::int32_t get_live_view(uint8_t* buf[]);
     void set_live_view_image_quality(std::int32_t index);
 
 	text GetFormatMsg(SCRSDK::CrDevicePropertyCode id, std::uint32_t value);
-	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
-	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
-	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
 	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
 	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
 	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint8_t value);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint16_t value);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint32_t value);
-
 };
 } // namespace cli
 

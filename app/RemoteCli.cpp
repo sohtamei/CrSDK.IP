@@ -108,7 +108,7 @@ int remoteCli_init(void)
             camera->s1_shooting();
         }
         else if (select == TEXT("3")) { /* AF Shutter */
-            camera->af_shutter();
+            camera->af_shutter(500);
         }
         else if (select == TEXT("4")) { /* Continuous Shooting */
             camera->continuous_shooting();
