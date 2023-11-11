@@ -228,9 +228,9 @@ public:
     virtual void OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;
     virtual void OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;
     virtual void OnNotifyContentsTransfer(CrInt32u notify, SCRSDK::CrContentHandle contentHandle, CrChar* filename) override;
+    void load_properties(CrInt32u num = 0, CrInt32u* codes = nullptr);
 
 private:
-    void load_properties(CrInt32u num = 0, CrInt32u* codes = nullptr);
     void get_property(SCRSDK::CrDeviceProperty& prop) const;
     bool set_property(SCRSDK::CrDeviceProperty& prop) const;
     text format_dispstrlist(SCRSDK::CrDisplayStringListInfo list);
@@ -264,8 +264,7 @@ private:
 public:
 	bool set_save_info(text prefix) const;
 
-    std::int32_t get_live_view(uint8_t* buf[]);
-    void set_live_view_image_quality(std::int32_t index);
+	std::int32_t get_live_view(uint8_t* buf[]);
 
 	text GetFormatMsg(SCRSDK::CrDevicePropertyCode id, std::uint32_t value);
 	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);

@@ -518,7 +518,7 @@ void do_thread_http(void)
 					res.content_length(imageSize);
 					res.keep_alive(req.keep_alive());
 					http::write(socket2, res, err);
-				//	boost::this_thread::sleep(boost::posix_time::milliseconds(100));
+					std::this_thread::sleep_for(std::chrono::milliseconds(30));
 					if(err) {
 						fail(err, "write");
 						break;
@@ -534,26 +534,21 @@ void do_thread_http(void)
 
 int main(int argc, char* argv[])
 {
+	std::locale utf8_locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
+
 	int ret = remoteCli_init();
 	if(ret) return -1;
 
-	std::locale utf8_locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-	asio::io_context ioContext;
-	asio::steady_timer timer(ioContext);
-	timer.expires_after(std::chrono::milliseconds(1000));
-	timer.async_wait([](const boost::system::error_code& error) {
-		if (error) std::cerr << "error." << std::endl;
+	camera->load_properties();
+	camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, static_cast<std::uint16_t>(0));
 
-		camera->set_live_view_image_quality(0);
+	std::thread serverThread1(do_thread_ws);
+	std::thread serverThread2(do_thread_http);
 
-		std::thread serverThread1(do_thread_ws);
-		std::thread serverThread2(do_thread_http);
-
-		serverThread1.join();
-		serverThread2.join();
-	});
-	ioContext.run();
+	serverThread1.join();
+	serverThread2.join();
 
 	return 0;
 }

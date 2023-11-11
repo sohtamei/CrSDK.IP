@@ -5996,26 +5996,6 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
     return -1;
 }
 
-void CameraDevice::set_live_view_image_quality(std::int32_t index)
-{
-    load_properties();
-    if (1 != m_prop.live_view_image_quality.writable) {
-        // Not a settable property
-        tout << "Live View Image Quality is not writable\n";
-        return;
-    }
-
-    auto& values = m_prop.live_view_image_quality.possible;
-    tout << "image quality :" << format_live_view_image_quality(values[index]) << '\n';
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality);
-    prop.SetCurrentValue(values[index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-
 text CameraDevice::GetFormatMsg(SDK::CrDevicePropertyCode id, std::uint32_t value)
 {
 	switch(id) {
