@@ -108,6 +108,8 @@ struct PropertyValueTable
     PropertyValueEntry<std::uint32_t> zoom_distance;
 	PropertyValueEntry<std::uint8_t>  media_slot1_recording_available_type;
     PropertyValueEntry<std::uint8_t>  media_slot2_recording_available_type;
+
+    PropertyValueEntry<std::uint32_t> focus_indication;
 };
 
 std::vector<std::uint16_t> parse_f_number(unsigned char const* buf, std::uint32_t nval);
@@ -166,6 +168,8 @@ std::vector<std::uint8_t> parse_focus_driving_status(unsigned char const* buf, s
 std::vector<std::uint32_t> parse_zoom_distance(unsigned char const* buf, std::uint32_t nval);
 std::vector<std::uint8_t> parse_slotx_rec_available(unsigned char const* buf, std::uint32_t nval);
 
+std::vector<std::uint32_t> parse_focus_indication(unsigned char const* buf, std::uint32_t nval);
+
 
 text format_f_number(std::uint16_t f_number);
 text format_iso_sensitivity(std::uint32_t iso);
@@ -216,6 +220,8 @@ text format_shutter_type(std::uint8_t shutter_type);
 text format_movie_shooting_mode(std::uint16_t movie_shooting_mode);
 text format_focus_driving_status(std::uint8_t focus_driving_status);
 text format_media_slotx_rec_available(std::uint8_t rec_available);
+
+text format_focus_indication(std::uint32_t focus_indication);
 
 } // namespace cli
 

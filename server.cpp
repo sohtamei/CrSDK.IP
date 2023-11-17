@@ -21,6 +21,7 @@
 
 #include "app/CRSDK/CameraRemote_SDK.h"
 #include "app/CameraDevice.h"
+#include "server.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
 namespace http = boost::beast::http;    // from <boost/beast/http.hpp>
@@ -279,6 +280,13 @@ void opeProp32(websocket::stream<tcp::socket>& ws,
 	}
 }
 
+void SendProp32(SCRSDK::CrDevicePropertyCode id)
+{
+	if(p_ws) {
+		sendProp32(*p_ws, id, false);
+	}
+}
+
 
 void do_thread_ws(void)
 {
@@ -396,6 +404,7 @@ void do_thread_ws(void)
 							} else if (cmd == "exposureProgramMode") {			opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode, ope); continue;
 							} else if (cmd == "driveMode") {					opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode, ope); continue;
 
+							} else if (cmd == "focusIndication") {				opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication, ope); continue;
 							} else {
 								std::clog << "unknown command" << std::endl;
 							}

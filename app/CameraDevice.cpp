@@ -26,6 +26,7 @@ namespace fs = std::filesystem;
 #include <thread>
 #include "CRSDK/CrDeviceProperty.h"
 #include "Text.h"
+#include "../server.h"
 
 
 #if defined(__APPLE__) || defined(__linux__)
@@ -4025,8 +4026,6 @@ void CameraDevice::OnLvPropertyChanged()
 
 void CameraDevice::OnCompleteDownload(CrChar* filename, CrInt32u type )
 {
-    void uploadFile(const wchar_t* filename);
-
     text file(filename);
     switch (type)
     {
@@ -4160,6 +4159,17 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
     //    tout << ", 0x" << codes[i];
     //}
     //tout << std::endl << std::dec;
+	for (std::int32_t i = 0; i < num; ++i)
+	{
+		auto id = static_cast<SDK::CrDevicePropertyCode>(codes[i]);
+		switch(id) {
+		case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:
+			SendProp32(id);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
@@ -4964,6 +4974,16 @@ void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
                 if (0 < nval) {
                     auto parsed_values = parse_slotx_rec_available(prop.GetValues(), nval);
                     m_prop.media_slot2_recording_available_type.possible.swap(parsed_values);
+                }
+                break;
+
+            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:
+                nval = prop.GetValueSize() / sizeof(std::uint32_t);
+                m_prop.focus_indication.writable = prop.IsSetEnableCurrentValue();
+                m_prop.focus_indication.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
+                if (0 < nval) {
+                    auto parsed_values = parse_focus_indication(prop.GetValues(), nval);
+                    m_prop.focus_indication.possible.swap(parsed_values);
                 }
                 break;
             default:
@@ -5899,6 +5919,8 @@ bool CameraDevice::execute_focus_position_cancel()
     return true;
 }
 
+/*----- for Nocode SDK -----*/
+
 bool CameraDevice::set_save_info(text prefix) const
 {
     text path = fs::current_path().native();
@@ -6036,6 +6058,7 @@ text CameraDevice::GetFormatMsg(SDK::CrDevicePropertyCode id, std::uint32_t valu
 	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:			return format_exposure_program_mode(value);
 	case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:						return format_still_capture_mode(value);
 
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:				return format_focus_indication(value);
 	default:
 		return TEXT("");
 	}
@@ -6096,6 +6119,8 @@ void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std
 	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed:					prop = m_prop.shutter_speed; break;
 	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:			prop = m_prop.exposure_program_mode; break;
 	case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:						prop = m_prop.still_capture_mode; break;
+
+	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:				prop = m_prop.focus_indication; break;
 	default:
         tout << "unknown(" << __LINE__ << ")\n";
 		break;
@@ -6104,19 +6129,22 @@ void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std
 
 void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop)
 {
-	load_properties();
+	CrInt32u code = static_cast<CrInt32u>(id);
+	load_properties(1, &code);
 	CameraDevice::_getProp(id, prop);
 }
 
 void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop)
 {
-	load_properties();
+	CrInt32u code = static_cast<CrInt32u>(id);
+	load_properties(1, &code);
 	CameraDevice::_getProp(id, prop);
 }
 
 void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop)
 {
-	load_properties();
+	CrInt32u code = static_cast<CrInt32u>(id);
+	load_properties(1, &code);
 	CameraDevice::_getProp(id, prop);
 }
 

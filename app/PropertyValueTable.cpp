@@ -708,6 +708,18 @@ std::vector<std::uint8_t> parse_slotx_rec_available(unsigned char const* buf, st
     return result;
 }
 
+std::vector<std::uint32_t> parse_focus_indication(unsigned char const* buf, std::uint32_t nval)
+{
+    using TargetType = std::uint32_t;
+    constexpr std::size_t const type_size = sizeof(TargetType);
+    TargetType const* source = reinterpret_cast<TargetType const*>(buf);
+    std::vector<TargetType> result(nval);
+    for (std::uint32_t i = 0; i < nval; ++i, ++source) {
+        MemCpyEx(&result[i], source, type_size);
+    }
+    return result;
+}
+
 text format_f_number(std::uint16_t f_number)
 {
     text_stringstream ts;
@@ -2580,5 +2592,21 @@ text format_media_slotx_rec_available(std::uint8_t rec_available)
         break;
     }
     return ts.str();
+}
+
+text format_focus_indication(std::uint32_t focus_indication)
+{
+	text mes;
+
+    switch (focus_indication) {
+	case SDK::CrFocusIndicator::CrFocusIndicator_Unlocked:				mes = TEXT("Unlocked"); break;
+	case SDK::CrFocusIndicator::CrFocusIndicator_Focused_AF_S:			mes = TEXT("Focused_AF_S"); break;
+	case SDK::CrFocusIndicator::CrFocusIndicator_NotFocused_AF_S:		mes = TEXT("NotFocused_AF_S"); break;
+	case SDK::CrFocusIndicator::CrFocusIndicator_Focused_AF_C:			mes = TEXT("Focused_AF_C"); break;
+	case SDK::CrFocusIndicator::CrFocusIndicator_NotFocused_AF_C:		mes = TEXT("NotFocused_AF_C"); break;
+	case SDK::CrFocusIndicator::CrFocusIndicator_TrackingSubject_AF_C:	mes = TEXT("TrackingSubject_AF_C"); break;
+	default: break;
+	}
+	return mes;
 }
 } // namespace cli
