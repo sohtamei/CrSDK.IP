@@ -66,6 +66,9 @@ public:
     // Release from the device
     bool release();
 
+    CrInt32u get_sshsupport();
+    SCRSDK::CrSdkControlMode get_sdkmode();
+
     /*** Shooting operations ***/
 
     void capture_image() const;
@@ -76,125 +79,41 @@ public:
     /*** Property operations ***/
     // Should be const functions, but requires load property, which is not
 
-    void get_aperture();
-    void get_iso();
-    void get_shutter_speed();
-    void get_position_key_setting();
-    void get_exposure_program_mode();
-    void get_still_capture_mode();
-    void get_focus_mode();
-    void get_focus_area();
-    void get_live_view();
-    void get_live_view_image_quality();
-    void get_af_area_position();
+  //void get_live_view();
     void get_select_media_format();
-    void get_white_balance();
     bool get_custom_wb();
     void get_zoom_operation();
-    void get_remocon_zoom_speed_type();
     bool get_aps_c_or_full_switching_setting();
     bool get_camera_setting_saveread_state();
-    bool get_playback_media();
-    bool get_gain_base_sensitivity();
-    bool get_gain_base_iso_sensitivity();
-    bool get_monitor_lut_setting();
-    bool get_exposure_index();
     bool get_baselook_value();
-    bool get_iris_mode_setting();
-    bool get_shutter_mode_setting();
-    void get_iso_current_sensitivity();
-    bool get_gain_control_setting();
-    bool get_exposure_control_type();
-    bool get_recording_setting();
-    bool get_gain_db_value();
-    bool get_shutter_speed_value();
     bool get_white_balance_tint();
     void get_media_slot_status();
     bool get_movie_rec_button_toggle_enable_status();
-    bool get_focus_bracket_shot_num();
-    bool get_focus_bracket_focus_range();
-    bool get_image_stabilization_steady_shot();
-    bool get_movie_image_stabilization_steady_shot();
-    bool get_silent_mode();
-    bool get_silent_mode_aperture_drive_in_af();
-    bool get_silent_mode_shutter_when_power_off();
-    bool get_silent_mode_auto_pixel_mapping();
-    bool get_shutter_type();
-    bool get_focus_position_setting();
 
-    void set_aperture();
-    void set_iso();
     bool set_save_info() const;
-    void set_shutter_speed();
-    void set_position_key_setting();
-    void set_exposure_program_mode();
-    void set_still_capture_mode();
-    void set_focus_mode();
-    void set_focus_area();
-    void set_live_view_image_quality();
+    void get_af_area_position();
     void set_af_area_position();
-    void set_white_balance();
-    void set_custom_wb();
-    void set_zoom_operation();
-    void set_remocon_zoom_speed_type();
-    bool set_drive_mode(CrInt64u value);
-    void execute_camera_setting_reset();
-    void set_playback_media();
-
-    void set_gain_base_iso_sensitivity();
-    void set_gain_base_sensitivity();
-    void set_monitor_lut_setting();
-    void set_exposure_index();
-    void set_baselook_value();
-    void set_iris_mode_setting();
-    void set_shutter_mode_setting();
-    void set_gain_control_setting();
-    void set_exposure_control_type();
-    void set_recording_setting();
-    void set_dispmode();
-    void set_gain_db_value();
-    void set_white_balance_tint();
-    void set_shutter_speed_value();
-    void set_focus_bracket_focus_range();
-    void set_focus_bracket_shot_num();
-    void set_movie_image_stabilization_steady_shot();
-    void set_image_stabilization_steady_shot();
-    void set_silent_mode();
-    void set_silent_mode_aperture_drive_in_af();
-    void set_silent_mode_shutter_when_power_off();
-    void set_silent_mode_auto_pixel_mapping();
-    void set_shutter_type();
-    void set_focus_position_setting();
-
-    void execute_lock_property(CrInt16u code);
     void set_select_media_format();
     void execute_movie_rec();
+
+    void set_custom_wb();
+    void set_zoom_operation();
+    bool set_drive_mode(CrInt64u value);
+    void execute_camera_setting_reset();
+    void set_baselook_value();
     void execute_downup_property(CrInt16u code);
     void execute_pos_xy(CrInt16u code);
-    void change_live_view_enable();
-    bool is_live_view_enable() { return m_lvEnbSet; };
+
     void execute_preset_focus();
     void execute_APS_C_or_Full();
     void execute_movie_rec_toggle();
+    void execute_focus_bracket();
     void do_download_camera_setting_file();
     void do_upload_camera_setting_file();
+    void getFileNames(std::vector<text> &file_names);
 
-    void execute_request_displaystringlist();
-    void execute_get_displaystringtypes();
-    void execute_get_displaystringlist();
-    void execute_focus_bracket();
-    bool execute_focus_position_cancel();
-
-    void get_mediaprofile();
-
-    bool get_movie_shooting_mode();
-    void set_movie_shooting_mode();
-
-    void format_focus_position_value(uint16_t value);
-
-    std::int32_t get_number() { return m_number; }
-    text get_model() { return text(m_info->GetModel()); }
-    text get_id();
+    bool is_live_view_enable() { return m_lvEnbSet; };
+    void change_live_view_enable();
 
     // Check if this device is connected
     bool is_connected() const;
@@ -202,16 +121,10 @@ public:
     text ip_address_fmt() const;
     text mac_address() const;
     std::int16_t pid() const;
+    text get_id();
 
-    void getContentsList();
-    void getFileNames(std::vector<text> &file_names);
-    void pullContents(SCRSDK::CrContentHandle content);
-    void getScreennail(SCRSDK::CrContentHandle content);
-    void getThumbnail(SCRSDK::CrContentHandle content);
-
-    SCRSDK::CrSdkControlMode get_sdkmode();
-
-    CrInt32u get_sshsupport();
+    std::int32_t get_number() { return m_number; }
+    text get_model() { return text(m_info->GetModel()); }
     bool is_getfingerprint() { return !m_fingerprint.empty(); };
     bool is_setpassword() { return !m_userPassword.empty(); };
 
@@ -230,11 +143,22 @@ public:
     virtual void OnNotifyContentsTransfer(CrInt32u notify, SCRSDK::CrContentHandle contentHandle, CrChar* filename) override;
     void load_properties(CrInt32u num = 0, CrInt32u* codes = nullptr);
 
-private:
-    void get_property(SCRSDK::CrDeviceProperty& prop) const;
-    bool set_property(SCRSDK::CrDeviceProperty& prop) const;
-    text format_dispstrlist(SCRSDK::CrDisplayStringListInfo list);
+public:
+    void getContentsList();
+    void pullContents(SCRSDK::CrContentHandle content);
+    void getScreennail(SCRSDK::CrContentHandle content);
+    void getThumbnail(SCRSDK::CrContentHandle content);
+
     text format_display_string_type(SCRSDK::CrDisplayStringType type);
+    void execute_request_displaystringlist();
+    void execute_get_displaystringtypes();
+    void execute_get_displaystringlist();
+    text format_dispstrlist(SCRSDK::CrDisplayStringListInfo list);
+
+    void get_mediaprofile();
+    bool get_focus_position_setting();
+    void set_focus_position_setting();
+    bool execute_focus_position_cancel();
 
 private:
     std::int32_t m_number;
@@ -256,23 +180,26 @@ private:
     std::string m_fingerprint;
     std::string m_userPassword;
 
-private:
-	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
-	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
-	void _getProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
-
 public:
 	bool set_save_info(text prefix) const;
 
 	std::int32_t get_live_view(uint8_t* buf[]);
 
-	text GetFormatMsg(SCRSDK::CrDevicePropertyCode id, std::uint32_t value);
-	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop);
-	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop);
-	void GetProp(SCRSDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop);
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint8_t value);
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint16_t value);
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, uint32_t value);
+	SCRSDK::CrDevicePropertyCode Prop_tag2id(std::string tag) const;
+
+	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint32_t value) const;
+
+void parse_para(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
+
+std::vector<std::uint32_t> parse_para(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint32_t> parse_int8(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint32_t> parse_uint8(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint32_t> parse_int16(unsigned char const* buf, std::int32_t nval);
+std::vector<std::uint32_t> parse_uint16(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint32_t> parse_uint32(unsigned char const* buf, std::uint32_t nval);
+std::vector<std::uint64_t> parse_uint64(unsigned char const* buf, std::uint32_t nval);
+
 };
 } // namespace cli
 

@@ -6,6 +6,7 @@
 // Windows Header Files:
 #include <windows.h>
 #include <memory>
+#include <map>
 
 // TODO: reference additional headers your program requires here
 #pragma warning (push)
@@ -82,6 +83,105 @@ constexpr int const ImageSaveAutoStartNo = -1;
 
 namespace cli
 {
+
+using PCode = SDK::CrDevicePropertyCode;
+
+//(.*)\t(.*)\t(.*)\t(.*)\t(.*)\t(.*)
+//	{ PCode::CrDeviceProperty_\2,	{ -1, SDK::CrDataType::CrDataType_\4, Possible\5, "\1",		format_\6, } },
+//Prop.at(PCode::CrDeviceProperty_FNumber)
+
+//LensModelName		m_prop.lensModelNameStr
+//shutter_speed_value	m_prop.shutter_speed_values
+//CrDeviceProperty_ContentsTransferStatus
+//CrDeviceProperty_LensModelName
+//CrDeviceProperty_Media_FormatProgressRate
+//CrDeviceProperty_ShutterSpeedValue
+
+
+std::map<PCode, struct PropertyValue> Prop {
+	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "aps_c_or_Full_SwitchingEnableStatus",		format_aps_c_or_full_switching_enable_status, } },
+	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "aps_c_or_Full_SwitchingSetting",		format_aps_c_or_full_switching_setting, } },
+	{ PCode::CrDeviceProperty_BaseLookValue,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "baseLookValue",		format_baselook_value, } },
+	{ PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSetting_ReadOperationEnableStatus",		format_camera_setting_read_operation, } },
+	{ PCode::CrDeviceProperty_CameraSettingsResetEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSettingsResetEnableStatus",		format_camera_setting_reset_enable_status, } },
+	{ PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSetting_SaveOperationEnableStatus",		format_camera_setting_save_operation, } },
+	{ PCode::CrDeviceProperty_CameraSetting_SaveRead_State,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSetting_SaveRead_State",		format_camera_setting_save_read_state, } },
+	{ PCode::CrDeviceProperty_CustomWB_Execution_State,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Execution_State",		format_customwb_capture_execution_state, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Operation,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Capture_Operation",		format_customwb_capture_operation, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Capture_Standby",		format_customwb_capture_standby, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Capture_Standby_Cancel",		format_customwb_capture_standby_cancel, } },
+	{ PCode::CrDeviceProperty_DispMode,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "dispMode",		format_dispmode, } },
+	{ PCode::CrDeviceProperty_ExposureCtrlType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "exposureCtrlType",		format_exposure_control_type, } },
+	{ PCode::CrDeviceProperty_ExposureProgramMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "exposureProgramMode",		format_exposure_program_mode, } },
+	{ PCode::CrDeviceProperty_FNumber,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "aperture",		format_f_number, } },
+	{ PCode::CrDeviceProperty_FocusArea,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "focusArea",		format_focus_area, } },
+	{ PCode::CrDeviceProperty_FocusDrivingStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "focusDrivingStatus",		format_focus_driving_status, } },
+	{ PCode::CrDeviceProperty_FocusIndication,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "focusIndication",		format_focus_indication, } },
+	{ PCode::CrDeviceProperty_FocusMode,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "focusMode",		format_focus_mode, } },
+	{ PCode::CrDeviceProperty_FocusPositionCurrentValue,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "focusPositionCurrentValue",		format_focus_position_value, } },
+	{ PCode::CrDeviceProperty_GainBaseIsoSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "gainBaseIsoSensitivity",		format_gain_base_iso_sensitivity, } },
+	{ PCode::CrDeviceProperty_GainBaseSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "gainBaseSensitivity",		format_gain_base_sensitivity, } },
+	{ PCode::CrDeviceProperty_GainControlSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "gainControlSetting",		format_gain_control_setting, } },
+	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShot,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "imageStabilizationSteadyShot",		format_image_stabilization_steady_shot, } },
+	{ PCode::CrDeviceProperty_IrisModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "irisModeSetting",		format_iris_mode_setting, } },
+	{ PCode::CrDeviceProperty_IsoSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "iso",		format_iso_sensitivity, } },
+	{ PCode::CrDeviceProperty_IsoCurrentSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "isoCurrentSensitivity",		format_iso_sensitivity, } },
+	{ PCode::CrDeviceProperty_LiveView_Image_Quality,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "liveView_Image_Quality",		format_live_view_image_quality, } },
+	{ PCode::CrDeviceProperty_S1,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "S1",		format_lock_indicator, } },
+	{ PCode::CrDeviceProperty_FEL,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "FEL",		format_lock_indicator, } },
+	{ PCode::CrDeviceProperty_AWBL,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "AWBL",		format_lock_indicator, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT1_FormatEnableStatus",		format_media_slotx_format_enable_status, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT1_QuickFormatEnableStatus",		format_media_slotx_format_enable_status, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT2_FormatEnableStatus",		format_media_slotx_format_enable_status, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT2_QuickFormatEnableStatus",		format_media_slotx_format_enable_status, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT1_RecordingAvailableType",		format_media_slotx_rec_available, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT2_RecordingAvailableType",		format_media_slotx_rec_available, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_Status,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "mediaSLOT1_Status",		format_media_slotx_status, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_Status,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "mediaSLOT2_Status",		format_media_slotx_status, } },
+	{ PCode::CrDeviceProperty_MonitorLUTSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "monitorLUTSetting",		format_monitor_lut_setting, } },
+	{ PCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "movie_ImageStabilizationSteadyShot",		format_movie_image_stabilization_steady_shot, } },
+	{ PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "movieRecButtonToggleEnableStatus",		format_movie_rec_button_toggle_enable_status, } },
+	{ PCode::CrDeviceProperty_MovieShootingMode,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "movieShootingMode",		format_movie_shooting_mode, } },
+	{ PCode::CrDeviceProperty_DispModeCandidate,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "dispModeCandidate",		format_number, } },
+	{ PCode::CrDeviceProperty_DispModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "dispModeSetting",		format_number, } },
+	{ PCode::CrDeviceProperty_ExposureIndex,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "exposureIndex",		format_number, } },
+	{ PCode::CrDeviceProperty_ZoomDistance,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleRange, "zoomDistance",		format_number, } },
+	{ PCode::CrDeviceProperty_WhiteBalanceTint,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "whiteBalanceTint",		format_number, } },
+	{ PCode::CrDeviceProperty_WhiteBalanceTintStep,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleRange, "whiteBalanceTintStep",		format_number, } },
+	{ PCode::CrDeviceProperty_GaindBValue,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "gaindBValue",		format_number, } },
+	{ PCode::CrDeviceProperty_FocusBracketShotNumber,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleRange, "focusBracketShotNumber",		format_number, } },
+	{ PCode::CrDeviceProperty_FocusBracketFocusRange,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "focusBracketFocusRange",		format_number, } },
+	{ PCode::CrDeviceProperty_FocusPositionSetting,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleRange, "focusPositionSetting",		format_number, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleNone, "customWB_Capture",		format_number, } },
+	{ PCode::CrDeviceProperty_AF_Area_Position,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleNone, "af_Area_Position",		format_number, } },
+	{ PCode::CrDeviceProperty_Zoom_Bar_Information,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleNone, "zoom_Bar_Information",		format_number, } },
+	{ PCode::CrDeviceProperty_Zoom_Speed_Range,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "zoom_Speed_Range",		format_number, } },
+	{ PCode::CrDeviceProperty_Zoom_Operation,	{ -1, SDK::CrDataType::CrDataType_Int8, PossibleRange, "zoom_Operation",		format_number, } },
+	{ PCode::CrDeviceProperty_PlaybackMedia,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "playbackMedia",		format_playback_media, } },
+	{ PCode::CrDeviceProperty_PriorityKeySettings,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "priorityKeySettings",		format_position_key_setting, } },
+	{ PCode::CrDeviceProperty_Movie_Recording_Setting,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "movie_Recording_Setting",		format_recording_setting, } },
+	{ PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "remocon_Zoom_Speed_Type",		format_remocon_zoom_speed_type, } },
+	{ PCode::CrDeviceProperty_SdkControlMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "sdkControlMode",		format_SdkControlMode, } },
+	{ PCode::CrDeviceProperty_ShutterModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "shutterModeSetting",		format_shutter_mode_setting, } },
+	{ PCode::CrDeviceProperty_ShutterSpeed,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "shutterSpeed",		format_shutter_speed, } },
+//	{ PCode::CrDeviceProperty_ShutterSpeedValue,	{ -1, SDK::CrDataType::CrDataType_UInt64, PossibleList, "shutterSpeedValue",		format_shutter_speed_value, } },
+	{ PCode::CrDeviceProperty_ShutterType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "shutterType",		format_shutter_type, } },
+	{ PCode::CrDeviceProperty_SilentMode,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentMode",		format_silent_mode, } },
+	{ PCode::CrDeviceProperty_SilentModeApertureDriveInAF,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentModeApertureDriveInAF",		format_silent_mode_aperture_drive_in_af, } },
+	{ PCode::CrDeviceProperty_SilentModeAutoPixelMapping,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentModeAutoPixelMapping",		format_silent_mode_auto_pixel_mapping, } },
+	{ PCode::CrDeviceProperty_SilentModeShutterWhenPowerOff,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentModeShutterWhenPowerOff",		format_silent_mode_shutter_when_power_off, } },
+	{ PCode::CrDeviceProperty_DriveMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "driveMode",		format_still_capture_mode, } },
+	{ PCode::CrDeviceProperty_WhiteBalance,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "whiteBalance",		format_white_balance, } },
+	{ PCode::CrDeviceProperty_Zoom_Operation_Status,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoom_Operation_Status",		format_zoom_operation_status, } },
+	{ PCode::CrDeviceProperty_Zoom_Setting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoom_Setting",		format_zoom_setting_type, } },
+	{ PCode::CrDeviceProperty_Zoom_Type_Status,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoom_Type_Status",		format_zoom_types_status, } },
+
+	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Save,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoomAndFocusPosition_Save",		format_number, } },
+	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Load,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoomAndFocusPosition_Load",		format_number, } },
+
+};
+
+
 CameraDevice::CameraDevice(std::int32_t no, SCRSDK::ICrCameraObjectInfo const* camera_info)
     : m_number(no)
     , m_device_handle(0)
@@ -286,75 +386,37 @@ SCRSDK::CrSdkControlMode CameraDevice::get_sdkmode()
 void CameraDevice::capture_image() const
 {
     tout << "Capture image...\n";
-    tout << "Shutter down\n";
+    tout << "Shutter down&up\n";
     SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam_Down);
-
-    // Wait, then send shutter up
     std::this_thread::sleep_for(35ms);
-    tout << "Shutter up\n";
     SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam_Up);
 }
 
 void CameraDevice::s1_shooting() const
 {
-/*
-    text input;
-    tout << "Is the focus mode set to AF? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Set the focus mode to AF\n";
-        return;
-    }
-*/
     tout << "S1 shooting...\n";
     tout << "Shutter Half Press down\n";
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_S1);
-    prop.SetCurrentValue(SDK::CrLockIndicator::CrLockIndicator_Locked);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-
-    // Wait, then send shutter up
+    SetProp(PCode::CrDeviceProperty_S1, (std::uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
     std::this_thread::sleep_for(1s);
     tout << "Shutter Half Press up\n";
-    prop.SetCurrentValue(SDK::CrLockIndicator::CrLockIndicator_Unlocked);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
+    SetProp(PCode::CrDeviceProperty_S1, (std::uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
 }
 
 void CameraDevice::af_shutter(std::uint32_t delay_ms) const
 {
-/*
-    text input;
-    tout << "Is the focus mode set to AF? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Set the focus mode to AF\n";
-        return;
-    }
-*/
     tout << "S1 shooting...\n";
     tout << "Shutter Half Press down\n";
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_S1);
-    prop.SetCurrentValue(SDK::CrLockIndicator::CrLockIndicator_Locked);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
+    SetProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
 
-    // Wait, then send shutter down
     std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
-    tout << "Shutter down\n";
+    tout << "Shutter down&up\n";
     SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
-
-    // Wait, then send shutter up
     std::this_thread::sleep_for(35ms);
-    tout << "Shutter up\n";
     SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Up);
 
-    // Wait, then send shutter up
     std::this_thread::sleep_for(1s);
     tout << "Shutter Half Press up\n";
-    prop.SetCurrentValue(SDK::CrLockIndicator::CrLockIndicator_Unlocked);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
+    SetProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
 }
 
 void CameraDevice::continuous_shooting()
@@ -362,32 +424,27 @@ void CameraDevice::continuous_shooting()
     load_properties();
     tout << "Capture image...\n";
     tout << "Continuous Shooting\n";
-    if (1 == m_prop.position_key_setting.writable) {
-        // Set, PriorityKeySettings property
-        SDK::CrDeviceProperty priority;
-        priority.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings);
-        priority.SetCurrentValue(SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
-        priority.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-        auto err_priority = SDK::SetDeviceProperty(m_device_handle, &priority);
-        if (CR_FAILED(err_priority)) {
+    if (1 == Prop.at(PCode::CrDeviceProperty_PriorityKeySettings).writable) {
+        auto err = SetProp(PCode::CrDeviceProperty_PriorityKeySettings, SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
+        if (CR_FAILED(err)) {
             tout << "Priority Key setting FAILED\n";
             return;
         }
         std::this_thread::sleep_for(500ms);
-        get_position_key_setting();
+        load_properties();
     }
 
     // Set, still_capture_mode property
-    SDK::CrDeviceProperty mode;
-    auto& values = m_prop.still_capture_mode.possible;
-    mode.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode);
+    SDK::CrDeviceProperty devProp;
+    auto& values = Prop.at(PCode::CrDeviceProperty_DriveMode).possible;
+    devProp.SetCode(PCode::CrDeviceProperty_DriveMode);
     if (find(values.begin(), values.end(), SDK::CrDriveMode::CrDrive_Continuous_Hi) != values.end()) {
-        mode.SetCurrentValue(SDK::CrDriveMode::CrDrive_Continuous_Hi);
+        devProp.SetCurrentValue(SDK::CrDriveMode::CrDrive_Continuous_Hi);
     }
     else if (find(values.begin(), values.end(), SDK::CrDriveMode::CrDrive_Continuous) != values.end()) {
-        mode.SetCurrentValue(SDK::CrDriveMode::CrDrive_Continuous);
+        devProp.SetCurrentValue(SDK::CrDriveMode::CrDrive_Continuous);
     }
-    else if (1 == m_prop.still_capture_mode.writable) {
+    else if (1 == Prop.at(PCode::CrDeviceProperty_DriveMode).writable) {
         tout << "Continuous Shot hi or Continuous Shot is not supported.\n";
         return;
     }
@@ -395,19 +452,18 @@ void CameraDevice::continuous_shooting()
         tout << "Still Capture Mode setting is not writable.\n";
         return;
     }
-    mode.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-    auto err_still_capture_mode = SDK::SetDeviceProperty(m_device_handle, &mode);
+    devProp.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+    auto err_still_capture_mode = SDK::SetDeviceProperty(m_device_handle, &devProp);
     if (CR_FAILED(err_still_capture_mode)) {
         tout << "Still Capture Mode setting FAILED\n";
         return;
     }
 
-    // get_still_capture_mode();
     std::this_thread::sleep_for(1s);
-    get_still_capture_mode();
+    load_properties();
 
-	if ((m_prop.still_capture_mode.current == SDK::CrDriveMode::CrDrive_Continuous_Hi)||
-		(m_prop.still_capture_mode.current == SDK::CrDriveMode::CrDrive_Continuous)){
+	if ((Prop.at(PCode::CrDeviceProperty_DriveMode).current == SDK::CrDriveMode::CrDrive_Continuous_Hi)||
+		(Prop.at(PCode::CrDeviceProperty_DriveMode).current == SDK::CrDriveMode::CrDrive_Continuous)){
         tout << "Still Capture Mode setting SUCCESS\n";
         tout << "Shutter down\n";
         SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
@@ -422,55 +478,7 @@ void CameraDevice::continuous_shooting()
     }
 }
 
-void CameraDevice::get_aperture()
-{
-    load_properties();
-    tout << format_f_number(m_prop.f_number.current) << '\n';
-}
-
-void CameraDevice::get_iso()
-{
-    load_properties();
-
-    tout << "ISO: " << format_iso_sensitivity(m_prop.iso_sensitivity.current) << '\n';
-}
-
-void CameraDevice::get_shutter_speed()
-{
-    load_properties();
-    tout << "Shutter speed: " << format_shutter_speed(m_prop.shutter_speed.current) << '\n';
-}
-
-void CameraDevice::get_position_key_setting()
-{
-    load_properties();
-    tout << "Position Key Setting: " << format_position_key_setting(m_prop.position_key_setting.current) << '\n';
-}
-
-void CameraDevice::get_exposure_program_mode()
-{
-    load_properties();
-    tout << "Exposure Program Mode: " << format_exposure_program_mode(m_prop.exposure_program_mode.current) << '\n';
-}
-
-void CameraDevice::get_still_capture_mode()
-{
-    load_properties();
-    tout << "Still Capture Mode: " << format_still_capture_mode(m_prop.still_capture_mode.current) << '\n';
-}
-
-void CameraDevice::get_focus_mode()
-{
-    load_properties();
-    tout << "Focus Mode: " << format_focus_mode(m_prop.focus_mode.current) << '\n';
-}
-
-void CameraDevice::get_focus_area()
-{
-    load_properties();
-    tout << "Focus Area: " << format_focus_area(m_prop.focus_area.current) << '\n';
-}
-
+#if 0
 void CameraDevice::get_live_view()
 {
     tout << "GetLiveView...\n";
@@ -577,40 +585,28 @@ void CameraDevice::get_live_view()
         }
     }
 }
-
-void CameraDevice::get_live_view_image_quality()
-{
-    load_properties();
-    tout << "Live View Image Quality: " << format_live_view_image_quality(m_prop.live_view_image_quality.current) << '\n';
-}
-
+#endif
 void CameraDevice::get_select_media_format()
 {
     load_properties();
-    tout << "Media SLOT1 Full Format Enable Status: " << format_media_slotx_format_enable_status(m_prop.media_slot1_full_format_enable_status.current) << std::endl;
-    tout << "Media SLOT2 Full Format Enable Status: " << format_media_slotx_format_enable_status(m_prop.media_slot2_full_format_enable_status.current) << std::endl;
+    tout << "Media SLOT1 Full Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus).current) << std::endl;
+    tout << "Media SLOT2 Full Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus).current) << std::endl;
     // Valid Quick format
-    if (-1 != m_prop.media_slot1_quick_format_enable_status.writable || -1 != m_prop.media_slot2_quick_format_enable_status.writable){
-        tout << "Media SLOT1 Quick Format Enable Status: " << format_media_slotx_format_enable_status(m_prop.media_slot1_quick_format_enable_status.current) << std::endl;
-        tout << "Media SLOT2 Quick Format Enable Status: " << format_media_slotx_format_enable_status(m_prop.media_slot2_quick_format_enable_status.current) << std::endl;
+    if (-1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).writable || -1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).writable){
+        tout << "Media SLOT1 Quick Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).current) << std::endl;
+        tout << "Media SLOT2 Quick Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).current) << std::endl;
     }
-}
-
-void CameraDevice::get_white_balance()
-{
-    load_properties();
-    tout << "White Balance: " << format_white_balance(m_prop.white_balance.current) << '\n';
 }
 
 bool CameraDevice::get_custom_wb()
 {
     bool state = false;
     load_properties();
-    tout << "CustomWB Capture Standby Operation: " << format_customwb_capture_standby(m_prop.customwb_capture_standby.current) << '\n';
-    tout << "CustomWB Capture Standby CancelOperation: " << format_customwb_capture_standby_cancel(m_prop.customwb_capture_standby_cancel.current) << '\n';
-    tout << "CustomWB Capture Operation: " << format_customwb_capture_operation(m_prop.customwb_capture_operation.current) << '\n';
-    tout << "CustomWB Capture Execution State: " << format_customwb_capture_execution_state(m_prop.customwb_capture_execution_state.current) << '\n';
-    if (m_prop.customwb_capture_operation.current == 1) {
+    tout << "CustomWB Capture Standby Operation: " << format_customwb_capture_standby(Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Standby).current) << '\n';
+    tout << "CustomWB Capture Standby CancelOperation: " << format_customwb_capture_standby_cancel(Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel).current) << '\n';
+    tout << "CustomWB Capture Operation: " << format_customwb_capture_operation(Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Operation).current) << '\n';
+    tout << "CustomWB Capture Execution State: " << format_customwb_capture_execution_state(Prop.at(PCode::CrDeviceProperty_CustomWB_Execution_State).current) << '\n';
+    if (Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Operation).current == 1) {
         state = true;
     }
     return state;
@@ -619,28 +615,28 @@ bool CameraDevice::get_custom_wb()
 void CameraDevice::get_zoom_operation()
 {
     load_properties();
-    tout << "Zoom Operation Status: " << format_zoom_operation_status(m_prop.zoom_operation_status.current) << '\n';
-    if (m_prop.zoom_setting_type.current > 0) {
-        tout << "Zoom Setting Type    : " << format_zoom_setting_type(m_prop.zoom_setting_type.current) << '\n';
+    tout << "Zoom Operation Status: " << format_zoom_operation_status(Prop.at(PCode::CrDeviceProperty_Zoom_Operation_Status).current) << '\n';
+    if (Prop.at(PCode::CrDeviceProperty_Zoom_Setting).current > 0) {
+        tout << "Zoom Setting Type    : " << format_zoom_setting_type(Prop.at(PCode::CrDeviceProperty_Zoom_Setting).current) << '\n';
     }
-    if (m_prop.zoom_types_status.current > 0) {
-        tout << "Zoom Type Status     : " << format_zoom_types_status(m_prop.zoom_types_status.current) << '\n';
+    if (Prop.at(PCode::CrDeviceProperty_Zoom_Type_Status).current > 0) {
+        tout << "Zoom Type Status     : " << format_zoom_types_status(Prop.at(PCode::CrDeviceProperty_Zoom_Type_Status).current) << '\n';
     }
 
     // Zoom Speed Range is not supported
-    if (m_prop.zoom_speed_range.possible.size() < 2) {
+    if (Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.size() < 2) {
         tout << "Zoom Speed Range     : -1 to 1" << std::endl 
-             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
+             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(Prop.at(PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type).current) << std::endl;
     }
     else {
-        tout << "Zoom Speed Range     : " << (int)m_prop.zoom_speed_range.possible.at(0) << " to " << (int)m_prop.zoom_speed_range.possible.at(1) << std::endl
-             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << std::endl;
+        tout << "Zoom Speed Range     : " << (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(0) << " to " << (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(1) << std::endl
+             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(Prop.at(PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type).current) << std::endl;
     }
 
     // Zoom Bar Information
     std::int32_t nprop = 0;
     SDK::CrDeviceProperty* prop_list = nullptr;
-    CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Bar_Information;
+    CrInt32u getCode = PCode::CrDeviceProperty_Zoom_Bar_Information;
     auto status = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &prop_list, &nprop);
     if (CR_FAILED(status)) {
         tout << "Failed to get Zoom Bar Information.\n";
@@ -648,7 +644,7 @@ void CameraDevice::get_zoom_operation()
     }
     if (prop_list && 0 < nprop) {
         auto prop = prop_list[0];
-        if (SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Bar_Information == prop.GetCode())
+        if (PCode::CrDeviceProperty_Zoom_Bar_Information == prop.GetCode())
         {
             tout << "Zoom Bar Information : 0x" << std::hex << prop.GetCurrentValue() << std::dec << '\n';
         }
@@ -656,14 +652,14 @@ void CameraDevice::get_zoom_operation()
     }
 
     // Zoom Distance
-    if (-1 == m_prop.zoom_distance.writable) {
+    if (-1 == Prop.at(PCode::CrDeviceProperty_ZoomDistance).writable) {
         tout << "Zoom Distance is not supported.\n";
     }
     else {
-        tout << "Zoom Distance Current Value : " << m_prop.zoom_distance.current << std::endl;
-        tout << "Zoom Distance min    : " << m_prop.zoom_distance.possible.at(0) << std::endl;
-        tout << "Zoom Distance max    : " << m_prop.zoom_distance.possible.at(1) << std::endl;
-        tout << "Zoom Distance step   : " << m_prop.zoom_distance.possible.at(2) << std::endl;
+        tout << "Zoom Distance Current Value : " << Prop.at(PCode::CrDeviceProperty_ZoomDistance).current << std::endl;
+        tout << "Zoom Distance min    : " << Prop.at(PCode::CrDeviceProperty_ZoomDistance).possible.at(0) << std::endl;
+        tout << "Zoom Distance max    : " << Prop.at(PCode::CrDeviceProperty_ZoomDistance).possible.at(1) << std::endl;
+        tout << "Zoom Distance step   : " << Prop.at(PCode::CrDeviceProperty_ZoomDistance).possible.at(2) << std::endl;
     }
 
     // Lens Model Name
@@ -680,96 +676,34 @@ void CameraDevice::get_zoom_operation()
     }
 }
 
-void CameraDevice::get_remocon_zoom_speed_type()
-{
-    load_properties();
-    tout << "Zoom Speed Type: " << format_remocon_zoom_speed_type(m_prop.remocon_zoom_speed_type.current) << '\n';
-}
-
 bool CameraDevice::get_aps_c_or_full_switching_setting()
 {
     load_properties();
-    if (m_prop.aps_c_of_full_switching_setting.current < SDK::CrAPS_C_or_Full_SwitchingSetting::CrAPS_C_or_Full_SwitchingSetting_Full)
+    if (Prop.at(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting).current < SDK::CrAPS_C_or_Full_SwitchingSetting::CrAPS_C_or_Full_SwitchingSetting_Full)
     {
         tout << "APS-C/FULL Switching Setting is not supported\n";
         return false;
     }
-    tout << "APS-C/FULL Switching Enable Status: " << format_aps_c_or_full_switching_enable_status(m_prop.aps_c_of_full_switching_enable_status.current) << '\n';
-    tout << "APS-C/FULL Switching Setting: " << format_aps_c_or_full_switching_setting(m_prop.aps_c_of_full_switching_setting.current) << '\n';
+    tout << "APS-C/FULL Switching Enable Status: " << format_aps_c_or_full_switching_enable_status(Prop.at(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus).current) << '\n';
+    tout << "APS-C/FULL Switching Setting: " << format_aps_c_or_full_switching_setting(Prop.at(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting).current) << '\n';
     return true;
 }
 
 bool CameraDevice::get_camera_setting_saveread_state()
 {
     load_properties();
-    if (m_prop.camera_setting_save_read_state.current == SDK::CrCameraSettingSaveReadState::CrCameraSettingSaveReadState_Reading) {
+    if (Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveRead_State).current == SDK::CrCameraSettingSaveReadState::CrCameraSettingSaveReadState_Reading) {
         tout << "Unable to download/upload Camera-Setting file. \n";
         return false;
     }
-    tout << "Camera-Setting Save/Read State: " << format_camera_setting_save_read_state(m_prop.camera_setting_save_read_state.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_playback_media()
-{
-    load_properties();
-    if (m_prop.playback_media.possible.size() < 1) {
-        tout << "Playback Media is not supported\n";
-        return false;
-    }
-    tout << "Playback Media: " << format_playback_media(m_prop.playback_media.current) << '\n';
-    return true;
-}
-
-
-bool CameraDevice::get_gain_base_sensitivity()
-{
-    load_properties();
-    if (m_prop.gain_base_sensitivity.possible.size() < 1) {
-        tout << "Gain Base Sensitivity is not supported\n";
-        return false;
-    }
-    tout << "Gain Base: " << format_gain_base_sensitivity(m_prop.gain_base_sensitivity.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_gain_base_iso_sensitivity()
-{
-    load_properties();
-    if (m_prop.gain_base_iso_sensitivity.possible.size() < 1){
-        tout << "Gain Base ISO Sensitivity is not supported \n";
-        return false;
-    }
-    tout << "Gain Base ISO: " << format_gain_base_iso_sensitivity(m_prop.gain_base_iso_sensitivity.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_monitor_lut_setting()
-{
-    load_properties();
-    if (m_prop.monitor_lut_setting.possible.size() < 1) {
-        tout << "Monitor LUT Setting is not supported \n";
-        return false;
-    }
-    tout << "Monitor LUT Setting: " << format_monitor_lut_setting(m_prop.monitor_lut_setting.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_exposure_index()
-{
-    load_properties();
-    if (m_prop.exposure_index.possible.size() < 1) {
-        tout << "Exposure Index is not supported \n";
-        return false;
-    }
-    tout << "Exposure Index: " << m_prop.exposure_index.current << '\n';
+    tout << "Camera-Setting Save/Read State: " << format_camera_setting_save_read_state(Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveRead_State).current) << '\n';
     return true;
 }
 
 bool CameraDevice::get_baselook_value()
 {
     load_properties();
-    if (m_prop.baselook_value.possible.size() < 1) {
+    if (Prop.at(PCode::CrDeviceProperty_BaseLookValue).possible.size() < 1) {
         tout << "BaseLook Value is not supported \n";
         return false;
     }
@@ -784,7 +718,7 @@ bool CameraDevice::get_baselook_value()
 
     if (CR_SUCCEEDED(err) && numOfList >0) {
         for (int i = 0; i < numOfList; ++i) {
-            if (pProperty[i].value == m_prop.baselook_value.current) {
+            if (pProperty[i].value == Prop.at(PCode::CrDeviceProperty_BaseLookValue).current) {
                 tout << "BaseLook Value: " << format_dispstrlist(pProperty[i]) << '\n';
                 break;
             }
@@ -792,117 +726,30 @@ bool CameraDevice::get_baselook_value()
         ReleaseDisplayStringList(m_device_handle, pProperty);
     }
     else {
-        CrInt8u valHI = (m_prop.baselook_value.current >>8 ) & 0x01;
-        CrInt8u valLO = m_prop.baselook_value.current & 0xFF;
+        CrInt8u valHI = (Prop.at(PCode::CrDeviceProperty_BaseLookValue).current >>8 ) & 0x01;
+        CrInt8u valLO = Prop.at(PCode::CrDeviceProperty_BaseLookValue).current & 0xFF;
         tout << "BaseLook Value: Index" << (int)valLO << " " << format_baselook_value(valHI) << '\n';
     }
 
     return true;
 }
 
-bool CameraDevice::get_iris_mode_setting()
-{
-    load_properties();
-    if (m_prop.iris_mode_setting.possible.size() < 1) {
-        tout << "Iris Mode Setting is not supported \n";
-        return false;
-    }
-    tout << "Iris Mode Setting: " << format_iris_mode_setting(m_prop.iris_mode_setting.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_shutter_mode_setting()
-{
-    load_properties();
-    if (m_prop.shutter_mode_setting.possible.size() < 1) {
-        tout << "Shutter Mode Setting is not supported \n";
-        return false;
-    }
-    tout << "Shutter Mode Setting: " << format_shutter_mode_setting(m_prop.shutter_mode_setting.current) << '\n';
-    return true;
-}
-
-void CameraDevice::get_iso_current_sensitivity()
-{
-    load_properties();
-    if (m_prop.iso_current_sensitivity.current == 0) {
-        tout << "ISO Current Sensitivity is not supported. \n";
-        return;
-    }
-    tout << "ISO Current Sensitivity: " << format_iso_sensitivity(m_prop.iso_current_sensitivity.current) << '\n';
-}
-
-bool CameraDevice::get_exposure_control_type()
-{
-    load_properties();
-    if (m_prop.exposure_control_type.possible.size() < 1) {
-        tout << "Exposure Control Type is not supported.\n";
-        return false;
-    }
-    tout << "Exposure Control Type: " << format_exposure_control_type(m_prop.exposure_control_type.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_gain_control_setting()
-{
-    load_properties();
-    if (m_prop.gain_control_setting.possible.size() < 1) {
-        tout << "Gain Control Setting is not supported.\n";
-        return false;
-    }
-    tout << "Gain Control Setting: " << format_gain_control_setting(m_prop.gain_control_setting.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_recording_setting()
-{
-    load_properties();
-    if (m_prop.recording_setting.possible.size() < 1) {
-        tout << "Recording Setting is not supported.\n";
-        return false;
-    }
-    tout << "Recording Setting: " << format_recording_setting(m_prop.recording_setting.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_gain_db_value()
-{
-    load_properties();
-    if (m_prop.gain_db_value.possible.size() < 1) {
-        tout << "Gain dB Value is not supported.\n";
-        return false;
-    }
-    tout << "Gain dB current value: " << (int)m_prop.gain_db_value.current << "dB\n";
-    return true;
-}
-
-bool CameraDevice::get_shutter_speed_value()
-{
-    load_properties();
-    if (m_prop.shutter_speed_value.possible.size() < 1) {
-        tout << "Shutter Speed Value is not supported.\n";
-        return false;
-    }
-    tout << "Shutter speed value: " << format_shutter_speed_value(m_prop.shutter_speed_value.current) << '\n';
-    return true;
-}
-
 bool CameraDevice::get_white_balance_tint()
 {
     load_properties();
-    if (m_prop.white_balance_tint.possible.size() < 1)
+    if (Prop.at(PCode::CrDeviceProperty_WhiteBalanceTint).possible.size() < 1)
     {
         tout << "White Balance Tint is not supported.\n";
         return false;
     }
-    if (m_prop.white_balance_tint_step.possible.size() < 1)
+    if (Prop.at(PCode::CrDeviceProperty_WhiteBalanceTintStep).possible.size() < 1)
     {
         tout << "White Balance Tint Step is not supported.\n";
         return false;
     }
-    tout << "White Balance Tint CurrentValue: " << (int)m_prop.white_balance_tint.current << '\n';
-    tout << "White Balance Tint        Range: " << (int)m_prop.white_balance_tint.possible.at(0) << " to " << (int)m_prop.white_balance_tint.possible.at(1) << std::endl;
-    tout << "White Balance Tint Step   Range: " << (int)m_prop.white_balance_tint_step.possible.at(0) << " to " << (int)m_prop.white_balance_tint_step.possible.at(1) << std::endl;
+    tout << "White Balance Tint CurrentValue: " << (int)Prop.at(PCode::CrDeviceProperty_WhiteBalanceTint).current << '\n';
+    tout << "White Balance Tint        Range: " << (int)Prop.at(PCode::CrDeviceProperty_WhiteBalanceTint).possible.at(0) << " to " << (int)Prop.at(PCode::CrDeviceProperty_WhiteBalanceTint).possible.at(1) << std::endl;
+    tout << "White Balance Tint Step   Range: " << (int)Prop.at(PCode::CrDeviceProperty_WhiteBalanceTintStep).possible.at(0) << " to " << (int)Prop.at(PCode::CrDeviceProperty_WhiteBalanceTintStep).possible.at(1) << std::endl;
     return true;
 }
 
@@ -911,23 +758,23 @@ void CameraDevice::get_media_slot_status()
     load_properties();
 
     // SLOT1
-    tout << "Media SLOT1 Status                  : " << format_media_slotx_status(m_prop.media_slot1_status.current) << std::endl;
-    if (0 <= m_prop.media_slot1_recording_available_type.writable)
+    tout << "Media SLOT1 Status                  : " << format_media_slotx_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_Status).current) << std::endl;
+    if (0 <= Prop.at(PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType).writable)
     {
-        tout << "Media SLOT1 Recording Available Type: " << format_media_slotx_rec_available(m_prop.media_slot1_recording_available_type.current) << std::endl;
+        tout << "Media SLOT1 Recording Available Type: " << format_media_slotx_rec_available(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType).current) << std::endl;
     }
 
     // SLOT2
-    if (-1 == m_prop.media_slot2_status.writable)
+    if (-1 == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).writable)
     {
         tout << "Media SLOT2 Status is not supported.\n";
     }
     else
     {
-        tout << "Media SLOT2 Status                  : " << format_media_slotx_status(m_prop.media_slot2_status.current) << std::endl;
-        if (0 <= m_prop.media_slot2_recording_available_type.writable)
+        tout << "Media SLOT2 Status                  : " << format_media_slotx_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).current) << std::endl;
+        if (0 <= Prop.at(PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType).writable)
         {
-            tout << "Media SLOT2 Recording Available Type: " << format_media_slotx_rec_available(m_prop.media_slot2_recording_available_type.current) << std::endl;
+            tout << "Media SLOT2 Recording Available Type: " << format_media_slotx_rec_available(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType).current) << std::endl;
         }
     }
 }
@@ -935,222 +782,13 @@ void CameraDevice::get_media_slot_status()
 bool CameraDevice::get_movie_rec_button_toggle_enable_status()
 {
     load_properties();
-    if (m_prop.movie_rec_button_toggle_enable_status.writable == -1)
+    if (Prop.at(PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus).writable == -1)
     {
         tout << "Movie Rec Button(Toggle) is not supported\n";
         return false;
     }
-    tout << "Movie Rec Button(Toggle) Enable Status: " << format_movie_rec_button_toggle_enable_status(m_prop.movie_rec_button_toggle_enable_status.current) << '\n';
+    tout << "Movie Rec Button(Toggle) Enable Status: " << format_movie_rec_button_toggle_enable_status(Prop.at(PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus).current) << '\n';
     return true;
-}
-
-bool CameraDevice::get_focus_bracket_shot_num()
-{
-    load_properties();
-    if (m_prop.focus_bracket_shot_num.possible.size() < 3)
-    {
-        tout << "Focus Bracket Shot Number is not supported \n";
-        return false;
-    }
-    tout << "Focus Bracket Shot Number: " <<m_prop.focus_bracket_shot_num.current << '\n';
-    tout << "                   Range : " << (int)m_prop.focus_bracket_shot_num.possible.at(0) << " to " << (int)m_prop.focus_bracket_shot_num.possible.at(1) << std::endl;
-
-    return true;
-}
-
-bool CameraDevice::get_focus_bracket_focus_range()
-{
-    load_properties();
-    if (m_prop.focus_bracket_focus_range.possible.size() < 3)
-    {
-        tout << "Focus Bracket Focus Range is not supported \n";
-        return false;
-    }
-    tout << "Focus Bracket Focus Range CurrentValue: " <<(int)m_prop.focus_bracket_focus_range.current << '\n';
-    tout << "                                 Range: " << (int)m_prop.focus_bracket_focus_range.possible.at(0) << " to " << (int)m_prop.focus_bracket_focus_range.possible.at(1) << std::endl;
-
-    return true;
-}
-
-bool CameraDevice::get_movie_image_stabilization_steady_shot()
-{
-    load_properties();
-    if (m_prop.movie_image_stabilization_steady_shot.possible.size() < 1) {
-        tout << "Image Stabilization Steady Shot(Movie) is not supported.\n";
-        return false;
-    }
-    tout << "Image Stabilization Steady Shot(Movie): " << format_movie_image_stabilization_steady_shot(m_prop.movie_image_stabilization_steady_shot.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_image_stabilization_steady_shot()
-{
-    load_properties();
-    if (m_prop.image_stabilization_steady_shot.possible.size() < 1) {
-        tout << "Image Stabilization Steady Shot(Still) is not supported.\n";
-        return false;
-    }
-    tout << "Image Stabilization Steady Shot(Still): " << format_image_stabilization_steady_shot(m_prop.image_stabilization_steady_shot.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_silent_mode()
-{
-    load_properties();
-    if (m_prop.silent_mode.possible.size() < 1) {
-        tout << "Silent Mode is not supported.\n";
-        return false;
-    }
-    tout << "Silent Mode: " << format_silent_mode(m_prop.silent_mode.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_silent_mode_aperture_drive_in_af()
-{
-    load_properties();
-    if (m_prop.silent_mode_aperture_drive_in_af.possible.size() < 1) {
-        tout << "Silent Mode Aperture Drive in AF is not supported.\n";
-        return false;
-    }
-    tout << "Aperture Drive in AF: " << format_silent_mode_aperture_drive_in_af(m_prop.silent_mode_aperture_drive_in_af.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_silent_mode_shutter_when_power_off()
-{
-    load_properties();
-    if (m_prop.silent_mode_shutter_when_power_off.possible.size() < 1) {
-        tout << "Silent Mode Shutter When Power OFF is not supported.\n";
-        return false;
-    }
-    tout << "Shutter When Power OFF: " << format_silent_mode_shutter_when_power_off(m_prop.silent_mode_shutter_when_power_off.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_silent_mode_auto_pixel_mapping()
-{
-    load_properties();
-    if (m_prop.silent_mode_auto_pixel_mapping.possible.size() < 1) {
-        tout << "Silent Mode Auto Pixel Mapping is not supported.\n";
-        return false;
-    }
-    tout << "Auto Pixel Mapping: " << format_silent_mode_auto_pixel_mapping(m_prop.silent_mode_auto_pixel_mapping.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_shutter_type()
-{
-    load_properties();
-    if (m_prop.shutter_type.possible.size() < 1)
-    {
-        tout << "Shutter Type is not supported.\n";
-        return false;
-    }
-    tout << "Shutter Type: " << format_shutter_type(m_prop.shutter_type.current) << '\n';
-    return true;
-}
-
-bool CameraDevice::get_movie_shooting_mode()
-{
-    load_properties();
-    if (m_prop.movie_shooting_mode.possible.size() < 1) {
-        tout << "Movie Shooting Mode is not supported.\n";
-        return false;
-    }
-    tout << "Movie Shooting Mode: " << format_movie_shooting_mode(m_prop.movie_shooting_mode.current) << '\n';
-    return true;
-}
-
-void CameraDevice::set_aperture()
-{
-    if (1 != m_prop.f_number.writable) {
-        // Not a settable property
-        tout << "Aperture is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Aperture value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Aperture value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.f_number.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_f_number(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Aperture value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_iso()
-{
-    if (1 != m_prop.iso_sensitivity.writable) {
-        // Not a settable property
-        tout << "ISO is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new ISO value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new ISO value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.iso_sensitivity.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_iso_sensitivity(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new ISO value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
 bool CameraDevice::set_save_info() const
@@ -1176,427 +814,6 @@ bool CameraDevice::set_save_info() const
         return false;
     }
     return true;
-}
-
-void CameraDevice::set_shutter_speed()
-{
-    if (1 != m_prop.shutter_speed.writable) {
-        // Not a settable property
-        tout << "Shutter Speed is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Shutter Speed value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Shutter Speed value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.shutter_speed.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_shutter_speed(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Shutter Speed value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_position_key_setting()
-{
-    if (1 != m_prop.position_key_setting.writable) {
-        // Not a settable property
-        tout << "Position Key Setting is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Position Key Setting value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Position Key Setting value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.position_key_setting.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_position_key_setting(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Position Key Setting value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_exposure_program_mode()
-{
-    if (1 != m_prop.exposure_program_mode.writable) {
-        // Not a settable property
-        tout << "Exposure Program Mode is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Exposure Program Mode value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Exposure Program Mode value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.exposure_program_mode.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_exposure_program_mode(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Exposure Program Mode value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_still_capture_mode()
-{
-    if (1 != m_prop.still_capture_mode.writable) {
-        // Not a settable property
-        tout << "Still Capture Mode is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Still Capture Mode value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Still Capture Mode value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.still_capture_mode.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_still_capture_mode(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Still Capture Mode value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_focus_mode()
-{
-    if (1 != m_prop.focus_mode.writable) {
-        // Not a settable property
-        tout << "Focus Mode is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Focus Mode value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Focus Mode value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.focus_mode.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_focus_mode(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Focus Mode value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_focus_area()
-{
-    if (1 != m_prop.focus_area.writable) {
-        // Not a settable property
-        tout << "Focus Area is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Focus Area value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Focus Area value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.focus_area.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_focus_area(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Focus Area value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_live_view_image_quality()
-{
-    if (1 != m_prop.live_view_image_quality.writable) {
-        // Not a settable property
-        tout << "Live View Image Quality is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Live View Image Quality value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Live View Image Quality value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.live_view_image_quality.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_live_view_image_quality(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Live View Image Quality value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_white_balance()
-{
-    if (1 != m_prop.white_balance.writable) {
-        // Not a settable property
-        tout << "White Balance is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << std::endl << "Would you like to set a new White Balance value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << std::endl << "Choose a number set a new White Balance value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.white_balance.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_white_balance(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << std::endl << "Choose a number set a new White Balance value:\n";
-
-    tout << std::endl << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::execute_lock_property(CrInt16u code)
-{
-    load_properties();
-
-    text input;
-    tout << std::endl << "Would you like to execute Unlock or Lock? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip execute a new value.\n";
-        return;
-    }
-
-    tout << std::endl << "Choose a number:\n";
-    tout << "[-1] Cancel input\n";
-
-    tout << "[1] Unlock" << '\n';
-    tout << "[2] Lock" << '\n';
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number:\n";
-
-    tout << std::endl << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    CrInt64u ptpValue = 0;
-    switch (selected_index) {
-    case 1:
-        ptpValue = SDK::CrLockIndicator::CrLockIndicator_Unlocked;
-        break;
-    case 2:
-        ptpValue = SDK::CrLockIndicator::CrLockIndicator_Locked;
-        break;
-    default:
-        selected_index = -1;
-        break;
-    }
-
-    if (-1 == selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(code);
-    prop.SetCurrentValue((CrInt64u)(ptpValue));
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
 void CameraDevice::get_af_area_position()
@@ -1653,41 +870,35 @@ void CameraDevice::set_af_area_position()
 {
     load_properties();
 
-    if (1 == m_prop.position_key_setting.writable) {
-        // Set, PriorityKeySettings property
-        tout << std::endl << "Set camera to PC remote" << std::endl;
-        SDK::CrDeviceProperty priority;
-        priority.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings);
-        priority.SetCurrentValue(SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
-        priority.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-        auto err_priority = SDK::SetDeviceProperty(m_device_handle, &priority);
-        if (CR_FAILED(err_priority)) {
+    if (1 == Prop.at(PCode::CrDeviceProperty_PriorityKeySettings).writable) {
+        auto err = SetProp(PCode::CrDeviceProperty_PriorityKeySettings, SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
+        if (CR_FAILED(err)) {
             tout << "Priority Key setting FAILED\n";
             return;
         }
         std::this_thread::sleep_for(500ms);
-        get_position_key_setting();
+        load_properties();
     }
 
     // Set, ExposureProgramMode property
     tout << std::endl << "Set the Exposure Program mode to P Auto" << std::endl;
-    SDK::CrDeviceProperty expromode;
-    expromode.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode);
-    expromode.SetCurrentValue(SDK::CrExposureProgram::CrExposure_P_Auto);
-    expromode.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
+    SDK::CrDeviceProperty devProp;
+    devProp.SetCode(PCode::CrDeviceProperty_ExposureProgramMode);
+    devProp.SetCurrentValue(SDK::CrExposureProgram::CrExposure_P_Auto);
+    devProp.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
     SDK::CrError err_expromode;
     bool execStat = false;
     int i = 0;
     while (i < 5)
     {
-        err_expromode = SDK::SetDeviceProperty(m_device_handle, &expromode);
+        err_expromode = SDK::SetDeviceProperty(m_device_handle, &devProp);
         if (CR_FAILED(err_expromode)) {
             tout << "Exposure Program mode FAILED\n";
             return;
         }
         std::this_thread::sleep_for(1000ms);
-        get_exposure_program_mode();
-        if (m_prop.exposure_program_mode.current == SDK::CrExposureProgram::CrExposure_P_Auto) {
+        load_properties();
+        if (Prop.at(PCode::CrDeviceProperty_ExposureProgramMode).current == SDK::CrExposureProgram::CrExposure_P_Auto) {
             execStat = true;
             break;
         }
@@ -1699,7 +910,7 @@ void CameraDevice::set_af_area_position()
         return;
     }
 
-    if (1 != m_prop.focus_area.writable) {
+    if (1 != Prop.at(PCode::CrDeviceProperty_FocusArea).writable) {
         tout << "Focus Area is not writable\n";
         return;
     }
@@ -1710,11 +921,11 @@ void CameraDevice::set_af_area_position()
     tout << std::endl << "Set Focus Area to Flexible_Spot_S\n";
 
     SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea);
+    prop.SetCode(PCode::CrDeviceProperty_FocusArea);
     prop.SetCurrentValue(SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S);
     prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
 
-    auto& values = m_prop.focus_area.possible;
+    auto& values = Prop.at(PCode::CrDeviceProperty_FocusArea).possible;
     if(find(values.begin(), values.end(), SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S) != values.end()) {
         prop.SetCurrentValue(SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S);
     }
@@ -1735,8 +946,8 @@ void CameraDevice::set_af_area_position()
             return;
         }
         std::this_thread::sleep_for(1000ms);
-        get_focus_area();
-        if (m_prop.focus_area.current == SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S) {
+        load_properties();
+        if (Prop.at(PCode::CrDeviceProperty_FocusArea).current == SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S) {
             execStat = true;
             break;
         }
@@ -1751,7 +962,7 @@ void CameraDevice::set_af_area_position()
     get_af_area_position();
 
 
-    execute_pos_xy(SDK::CrDevicePropertyCode::CrDeviceProperty_AF_Area_Position);
+    execute_pos_xy(PCode::CrDeviceProperty_AF_Area_Position);
 }
 
 void CameraDevice::set_select_media_format()
@@ -1759,17 +970,17 @@ void CameraDevice::set_select_media_format()
     bool validQuickFormat = false;
     SDK::CrCommandId ptpFormatType = SDK::CrCommandId::CrCommandId_MediaFormat;
 
-    if ((SDK::CrMediaFormat::CrMediaFormat_Disable == m_prop.media_slot1_full_format_enable_status.current) &&
-        (SDK::CrMediaFormat::CrMediaFormat_Disable == m_prop.media_slot2_full_format_enable_status.current)) {
+    if ((SDK::CrMediaFormat::CrMediaFormat_Disable == Prop.at(PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus).current) &&
+        (SDK::CrMediaFormat::CrMediaFormat_Disable == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus).current)) {
             // Not a settable property
         tout << std::endl << "Slot1 and Slot2 can not format\n";
         return;
     }
 
-    if ((-1 != m_prop.media_slot1_quick_format_enable_status.writable || -1 != m_prop.media_slot2_quick_format_enable_status.writable)
+    if ((-1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).writable || -1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).writable)
         &&
-         ((SDK::CrMediaFormat::CrMediaFormat_Enable == m_prop.media_slot1_quick_format_enable_status.current) ||
-          (SDK::CrMediaFormat::CrMediaFormat_Enable == m_prop.media_slot2_quick_format_enable_status.current))) {
+         ((SDK::CrMediaFormat::CrMediaFormat_Enable == Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).current) ||
+          (SDK::CrMediaFormat::CrMediaFormat_Enable == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).current))) {
             validQuickFormat = true;
     }
 
@@ -1833,19 +1044,19 @@ void CameraDevice::set_select_media_format()
 
     CrInt64u ptpValue = 0xFFFF;
     if (SDK::CrCommandId::CrCommandId_MediaQuickFormat == ptpFormatType) {
-        if ((1 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == m_prop.media_slot1_quick_format_enable_status.current)) {
+        if ((1 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).current)) {
         ptpValue = SDK::CrCommandParam::CrCommandParam_Up;
         }
-        else if ((2 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == m_prop.media_slot2_quick_format_enable_status.current)) {
+        else if ((2 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).current)) {
             ptpValue = SDK::CrCommandParam::CrCommandParam_Down;
         }
     }
     else
     {
-        if ((1 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == m_prop.media_slot1_full_format_enable_status.current)) {
+        if ((1 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == Prop.at(PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus).current)) {
             ptpValue = SDK::CrCommandParam::CrCommandParam_Up;
         }
-        else if ((2 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == m_prop.media_slot2_full_format_enable_status.current)) {
+        else if ((2 == selected_index) && (SDK::CrMediaFormat::CrMediaFormat_Enable == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus).current)) {
             ptpValue = SDK::CrCommandParam::CrCommandParam_Down;
         }
     }
@@ -1861,7 +1072,7 @@ void CameraDevice::set_select_media_format()
     tout << std::endl << "Formatting .....\n";
 
     int startflag = 0;
-    CrInt32u getCodes = SDK::CrDevicePropertyCode::CrDeviceProperty_Media_FormatProgressRate;
+    CrInt32u getCodes = PCode::CrDeviceProperty_Media_FormatProgressRate;
 
     std::int32_t nprop = 0;
     SDK::CrDeviceProperty* prop_list = nullptr;
@@ -1956,30 +1167,24 @@ void CameraDevice::execute_movie_rec()
 void CameraDevice::set_custom_wb()
 {
     load_properties();
-    if (-1 == m_prop.customwb_capture_execution_state.writable) {
+    if (-1 == Prop.at(PCode::CrDeviceProperty_CustomWB_Execution_State).writable) {
         tout << "Custom WB Capture is Not Supported.\n";
         return ;
     }
-    if (1 == m_prop.position_key_setting.writable) {
-        // Set, PriorityKeySettings property
-        tout << std::endl << "Set camera to PC remote" << std::endl;
-        SDK::CrDeviceProperty priority;
-        priority.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings);
-        priority.SetCurrentValue(SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
-        priority.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-        auto err_priority = SDK::SetDeviceProperty(m_device_handle, &priority);
-        if (CR_FAILED(err_priority)) {
+    if (1 == Prop.at(PCode::CrDeviceProperty_PriorityKeySettings).writable) {
+        auto err = SetProp(PCode::CrDeviceProperty_PriorityKeySettings, SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
+        if (CR_FAILED(err)) {
             tout << "Priority Key setting FAILED\n";
             return;
         }
         std::this_thread::sleep_for(500ms);
-        get_position_key_setting();
+        load_properties();
     }
 
     // Set, ExposureProgramMode property
     tout << std::endl << "Set the Exposure Program mode to P mode" << std::endl;
     SDK::CrDeviceProperty expromode;
-    expromode.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode);
+    expromode.SetCode(PCode::CrDeviceProperty_ExposureProgramMode);
     expromode.SetCurrentValue(SDK::CrExposureProgram::CrExposure_P_Auto);
     expromode.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
     SDK::CrError err_expromode;
@@ -1993,8 +1198,8 @@ void CameraDevice::set_custom_wb()
             return;
         }
         std::this_thread::sleep_for(1000ms);
-        get_exposure_program_mode();
-        if (m_prop.exposure_program_mode.current == SDK::CrExposureProgram::CrExposure_P_Auto) {
+        load_properties();
+        if (Prop.at(PCode::CrDeviceProperty_ExposureProgramMode).current == SDK::CrExposureProgram::CrExposure_P_Auto) {
             execStat = true;
             break;
         }
@@ -2010,7 +1215,7 @@ void CameraDevice::set_custom_wb()
     // Set, White Balance property
     tout << std::endl << "Set the White Balance to Custom1\n";
     SDK::CrDeviceProperty wb;
-    wb.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance);
+    wb.SetCode(PCode::CrDeviceProperty_WhiteBalance);
     wb.SetCurrentValue(SDK::CrWhiteBalanceSetting::CrWhiteBalance_Custom_1);
     wb.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
     auto err_wb = SDK::SetDeviceProperty(m_device_handle, &wb);
@@ -2019,7 +1224,8 @@ void CameraDevice::set_custom_wb()
         return;
     }
     std::this_thread::sleep_for(2000ms);
-    get_white_balance();
+    load_properties();
+    tout << "White Balance: " << format_white_balance(Prop.at(PCode::CrDeviceProperty_WhiteBalance).current) << '\n';
 
     execStat = false;
     // Set, custom WB capture standby 
@@ -2028,7 +1234,7 @@ void CameraDevice::set_custom_wb()
     i = 0;
     while ((false == execStat) && (i < 5))
     {
-        execute_downup_property(SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Capture_Standby);
+        execute_downup_property(PCode::CrDeviceProperty_CustomWB_Capture_Standby);
         std::this_thread::sleep_for(1000ms);
         tout << std::endl;
         execStat = get_custom_wb();
@@ -2044,7 +1250,7 @@ void CameraDevice::set_custom_wb()
 
     // Set, custom WB capture 
     tout << std::endl << "Set custom WB capture ";
-    execute_pos_xy(SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Capture);
+    execute_pos_xy(PCode::CrDeviceProperty_CustomWB_Capture);
 
     std::this_thread::sleep_for(5000ms);
 
@@ -2053,7 +1259,7 @@ void CameraDevice::set_custom_wb()
     tout << std::endl << "Set custom WB capture standby cancel. Please enter something. " << std::endl;
     std::getline(tin, input);
     if (0 == input.size() || 0 < input.size()) {
-        execute_downup_property(SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel);
+        execute_downup_property(PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel);
         get_custom_wb();
         tout << std::endl << "Finish custom WB capture\n";
     }
@@ -2080,7 +1286,7 @@ void CameraDevice::set_zoom_operation()
         bool cancel = false;
 
         // Zoom Speed Range is not supported
-        if (m_prop.zoom_speed_range.possible.size() < 2) {
+        if (Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.size() < 2) {
             tout << std::endl << "Choose a number:\n";
             tout << "[-1] Cancel input\n";
 
@@ -2123,7 +1329,7 @@ void CameraDevice::set_zoom_operation()
             // Get the latest value
             load_properties();
             //Stop zoom and return to the top menu when out-of-range values or non-numeric values are entered
-            if (((input_value == 0) && (input != TEXT("0"))) || (input_value < (int)m_prop.zoom_speed_range.possible.at(0)) || ((int)m_prop.zoom_speed_range.possible.at(1) < input_value))
+            if (((input_value == 0) && (input != TEXT("0"))) || (input_value < (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(0)) || ((int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(1) < input_value))
             {
                 cancel = true;
                 ptpValue = SDK::CrZoomOperation::CrZoomOperation_Stop;
@@ -2133,12 +1339,12 @@ void CameraDevice::set_zoom_operation()
                 ptpValue = (CrInt64)input_value;
             }
         }
-        if (SDK::CrZoomOperationEnableStatus::CrZoomOperationEnableStatus_Enable != m_prop.zoom_operation_status.current) {
+        if (SDK::CrZoomOperationEnableStatus::CrZoomOperationEnableStatus_Enable != Prop.at(PCode::CrDeviceProperty_Zoom_Operation_Status).current) {
             tout << "Zoom Operation is not executable.\n";
             return;
         }
         SDK::CrDeviceProperty prop;
-        prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Operation);
+        prop.SetCode(PCode::CrDeviceProperty_Zoom_Operation);
         prop.SetCurrentValue((CrInt64u)ptpValue);
         prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
         SDK::SetDeviceProperty(m_device_handle, &prop);
@@ -2149,57 +1355,10 @@ void CameraDevice::set_zoom_operation()
     }
 }
 
-void CameraDevice::set_remocon_zoom_speed_type()
-{
-    if (1 != m_prop.remocon_zoom_speed_type.writable) {
-        // Not a settable property
-        tout << "Zoom speed type is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new zoom speed type value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new zoom speed type value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.remocon_zoom_speed_type.possible;
-
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_remocon_zoom_speed_type(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new zoom speed type value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
 bool CameraDevice::set_drive_mode(CrInt64u Value)
 {
     SDK::CrDeviceProperty mode;
-    mode.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode);
+    mode.SetCode(PCode::CrDeviceProperty_DriveMode);
     mode.SetCurrentValue(Value);
     mode.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
     auto err_still_capture_mode = SDK::SetDeviceProperty(m_device_handle, &mode);
@@ -2214,7 +1373,7 @@ bool CameraDevice::set_drive_mode(CrInt64u Value)
 void CameraDevice::execute_camera_setting_reset()
 {
     load_properties();
-    if (SDK::CrCameraSettingsResetEnableStatus::CrCameraSettingsReset_Enable == m_prop.camera_setting_reset_enable_status.current) {
+    if (SDK::CrCameraSettingsResetEnableStatus::CrCameraSettingsReset_Enable == Prop.at(PCode::CrDeviceProperty_CameraSettingsResetEnableStatus).current) {
         tout << "Camera Setting Reset Enable Status: Enable \n";
     } else {
         tout << "Camera Setting Reset not executable.\n";
@@ -2230,7 +1389,7 @@ void CameraDevice::execute_camera_setting_reset()
     }
     // Get the latest status
     load_properties();
-    if (SDK::CrCameraSettingsResetEnableStatus::CrCameraSettingsReset_Enable != m_prop.camera_setting_reset_enable_status.current) {
+    if (SDK::CrCameraSettingsResetEnableStatus::CrCameraSettingsReset_Enable != Prop.at(PCode::CrDeviceProperty_CameraSettingsResetEnableStatus).current) {
         tout << "Camera Setting Reset not executable.\n";
         return;
     }
@@ -2240,232 +1399,12 @@ void CameraDevice::execute_camera_setting_reset()
     SDK::SendCommand(m_device_handle, ptpFormatType, SDK::CrCommandParam::CrCommandParam_Up);
 }
 
-void CameraDevice::set_playback_media()
-{
-    if (false == get_playback_media())
-        return;
-
-    if (1 != m_prop.playback_media.writable) {
-        tout << "Playback Media is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Playback Media value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Playback Media value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] Slot1\n";
-    tout << "[2] Slot2\n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Playback Media value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-    if (selected_index < 1 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue= selected_index;
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_gain_base_sensitivity()
-{
-    if (false == get_gain_base_sensitivity())
-        return;
-
-    if (1 != m_prop.gain_base_sensitivity.writable) {
-        tout << "Gain Base Sensitivity is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Gain Base Sensitivity value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Gain Base Sensitivity Setting value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] High Level  \n";
-    tout << "[2] Low Level \n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Gain Base Sensitivity Setting value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 1 ||2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_gain_base_iso_sensitivity()
-{
-    if (false == get_gain_base_iso_sensitivity())
-        return;
-
-    if (1 != m_prop.gain_base_iso_sensitivity.writable) {
-        // Not a settable property
-        tout << "Gain Base ISO Sensitivity is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Gain Base ISO Sensitivity value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Gain Base ISO Sensitivity Setting value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] High Level  \n";
-    tout << "[2] Low Level \n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Gain Base ISO Sensitivity Setting value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 1 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_monitor_lut_setting()
-{
-    if (false == get_monitor_lut_setting())
-        return;
-
-    if (1 != m_prop.monitor_lut_setting.writable) {
-        tout << "Monitor LUT Setting is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Monitor LUT Setting? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Monitor LUT Setting value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] OFF\n";
-    tout << "[2] ON\n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Monitor LUT Setting value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-    if (selected_index < 1 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_exposure_index()
-{
-    if (false == get_exposure_index())
-        return;
-
-    if (1 != m_prop.exposure_index.writable) {
-        tout << "Exposure Index is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Exposure Index value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Exposure Index:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.exposure_index.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << values[i] << '\n';
-    }
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Exposure Index:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureIndex);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
 void CameraDevice::set_baselook_value()
 {
     if (false == get_baselook_value())
         return;
 
-    if (1 != m_prop.baselook_value.writable) {
+    if (1 != Prop.at(PCode::CrDeviceProperty_BaseLookValue).writable) {
         tout << "BaseLook Value is not writable\n";
         return;
     }
@@ -2480,7 +1419,7 @@ void CameraDevice::set_baselook_value()
 
     tout << "Choose a number set a new BaseLook value:\n";
     tout << "[-1] Cancel input\n";
-    auto& values = m_prop.baselook_value.possible;
+    auto& values = Prop.at(PCode::CrDeviceProperty_BaseLookValue).possible;
 
     //If you want to display a string, you need to execute RequestDisplayStringList() in advance.
     SDK::CrDisplayStringListInfo* pProperty = nullptr;
@@ -2524,916 +1463,7 @@ void CameraDevice::set_baselook_value()
     }
 
     SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
- }
-
-void CameraDevice::set_iris_mode_setting()
-{
-    if (false == get_iris_mode_setting())
-        return;
-
-    if (1 != m_prop.iris_mode_setting.writable) {
-        // Not a settable property
-        tout << "Iris Mode Setting is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Iris Mode Setting value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Iris Mode Setting value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] Automatic \n";
-    tout << "[2] Manual \n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Iris Mode Setting value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 1 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_shutter_mode_setting()
-{
-    if (false == get_shutter_mode_setting())
-        return;
-
-    if (1 != m_prop.shutter_mode_setting.writable) {
-        // Not a settable property
-        tout << "Shutter Mode Setting is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Shutter Mode Setting value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Shutter Mode Setting value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] Automatic \n";
-    tout << "[2] Manual \n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Shutter Mode Setting value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 1 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_exposure_control_type()
-{
-    if (false == get_exposure_control_type())
-        return;
-
-    if (1 != m_prop.exposure_control_type.writable) {
-        // Not a settable property
-        tout << "Exposure Control Type is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Exposure Control Type is value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Exposure Control Type is value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] P/A/S/M Mode \n";
-    tout << "[2] Flexible Exposure Mode \n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Exposure Control Type is:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 1 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_recording_setting()
-{
-    if (false == get_recording_setting())
-        return;
-
-    if (1 != m_prop.recording_setting.writable) {
-        // Not a settable property
-        tout << "Recording Setting is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Recording Setting is value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Recording Setting is value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.recording_setting.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_recording_setting(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set Recording Setting is value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_gain_control_setting()
-{
-    if (false == get_gain_control_setting())
-        return;
-
-    if (1 != m_prop.gain_control_setting.writable) {
-        // Not a settable property
-        tout << "Gain Control Setting is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Gain Control Setting value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Gain Control Setting value:\n";
-    tout << "[-1] Cancel input\n";
-    tout << "[1] Automatic \n";
-    tout << "[2] Manual \n";
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Gain Control Setting value:\n" << std::endl;
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || 2 < selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-    CrInt8u ptpValue = selected_index;
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting);
-    prop.SetCurrentValue((CrInt64u)ptpValue);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_dispmode()
-{
-    load_properties();
-    if (-1 == m_prop.dispmode_candidate.writable||
-        -1 == m_prop.dispmode_setting.writable||
-        -1 == m_prop.dispmode.writable) {
-        tout << "DISP Mode Setting is not supported\n";
-        return ;
-    }
-
-    if (1 != m_prop.dispmode_setting.writable || 1 != m_prop.dispmode.writable) {
-        // Not a settable property
-        tout << "DISP Mode Setting is not writable\n";
-        return;
-    }
-
-    tout << "DISP Mode: " << format_dispmode(m_prop.dispmode.current) << '\n';
-
-    auto& disp_candidate_values = m_prop.dispmode_candidate.possible;
-    CrInt32u set_dispmode_setting = 0;
-
-    // Select all configurable Disp mode
-    for (int i = 0; i < disp_candidate_values.size(); i++)
-    {
-        set_dispmode_setting |= disp_candidate_values[i];
-    }
-
-    SDK::CrDispMode set_dispmode = SDK::CrDispMode_DisplayAllInfo;
-
-    if (m_prop.dispmode.current == SDK::CrDispMode_DisplayAllInfo) {
-         set_dispmode = SDK::CrDispMode_Histogram;
-     }
-
-    text input;
-    tout << "When set, it will switch to the next Disp Mode: "<< format_dispmode(set_dispmode)<<"\n\n";
-    tout << "Would you like to set a new DISP Mode Setting is value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    // set Disp Mode Setting 
-    SDK::CrDeviceProperty disp_state_prop;
-    disp_state_prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DispModeSetting);
-    disp_state_prop.SetCurrentValue((CrInt64u)set_dispmode_setting);
-    disp_state_prop.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &disp_state_prop);
-
-    std::this_thread::sleep_for(500ms);
-
-    // set Disp Mode
-    SDK::CrDeviceProperty disp_mode_prop;
-    disp_mode_prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_DispMode);
-    disp_mode_prop.SetCurrentValue((CrInt64u)set_dispmode);
-    disp_mode_prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-
-    SDK::SetDeviceProperty(m_device_handle, &disp_mode_prop);
-}
-
-void CameraDevice::set_gain_db_value()
-{
-    if (false == get_gain_db_value())
-        return;
-
-    if (1 != m_prop.gain_db_value.writable) {
-        // Not a settable property
-        tout << "Gain dB Value is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "\nWould you like to set a Gain dB Value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip.\n";
-        return;
-    }
-    tout << "Gain dB Value: " << (int)m_prop.gain_db_value.possible.at(0) << " to " << (int)m_prop.gain_db_value.possible.at(1) << std::endl;
-    tout << std::endl << "input Number> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int num = 0;
-    ss >> num;
-
-    if ((num < (int)m_prop.gain_db_value.possible.at(0)) || ((int)m_prop.gain_db_value.possible.at(1) < num)) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_GaindBValue);
-    prop.SetCurrentValue((CrInt64u)num);
-    prop.SetValueType(SDK::CrDataType::CrDataType_Int8);
-
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_white_balance_tint()
-{
-    if (false == get_white_balance_tint())
-        return;
-
-#if 0 // White Balance Tint cannot be set directly
-    if (1 != m_prop.white_balance_tint.writable) {
-        // Not a settable property
-        tout << "White Balance Tint is not writable\n";
-        return;
-    }
-#else
-    if (1 != m_prop.white_balance_tint_step.writable) {
-        // Not a settable property
-        tout << "White Balance Tint Step is not writable\n";
-        return;
-    }
-#endif
-
-    text input;
-    tout << "\nWould you like to set a White Balance Tint Step ? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip.\n";
-        return;
-    }
-
-    tout << std::endl << "Set a value within the White Balance Tint Range" << std::endl;
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int num = 0;
-    ss >> num;
-
-    if (((int)m_prop.white_balance_tint_step.possible.at(0) > num) || ((int)m_prop.white_balance_tint_step.possible.at(1) < num)) {
-        tout << "\nWhite Balance Tint Step is out of range.\n";
-        return;
-    }
-
-    int finalValue = (int)m_prop.white_balance_tint.current + num;
-    int backNum = num;
-
-    // Do not exceed the minimum value
-    if (finalValue < (int)m_prop.white_balance_tint.possible.at(0)) {
-        // Set the value to reach the minumum value
-        num = (int)m_prop.white_balance_tint.possible.at(0) - (int)m_prop.white_balance_tint.current;
-        if (0 == num) {
-            tout << "The set value is out of range." << std::endl;
-            return;
-        }
-        tout << "Change the value to be set from " << backNum << " to " << num << "." << std::endl;
-    }
-
-    // Do not exceed the maximum value
-    if ((int)m_prop.white_balance_tint.possible.at(1) < finalValue) {
-        // Set the value to reach the maximum value
-        num = (int)m_prop.white_balance_tint.possible.at(1) - (int)m_prop.white_balance_tint.current;
-        if (0 == num) {
-            tout << "The set value is out of range." << std::endl;
-            return;
-        }
-        tout << "Change the value to be set from " << backNum << " to " << num << "." << std::endl;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTintStep);
-    prop.SetCurrentValue((CrInt64u)num);
-    prop.SetValueType(SDK::CrDataType::CrDataType_Int16);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_shutter_speed_value()
-{
-    if(false == get_shutter_speed_value())
-        return;
-
-    if (1 != m_prop.shutter_speed_value.writable) {
-        // Not a settable property
-        tout << "Shutter Speed Value is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Shutter Speed value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Shutter Speed value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.shutter_speed_value.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_shutter_speed_value(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Shutter Speed value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeedValue);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt64Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_focus_bracket_shot_num()
-{
-    if (false == get_focus_bracket_shot_num())
-        return;
-
-    if (1 != m_prop.focus_bracket_shot_num.writable) {
-        tout << "Focus Bracket is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "\nWould you like to set a new Focus Bracket Shot Number value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip.\n";
-        return;
-    }
-
-    tout << std::endl << "input Number> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    CrInt32u num = 0;
-    ss >> num;
-
-    // range
-    if (num < m_prop.focus_bracket_shot_num.possible.at(0) || m_prop.focus_bracket_shot_num.possible.at(1) < num)
-    {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketShotNumber);
-    prop.SetCurrentValue((CrInt64u)num);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_focus_bracket_focus_range()
-{
-    if (false == get_focus_bracket_focus_range())
-        return;
-
-    if (1 != m_prop.focus_bracket_focus_range.writable) {
-        tout << "Focus Bracket is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "\nWould you like to set a new Focus Bracket Range value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip.\n";
-        return;
-    }
-
-    tout << std::endl << "input Number> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    CrInt32u num = 0;
-    ss >> num;
-
-    // range
-    if (num < m_prop.focus_bracket_focus_range.possible.at(0) || m_prop.focus_bracket_focus_range.possible.at(1) < num)
-    {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketFocusRange);
-    prop.SetCurrentValue((CrInt64u)num);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_image_stabilization_steady_shot()
-{
-    if (false == get_image_stabilization_steady_shot())
-        return;
-
-    if (1 != m_prop.image_stabilization_steady_shot.writable) {
-        // Not a settable property
-        tout << "Image Stabilization Steady Shot(Still) is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Image Stabilization Steady Shot(Still) value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Image Stabilization Steady Shot(Still) value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.image_stabilization_steady_shot.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_image_stabilization_steady_shot(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Image Stabilization Steady Shot(Still) value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_movie_image_stabilization_steady_shot()
-{
-    if (false == get_movie_image_stabilization_steady_shot())
-        return;
-
-    if (1 != m_prop.movie_image_stabilization_steady_shot.writable) {
-        // Not a settable property
-        tout << "Image Stabilization Steady Shot(Movie) is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Image Stabilization Steady Shot(Movie) value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Image Stabilization Steady Shot(Movie) value:\n\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.movie_image_stabilization_steady_shot.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_movie_image_stabilization_steady_shot(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_silent_mode() {
-
-    if (false == get_silent_mode())
-        return;
-    if (1 != m_prop.silent_mode.writable) {
-        // Not a settable property
-        tout << "Silent Mode is not writable\n";
-        return;
-    }
-
-    tout << "\n";
-    text input;
-    tout << "Would you like to set a new Silent Mode value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Silent Mode value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.silent_mode.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_silent_mode(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Silent Mode value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_silent_mode_aperture_drive_in_af()
-{
-    if (false == get_silent_mode_aperture_drive_in_af())
-        return;
-
-    tout << "\n";
-    if (1 != m_prop.silent_mode_aperture_drive_in_af.writable) {
-        // Not a settable property
-        tout << "Silent Mode Aperture Drive in AF is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set an Aperture Drive in AF value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Aperture Drive in AF value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.silent_mode_aperture_drive_in_af.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_silent_mode_aperture_drive_in_af(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Aperture Drive in AF value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_silent_mode_shutter_when_power_off()
-{
-    if (false == get_silent_mode_shutter_when_power_off())
-        return;
-
-    tout << "\n";
-    if (1 != m_prop.silent_mode_shutter_when_power_off.writable) {
-        // Not a settable property
-        tout << "Silent Mode Shutter When Power OFF is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Shutter When Power OFF value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Shutter When Power OFF value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.silent_mode_shutter_when_power_off.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_silent_mode_shutter_when_power_off(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Shutter When Power OFF value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_silent_mode_auto_pixel_mapping()
-{
-    if (false == get_silent_mode_auto_pixel_mapping())
-        return;
-
-    tout << "\n";
-    if (1 != m_prop.silent_mode_auto_pixel_mapping.writable) {
-        // Not a settable property
-        tout << "Silent Mode Auto Pixel Mapping is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Auto Pixel Mapping value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Auto Pixel Mapping value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.silent_mode_auto_pixel_mapping.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_silent_mode_auto_pixel_mapping(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Auto Pixel Mapping value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_shutter_type()
-{
-    if (false == get_shutter_type())
-        return;
-
-    if (1 != m_prop.shutter_type.writable) {
-        // Not a settable property
-        tout << "Shutter Type is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Shutter Type value? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Shutter Type value:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.shutter_type.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_shutter_type(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Shutter Type value:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType);
-    prop.SetCurrentValue(values[selected_index]);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-
-void CameraDevice::set_movie_shooting_mode()
-{
-    if (false == get_movie_shooting_mode())
-        return;
-
-    if (1 != m_prop.movie_shooting_mode.writable) {
-        // Not a settable property
-        tout << "Movie Shooting Mode is not writable\n";
-        return;
-    }
-
-    text input;
-    tout << "Would you like to set a new Movie Shooting Mode? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip setting a new value.\n";
-        return;
-    }
-
-    tout << "Choose a number set a new Movie Shooting Mode:\n";
-    tout << "[-1] Cancel input\n";
-
-    auto& values = m_prop.movie_shooting_mode.possible;
-    for (std::size_t i = 0; i < values.size(); ++i) {
-        tout << '[' << i << "] " << format_movie_shooting_mode(values[i]) << '\n';
-    }
-
-    tout << "[-1] Cancel input\n";
-    tout << "Choose a number set a new Movie Shooting Mode:\n";
-
-    tout << "input> ";
-    std::getline(tin, input);
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-
-    if (selected_index < 0 || values.size() <= selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_MovieShootingMode);
+    prop.SetCode(PCode::CrDeviceProperty_BaseLookValue);
     prop.SetCurrentValue(values[selected_index]);
     prop.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
     SDK::SetDeviceProperty(m_device_handle, &prop);
@@ -3513,7 +1543,6 @@ void CameraDevice::execute_pos_xy(CrInt16u code)
     prop.SetCode(code);
     prop.SetCurrentValue((CrInt64u)x_y);
     prop.SetValueType(SDK::CrDataType::CrDataType_UInt32);
-
     SDK::SetDeviceProperty(m_device_handle, &prop);
 }
 
@@ -3521,11 +1550,11 @@ void CameraDevice::execute_preset_focus()
 {
     load_properties();
 
-    auto& values_save = m_prop.save_zoom_and_focus_position.possible;
-    auto& values_load = m_prop.load_zoom_and_focus_position.possible;
+    auto& values_save = Prop.at(PCode::CrDeviceProperty_ZoomAndFocusPosition_Save).possible;
+    auto& values_load = Prop.at(PCode::CrDeviceProperty_ZoomAndFocusPosition_Load).possible;
 
-    if ((1 != m_prop.save_zoom_and_focus_position.writable) &&
-        (1 != m_prop.load_zoom_and_focus_position.writable)){
+    if ((1 != Prop.at(PCode::CrDeviceProperty_ZoomAndFocusPosition_Save).writable) &&
+        (1 != Prop.at(PCode::CrDeviceProperty_ZoomAndFocusPosition_Load).writable)){
         // Not a settable property
         tout << "Preset Focus and Zoom is not supported.\n";
         return;
@@ -3560,11 +1589,11 @@ void CameraDevice::execute_preset_focus()
     ss >> selected_index;
 
     CrInt32u code = 0;
-    if ((1 == selected_index) && (1 == m_prop.save_zoom_and_focus_position.writable)) {
-        code = SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomAndFocusPosition_Save;
+    if ((1 == selected_index) && (1 == Prop.at(PCode::CrDeviceProperty_ZoomAndFocusPosition_Save).writable)) {
+        code = PCode::CrDeviceProperty_ZoomAndFocusPosition_Save;
     }
-    else if ((2 == selected_index) && (1 == m_prop.load_zoom_and_focus_position.writable)) {
-        code = SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomAndFocusPosition_Load;
+    else if ((2 == selected_index) && (1 == Prop.at(PCode::CrDeviceProperty_ZoomAndFocusPosition_Load).writable)) {
+        code = PCode::CrDeviceProperty_ZoomAndFocusPosition_Load;
     }
     else {
         tout << "Input cancelled.\n";
@@ -3579,7 +1608,7 @@ void CameraDevice::execute_preset_focus()
     int input_value = 0;
     ss_slot >> input_value;
 
-    if (code == SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomAndFocusPosition_Save) {
+    if (code == PCode::CrDeviceProperty_ZoomAndFocusPosition_Save) {
         if (find(values_save.begin(), values_save.end(), input_value) == values_save.end()) {
             tout << "Input cancelled.\n";
             return;
@@ -3613,7 +1642,7 @@ void CameraDevice::execute_APS_C_or_Full()
     }
     // Get the latest status
     load_properties();
-    if (SDK::CrAPS_C_or_Full_SwitchingEnableStatus::CrAPS_C_or_Full_Switching_Enable != m_prop.aps_c_of_full_switching_enable_status.current) {
+    if (SDK::CrAPS_C_or_Full_SwitchingEnableStatus::CrAPS_C_or_Full_Switching_Enable != Prop.at(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus).current) {
         tout << std::endl << "APS-C/Full switching is not executable.\n";
         return;
     }
@@ -3676,7 +1705,7 @@ void CameraDevice::execute_movie_rec_toggle()
     }
     // Get the latest status
     load_properties();
-    if (SDK::CrMovieRecButtonToggleEnableStatus::CrMovieRecButtonToggle_Enable != m_prop.movie_rec_button_toggle_enable_status.current) {
+    if (SDK::CrMovieRecButtonToggleEnableStatus::CrMovieRecButtonToggle_Enable != Prop.at(PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus).current) {
         tout << "Unable to execute the movie recording button toggle.\n";
         return;
     }
@@ -3688,7 +1717,7 @@ void CameraDevice::execute_focus_bracket()
 {
     load_properties();
 
-    if (1 != m_prop.focus_bracket_shot_num.writable || 1 != m_prop.focus_bracket_focus_range.writable) {
+    if (1 != Prop.at(PCode::CrDeviceProperty_FocusBracketShotNumber).writable || 1 != Prop.at(PCode::CrDeviceProperty_FocusBracketFocusRange).writable) {
         tout << "Focus Bracket Shooting is not executable\n";
         return;
     }
@@ -3696,17 +1725,10 @@ void CameraDevice::execute_focus_bracket()
     tout << "Execute Focus Bracket shooting \n";
 
     // Set, PriorityKeySettings property
-    SDK::CrDeviceProperty priority;
-    priority.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings);
-    priority.SetCurrentValue(SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
-    priority.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
-    auto err_priority = SDK::SetDeviceProperty(m_device_handle, &priority);
-    if (CR_FAILED(err_priority)) {
+    auto err = SetProp(PCode::CrDeviceProperty_PriorityKeySettings, SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
+    if (CR_FAILED(err)) {
         tout << "Priority Key setting FAILED\n";
         return;
-    }
-    else {
-        tout << "Priority Key setting SUCCESS\n";
     }
 
     // Set, FocusBracket
@@ -3722,7 +1744,7 @@ void CameraDevice::execute_focus_bracket()
         tout << ". ";
         std::this_thread::sleep_for(500ms);
         load_properties();
-        if (SDK::CrDriveMode::CrDrive_FocusBracket == m_prop.still_capture_mode.current) {
+        if (SDK::CrDriveMode::CrDrive_FocusBracket == Prop.at(PCode::CrDeviceProperty_DriveMode).current) {
             tout << "\nStill Capture Mode setting SUCCESS\n";
             continueFlag = true;
             break;
@@ -3741,7 +1763,7 @@ void CameraDevice::do_download_camera_setting_file()
     if (false == get_camera_setting_saveread_state())
         return;
 
-    if (m_prop.camera_setting_save_operation.current == SDK::CrCameraSettingSaveOperation::CrCameraSettingSaveOperation_Enable) {
+    if (Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus).current == SDK::CrCameraSettingSaveOperation::CrCameraSettingSaveOperation_Enable) {
         tout << "Camera-Setting Save Operation: Enable\n";
     } else {
         tout << "Camera-Setting Save Operation: Disable\n";
@@ -3765,7 +1787,7 @@ void CameraDevice::do_download_camera_setting_file()
 
     // Get the latest status
     load_properties();
-    if (SDK::CrCameraSettingSaveOperation::CrCameraSettingSaveOperation_Enable != m_prop.camera_setting_save_operation.current) {
+    if (SDK::CrCameraSettingSaveOperation::CrCameraSettingSaveOperation_Enable != Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus).current) {
         tout << "Unable to download Camera-Setting file. \n";
         return;
     }
@@ -3803,7 +1825,7 @@ void CameraDevice::do_upload_camera_setting_file()
     if (false == get_camera_setting_saveread_state())
         return;
 
-    if (m_prop.camera_setting_read_operation.current == SDK::CrCameraSettingReadOperation::CrCameraSettingReadOperation_Enable) {
+    if (Prop.at(PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus).current == SDK::CrCameraSettingReadOperation::CrCameraSettingReadOperation_Enable) {
         tout << "Camera-Setting Read Operation: Enable\n";
     } else {
         tout << "Camera-Setting Read Operation: Disable\n";
@@ -3863,7 +1885,7 @@ void CameraDevice::do_upload_camera_setting_file()
     tout << filename << "\n";
     // Get the latest status
     load_properties();
-    if (SDK::CrCameraSettingReadOperation::CrCameraSettingReadOperation_Enable != m_prop.camera_setting_read_operation.current) {
+    if (SDK::CrCameraSettingReadOperation::CrCameraSettingReadOperation_Enable != Prop.at(PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus).current) {
         tout << "Unable to upload Camera-Setting file. \n";
         return;
     }
@@ -3951,6 +1973,8 @@ void CameraDevice::change_live_view_enable()
     m_lvEnbSet = !m_lvEnbSet;
     SDK::SetDeviceSetting(m_device_handle, SDK::Setting_Key_EnableLiveView, (CrInt32u)m_lvEnbSet);
 }
+
+///////////////////////////////////////////////
 
 bool CameraDevice::is_connected() const
 {
@@ -4161,10 +2185,10 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
     //tout << std::endl << std::dec;
 	for (std::int32_t i = 0; i < num; ++i)
 	{
-		auto id = static_cast<SDK::CrDevicePropertyCode>(codes[i]);
+		auto id = static_cast<PCode>(codes[i]);
 		switch(id) {
-		case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:
-			SendProp32(id);
+		case PCode::CrDeviceProperty_FocusIndication:
+			SendProp(id);
 			break;
 		default:
 			break;
@@ -4349,13 +2373,58 @@ void CameraDevice::OnError(CrInt32u error)
     }
 }
 
+void CameraDevice::parse_para(SDK::CrDeviceProperty& devProp, PCode id)
+{
+	PropertyValue& prop = Prop.at(id);
+
+	prop.writable = devProp.IsSetEnableCurrentValue();
+	prop.current = devProp.GetCurrentValue();
+
+	unsigned char const* buf = devProp.GetValues();
+	std::uint32_t nval = devProp.GetValueSize();
+
+	switch(prop.dataType) {
+	case SDK::CrDataType::CrDataType_UInt8:		nval /= sizeof(std::uint8_t); break;
+	case SDK::CrDataType::CrDataType_Int8:		nval /= sizeof(std::int8_t); break;
+	case SDK::CrDataType::CrDataType_UInt16:	nval /= sizeof(std::uint16_t); break;
+	case SDK::CrDataType::CrDataType_Int16:		nval /= sizeof(std::int16_t); break;
+	case SDK::CrDataType::CrDataType_UInt32:	nval /= sizeof(std::uint32_t); break;
+	default: break;
+	}
+
+	prop.possible.resize(nval);
+	for (std::uint32_t i = 0; i < nval; ++i) {
+		int32_t data = 0;
+		switch(prop.dataType) {
+		case SDK::CrDataType::CrDataType_UInt8:		data = (reinterpret_cast<std::uint8_t const*>(buf))[i]; break;
+		case SDK::CrDataType::CrDataType_Int8:		data = (reinterpret_cast<std::int8_t const*>(buf))[i]; break;
+		case SDK::CrDataType::CrDataType_UInt16:	data = (reinterpret_cast<std::uint16_t const*>(buf))[i]; break;
+		case SDK::CrDataType::CrDataType_Int16:		data = (reinterpret_cast<std::int16_t const*>(buf))[i]; break;
+		case SDK::CrDataType::CrDataType_UInt32:	data = (reinterpret_cast<std::uint32_t const*>(buf))[i]; break;
+		default: break;
+		}
+		prop.possible.at(i) = data;
+	}
+}
+
+std::vector<std::uint64_t> CameraDevice::parse_uint64(unsigned char const* buf, std::uint32_t nval)
+{
+    using TargetType = std::uint64_t;
+    TargetType const* source = reinterpret_cast<TargetType const*>(buf);
+    std::vector<TargetType> result(nval);
+    for (std::uint32_t i = 0; i < nval; ++i) {
+        result[i] = source[i];
+    }
+    return result;
+}
+
 void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
 {
     std::int32_t nprop = 0;
     SDK::CrDeviceProperty* prop_list = nullptr;
 
-    m_prop.media_slot1_quick_format_enable_status.writable = -1;
-    m_prop.media_slot2_quick_format_enable_status.writable = -1;
+    Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).writable = -1;
+    Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).writable = -1;
 
     SDK::CrError status = SDK::CrError_Generic;
     if (0 == num){
@@ -4373,638 +2442,75 @@ void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
     }
 
     if (prop_list && nprop > 0) {
+#if 1
+		for (std::int32_t i = 0; i < nprop; ++i) {
+			auto devProp = prop_list[i];
+			uint32_t id = devProp.GetCode();
+			tout << std::hex << id << ":";
+			auto iter = Prop.find((PCode)id);
+			if ( iter != end(Prop) ) {
+				tout << iter->second.tag.c_str() << "\n";
+			} else {
+				tout << "unknown\n";
+			}
+		}
+#endif
         // Got properties list
         for (std::int32_t i = 0; i < nprop; ++i) {
-            auto prop = prop_list[i];
-            int nval = 0;
+            auto devProp = prop_list[i];
 
-            switch (prop.GetCode()) {
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_SdkControlMode:
-                m_prop.sdk_mode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.sdk_mode.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                m_modeSDK = (SDK::CrSdkControlMode)m_prop.sdk_mode.current;
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.f_number.writable = prop.IsSetEnableCurrentValue();
-                m_prop.f_number.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_f_number(prop.GetValues(), nval);
-                    m_prop.f_number.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.iso_sensitivity.writable = prop.IsSetEnableCurrentValue();
-                m_prop.iso_sensitivity.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_iso_sensitivity(prop.GetValues(), nval);
-                    m_prop.iso_sensitivity.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.shutter_speed.writable = prop.IsSetEnableCurrentValue();
-                m_prop.shutter_speed.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_shutter_speed(prop.GetValues(), nval);
-                    m_prop.shutter_speed.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.position_key_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.position_key_setting.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (nval != m_prop.position_key_setting.possible.size()) {
-                    auto parsed_values = parse_position_key_setting(prop.GetValues(), nval);
-                    m_prop.position_key_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.exposure_program_mode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.exposure_program_mode.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_exposure_program_mode(prop.GetValues(), nval);
-                    m_prop.exposure_program_mode.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.still_capture_mode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.still_capture_mode.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_still_capture_mode(prop.GetValues(), nval);
-                    m_prop.still_capture_mode.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.focus_mode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_mode.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_mode(prop.GetValues(), nval);
-                    m_prop.focus_mode.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.focus_area.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_area.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_area(prop.GetValues(), nval);
-                    m_prop.focus_area.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.live_view_image_quality.writable = prop.IsSetEnableCurrentValue();
-                m_prop.live_view_image_quality.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto view = parse_live_view_image_quality(prop.GetValues(), nval);
-                    m_prop.live_view_image_quality.possible.swap(view);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.media_slot1_full_format_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot1_full_format_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (nval != m_prop.media_slot1_full_format_enable_status.possible.size()) {
-                    auto parsed_values = parse_media_slotx_format_enable_status(prop.GetValues(), nval);
-                    m_prop.media_slot1_full_format_enable_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.media_slot2_full_format_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot2_full_format_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (nval != m_prop.media_slot2_full_format_enable_status.possible.size()) {
-                    auto parsed_values = parse_media_slotx_format_enable_status(prop.GetValues(), nval);
-                    m_prop.media_slot2_full_format_enable_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.media_slot1_quick_format_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot1_quick_format_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (nval != m_prop.media_slot1_quick_format_enable_status.possible.size()) {
-                    auto parsed_values = parse_media_slotx_format_enable_status(prop.GetValues(), nval);
-                    m_prop.media_slot1_quick_format_enable_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.media_slot2_quick_format_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot2_quick_format_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (nval != m_prop.media_slot2_quick_format_enable_status.possible.size()) {
-                    auto parsed_values = parse_media_slotx_format_enable_status(prop.GetValues(), nval);
-                    m_prop.media_slot2_quick_format_enable_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.white_balance.writable = prop.IsSetEnableCurrentValue();
-                m_prop.white_balance.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_white_balance(prop.GetValues(), nval);
-                    m_prop.white_balance.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Capture_Standby:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.customwb_capture_standby.writable = prop.IsSetEnableCurrentValue();
-                m_prop.customwb_capture_standby.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (nval != m_prop.white_balance.possible.size()) {
-                    auto parsed_values = parse_customwb_capture_standby(prop.GetValues(), nval);
-                    m_prop.customwb_capture_standby.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.customwb_capture_standby_cancel.writable = prop.IsSetEnableCurrentValue();
-                m_prop.customwb_capture_standby_cancel.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (nval != m_prop.customwb_capture_standby_cancel.possible.size()) {
-                    auto parsed_values = parse_customwb_capture_standby_cancel(prop.GetValues(), nval);
-                    m_prop.customwb_capture_standby_cancel.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Capture_Operation:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.customwb_capture_operation.writable = prop.IsSetEnableCurrentValue();
-                m_prop.customwb_capture_operation.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_customwb_capture_operation(prop.GetValues(), nval);
-                    m_prop.customwb_capture_operation.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CustomWB_Execution_State:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.customwb_capture_execution_state.writable = prop.IsSetEnableCurrentValue();
-                m_prop.customwb_capture_execution_state.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (nval != m_prop.customwb_capture_execution_state.possible.size()) {
-                    auto parsed_values = parse_customwb_capture_execution_state(prop.GetValues(), nval);
-                    m_prop.customwb_capture_execution_state.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Operation_Status:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.zoom_operation_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.zoom_operation_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (nval != m_prop.zoom_operation_status.possible.size()) {
-                    auto parsed_values = parse_zoom_operation_status(prop.GetValues(), nval);
-                    m_prop.zoom_operation_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Setting:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.zoom_setting_type.writable = prop.IsSetEnableCurrentValue();
-                m_prop.zoom_setting_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_zoom_setting_type(prop.GetValues(), nval);
-                    m_prop.zoom_setting_type.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Type_Status:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.zoom_types_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.zoom_types_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (nval != m_prop.zoom_types_status.possible.size()) {
-                    auto parsed_values = parse_zoom_types_status(prop.GetValues(), nval);
-                    m_prop.zoom_types_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Zoom_Speed_Range:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.zoom_speed_range.writable = prop.IsSetEnableCurrentValue();
-                if (0 < nval) {
-                    auto parsed_values = parse_zoom_speed_range(prop.GetValues(), nval);
-                    m_prop.zoom_speed_range.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomAndFocusPosition_Save:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.save_zoom_and_focus_position.writable = prop.IsSetEnableCurrentValue();
-                if (0 < nval) {
-                    auto parsed_values = parse_save_zoom_and_focus_position(prop.GetValues(), nval);
-                    m_prop.save_zoom_and_focus_position.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomAndFocusPosition_Load:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.load_zoom_and_focus_position.writable = prop.IsSetEnableCurrentValue();
-                if (0 < nval) {
-                    auto parsed_values = parse_load_zoom_and_focus_position(prop.GetValues(), nval);
-                    m_prop.load_zoom_and_focus_position.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.remocon_zoom_speed_type.writable = prop.IsSetEnableCurrentValue();
-                m_prop.remocon_zoom_speed_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_remocon_zoom_speed_type(prop.GetValues(), nval);
-                    m_prop.remocon_zoom_speed_type.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting:
-                m_prop.aps_c_of_full_switching_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.aps_c_of_full_switching_setting.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus:
-                m_prop.aps_c_of_full_switching_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.aps_c_of_full_switching_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus:
-                m_prop.camera_setting_save_operation.writable = prop.IsSetEnableCurrentValue();
-                m_prop.camera_setting_save_operation.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus:
-                m_prop.camera_setting_read_operation.writable = prop.IsSetEnableCurrentValue();
-                m_prop.camera_setting_read_operation.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CameraSetting_SaveRead_State:
-                m_prop.camera_setting_save_read_state.writable = prop.IsSetEnableCurrentValue();
-                m_prop.camera_setting_save_read_state.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_CameraSettingsResetEnableStatus:
-                m_prop.camera_setting_reset_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.camera_setting_reset_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.playback_media.writable = prop.IsSetEnableCurrentValue();
-                m_prop.playback_media.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_playback_media(prop.GetValues(), nval);
-                    m_prop.playback_media.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.gain_base_sensitivity.writable = prop.IsSetEnableCurrentValue();
-                m_prop.gain_base_sensitivity.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_gain_base_sensitivity(prop.GetValues(), nval);
-                    m_prop.gain_base_sensitivity.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.gain_base_iso_sensitivity.writable = prop.IsSetEnableCurrentValue();
-                m_prop.gain_base_iso_sensitivity.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_gain_base_iso_sensitivity(prop.GetValues(), nval);
-                    m_prop.gain_base_iso_sensitivity.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.monitor_lut_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.monitor_lut_setting.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_monitor_lut_setting(prop.GetValues(), nval);
-                    m_prop.monitor_lut_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureIndex:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.exposure_index.writable = prop.IsSetEnableCurrentValue();
-                m_prop.exposure_index.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_exposure_index(prop.GetValues(), nval);
-                    m_prop.exposure_index.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.baselook_value.writable = prop.IsSetEnableCurrentValue();
-                m_prop.baselook_value.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_baselook_value(prop.GetValues(), nval);
-                    m_prop.baselook_value.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.iris_mode_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.iris_mode_setting.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_iris_mode_setting(prop.GetValues(), nval);
-                    m_prop.iris_mode_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.shutter_mode_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.shutter_mode_setting.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_shutter_mode_setting(prop.GetValues(), nval);
-                    m_prop.shutter_mode_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.gain_control_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.gain_control_setting.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_gain_control_setting(prop.GetValues(), nval);
-                    m_prop.gain_control_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.exposure_control_type.writable = prop.IsSetEnableCurrentValue();
-                m_prop.exposure_control_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_exposure_control_type(prop.GetValues(), nval);
-                    m_prop.exposure_control_type.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_IsoCurrentSensitivity:
-                m_prop.iso_current_sensitivity.writable = prop.IsSetEnableCurrentValue();
-                m_prop.iso_current_sensitivity.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.recording_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.recording_setting.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_recording_setting(prop.GetValues(), nval);
-                    m_prop.recording_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_DispModeCandidate:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.dispmode_candidate.writable = prop.IsSetEnableCurrentValue();
-                m_prop.dispmode_candidate.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_dispmode_candidate(prop.GetValues(), nval);
-                    m_prop.dispmode_candidate.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_DispModeSetting:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.dispmode_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.dispmode_setting.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_dispmode_setting(prop.GetValues(), nval);
-                    m_prop.dispmode_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_DispMode:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.dispmode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.dispmode.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_dispmode(prop.GetValues(), nval);
-                    m_prop.dispmode.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_GaindBValue:
-                nval = prop.GetValueSize() / sizeof(std::int8_t);
-                m_prop.gain_db_value.writable = prop.IsSetEnableCurrentValue();
-                m_prop.gain_db_value.current = static_cast<std::int8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_gain_db_value(prop.GetValues(), nval);
-                    m_prop.gain_db_value.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTint:
-                nval = prop.GetValueSize() / sizeof(std::int8_t);
-                m_prop.white_balance_tint.writable = prop.IsSetEnableCurrentValue();
-                m_prop.white_balance_tint.current = static_cast<std::int8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_white_balance_tint(prop.GetValues(), nval);
-                    m_prop.white_balance_tint.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTintStep:
-                nval = prop.GetValueSize() / sizeof(std::int16_t);
-                m_prop.white_balance_tint_step.writable = prop.IsSetEnableCurrentValue();
-                m_prop.white_balance_tint_step.current = static_cast<std::int16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_white_balance_tint_step(prop.GetValues(), nval);
-                    m_prop.white_balance_tint_step.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus:
-                m_prop.movie_rec_button_toggle_enable_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.movie_rec_button_toggle_enable_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeedValue:
-                nval = prop.GetValueSize() / sizeof(std::uint64_t);
-                m_prop.shutter_speed_value.writable = prop.IsSetEnableCurrentValue();
-                m_prop.shutter_speed_value.current = static_cast<std::uint64_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_shutter_speed_value(prop.GetValues(), nval);
-                    m_prop.shutter_speed_value.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT1_Status:
-                m_prop.media_slot1_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot1_status.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT2_Status:
-                m_prop.media_slot2_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot2_status.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketShotNumber:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.focus_bracket_shot_num.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_bracket_shot_num.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_bracket_shot_num(prop.GetValues(), nval);
-                    m_prop.focus_bracket_shot_num.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketFocusRange:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.focus_bracket_focus_range.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_bracket_focus_range.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_bracket_focus_range(prop.GetValues(), nval);
-                    m_prop.focus_bracket_focus_range.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.movie_image_stabilization_steady_shot.writable = prop.IsSetEnableCurrentValue();
-                m_prop.movie_image_stabilization_steady_shot.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_movie_image_stabilization_steady_shot(prop.GetValues(), nval);
-                    m_prop.movie_image_stabilization_steady_shot.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.image_stabilization_steady_shot.writable = prop.IsSetEnableCurrentValue();
-                m_prop.image_stabilization_steady_shot.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_image_stabilization_steady_shot(prop.GetValues(), nval);
-                    m_prop.image_stabilization_steady_shot.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.silent_mode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.silent_mode.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_silent_mode(prop.GetValues(), nval);
-                    m_prop.silent_mode.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.silent_mode_aperture_drive_in_af.writable = prop.IsSetEnableCurrentValue();
-                m_prop.silent_mode_aperture_drive_in_af.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_silent_mode_aperture_drive_in_af(prop.GetValues(), nval);
-                    m_prop.silent_mode_aperture_drive_in_af.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.silent_mode_shutter_when_power_off.writable = prop.IsSetEnableCurrentValue();
-                m_prop.silent_mode_shutter_when_power_off.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_silent_mode_shutter_when_power_off(prop.GetValues(), nval);
-                    m_prop.silent_mode_shutter_when_power_off.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.silent_mode_auto_pixel_mapping.writable = prop.IsSetEnableCurrentValue();
-                m_prop.silent_mode_auto_pixel_mapping.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_silent_mode_auto_pixel_mapping(prop.GetValues(), nval);
-                    m_prop.silent_mode_auto_pixel_mapping.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.shutter_type.writable = prop.IsSetEnableCurrentValue();
-                m_prop.shutter_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_shutter_type(prop.GetValues(), nval);
-                    m_prop.shutter_type.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MovieShootingMode:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.movie_shooting_mode.writable = prop.IsSetEnableCurrentValue();
-                m_prop.movie_shooting_mode.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_movie_shooting_mode(prop.GetValues(), nval);
-                    m_prop.movie_shooting_mode.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.focus_position_setting.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_position_setting.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_position(prop.GetValues(), nval);
-                    m_prop.focus_position_setting.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionCurrentValue:
-                nval = prop.GetValueSize() / sizeof(std::uint16_t);
-                m_prop.focus_position_current_value.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_position_current_value.current = static_cast<std::uint16_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_position(prop.GetValues(), nval);
-                    m_prop.focus_position_current_value.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusDrivingStatus:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.focus_driving_status.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_driving_status.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_driving_status(prop.GetValues(), nval);
-                    m_prop.focus_driving_status.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_ZoomDistance:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.zoom_distance.writable = prop.IsSetEnableCurrentValue();
-                m_prop.zoom_distance.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_zoom_distance(prop.GetValues(), nval);
-                    m_prop.zoom_distance.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_LensModelName:
-            {
-                m_prop.lensModelNameStr.writable = prop.IsSetEnableCurrentValue();
-                CrInt16u* pCurrentStr = prop.GetCurrentStr();
-                if (pCurrentStr)
-                {
-                    m_prop.lensModelNameStr.length = (int)*pCurrentStr;
-#if defined(WIN32) || defined(_WIN64)//#if defined(_UNICODE) || defined(UNICODE)
-                    m_prop.lensModelNameStr.current = text((CrChar*)&pCurrentStr[1]);
-#else
-                    char buff[128];
-                    memset(buff, 0, sizeof(buff));
-                    pCurrentStr++;
-                    for (int i = 0; i < (m_prop.lensModelNameStr.length - 1); ++i,pCurrentStr++)
-                    {
-                        wctomb(&buff[i], (wchar_t)*pCurrentStr);
-                    }
-                    if (0 < strlen(buff))
-                    {
-                        m_prop.lensModelNameStr.current = text((CrChar*)buff);
-                    }
-#endif
-                }
-            }                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.media_slot1_recording_available_type.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot1_recording_available_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_slotx_rec_available(prop.GetValues(), nval);
-                    m_prop.media_slot1_recording_available_type.possible.swap(parsed_values);
-                }
-                break;
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType:
-                nval = prop.GetValueSize() / sizeof(std::uint8_t);
-                m_prop.media_slot2_recording_available_type.writable = prop.IsSetEnableCurrentValue();
-                m_prop.media_slot2_recording_available_type.current = static_cast<std::uint8_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_slotx_rec_available(prop.GetValues(), nval);
-                    m_prop.media_slot2_recording_available_type.possible.swap(parsed_values);
-                }
-                break;
-
-            case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:
-                nval = prop.GetValueSize() / sizeof(std::uint32_t);
-                m_prop.focus_indication.writable = prop.IsSetEnableCurrentValue();
-                m_prop.focus_indication.current = static_cast<std::uint32_t>(prop.GetCurrentValue());
-                if (0 < nval) {
-                    auto parsed_values = parse_focus_indication(prop.GetValues(), nval);
-                    m_prop.focus_indication.possible.swap(parsed_values);
-                }
-                break;
-            default:
-                break;
-            }
+			PCode id = (PCode)devProp.GetCode();
+			auto iter = Prop.find((PCode)id);
+			if ( iter != end(Prop) ) {
+				parse_para(devProp, id);
+				switch(id) {
+				case PCode::CrDeviceProperty_SdkControlMode:
+					m_modeSDK = (SDK::CrSdkControlMode)Prop.at(id).current;
+					break;
+				}
+			} else {
+	            int nval = 0;
+				switch(id) {
+	            case PCode::CrDeviceProperty_ShutterSpeedValue:
+	                nval = devProp.GetValueSize() / sizeof(std::uint64_t);
+	                m_prop.shutter_speed_value.writable = devProp.IsSetEnableCurrentValue();
+	                m_prop.shutter_speed_value.current = static_cast<std::uint64_t>(devProp.GetCurrentValue());
+	                if (0 < nval) {
+	                    auto parsed_values = parse_uint64(devProp.GetValues(), nval);
+	                    m_prop.shutter_speed_value.possible.swap(parsed_values);
+	                }
+	                break;
+	            case PCode::CrDeviceProperty_LensModelName: {
+	                m_prop.lensModelNameStr.writable = devProp.IsSetEnableCurrentValue();
+	                CrInt16u* pCurrentStr = devProp.GetCurrentStr();
+	                if (pCurrentStr)
+	                {
+	                    m_prop.lensModelNameStr.length = (int)*pCurrentStr;
+	#if defined(WIN32) || defined(_WIN64)//#if defined(_UNICODE) || defined(UNICODE)
+	                    m_prop.lensModelNameStr.current = text((CrChar*)&pCurrentStr[1]);
+	#else
+	                    char buff[128];
+	                    memset(buff, 0, sizeof(buff));
+	                    pCurrentStr++;
+	                    for (int i = 0; i < (m_prop.lensModelNameStr.length - 1); ++i,pCurrentStr++)
+	                    {
+	                        wctomb(&buff[i], (wchar_t)*pCurrentStr);
+	                    }
+	                    if (0 < strlen(buff))
+	                    {
+	                        m_prop.lensModelNameStr.current = text((CrChar*)buff);
+	                    }
+	#endif
+	                }
+	                break;
+	              }
+	            default:
+	                break;
+	            }
+	        }
         }
         SDK::ReleaseDeviceProperties(m_device_handle, prop_list);
     }
-}
-
-void CameraDevice::get_property(SDK::CrDeviceProperty& prop) const
-{
-    SDK::CrDeviceProperty* properties = nullptr;
-    int nprops = 0;
-    SDK::GetDeviceProperties(m_device_handle, &properties, &nprops);
-}
-
-bool CameraDevice::set_property(SDK::CrDeviceProperty& prop) const
-{
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-    return false;
 }
 
 void CameraDevice::getContentsList()
@@ -5012,7 +2518,7 @@ void CameraDevice::getContentsList()
     // check status
     std::int32_t nprop = 0;
     SDK::CrDeviceProperty* prop_list = nullptr;
-    CrInt32u getCode = SDK::CrDevicePropertyCode::CrDeviceProperty_ContentsTransferStatus;
+    CrInt32u getCode = PCode::CrDeviceProperty_ContentsTransferStatus;
     SDK::CrError res = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &prop_list, &nprop);
     bool bExec = false;
     if (CR_SUCCEEDED(res) && (1 == nprop)) {
@@ -5272,28 +2778,6 @@ void CameraDevice::pullContents(SDK::CrContentHandle content)
 
     if (SDK::CrError_None != err)
     {
-
-        /*tout << "[Error] err=0x";
-        std::ostringstream err_hex;
-        err_hex << std::hex << std::uppercase << err;
-        tout << std::dec;
-        std::string err_str = err_hex.str();
-        err_str.erase(std::remove(err_str.begin(), err_str.end(), ','), err_str.end());
-        const char* err_char = err_str.c_str();
-        tout.fill('0');
-        tout.width(4);
-        tout << err_char;
-        tout << ", handle(0x";
-        std::ostringstream content_hex;
-        content_hex << std::hex << std::uppercase << content;
-        tout << std::dec;
-        std::string content_str = content_hex.str();
-        content_str.erase(std::remove(content_str.begin(), content_str.end(), ','), content_str.end());
-        const char* content_char = content_str.c_str();
-        tout.fill('0');
-        tout.width(8);
-        tout << content_char << "), \n";*/
-
         text id(this->get_id());
         text msg = get_message_desc(err);
         if (!msg.empty()) {
@@ -5310,27 +2794,6 @@ void CameraDevice::getScreennail(SDK::CrContentHandle content)
 
     if (SDK::CrError_None != err)
     {
-        /*tout << "[Error] err=0x";
-        std::ostringstream err_hex;
-        err_hex << std::hex << std::uppercase << err;
-        tout << std::dec;
-        std::string err_str = err_hex.str();
-        err_str.erase(std::remove(err_str.begin(), err_str.end(), ','), err_str.end());
-        const char* err_char = err_str.c_str();
-        tout.fill('0');
-        tout.width(4);
-        tout << err_char;
-        tout << ", handle(0x";
-        std::ostringstream content_hex;
-        content_hex << std::hex << std::uppercase << content;
-        tout << std::dec;
-        std::string content_str = content_hex.str();
-        content_str.erase(std::remove(content_str.begin(), content_str.end(), ','), content_str.end());
-        const char* content_char = content_str.c_str();
-        tout.fill('0');
-        tout.width(8);
-        tout << content_char << "), \n";*/
-
         text id(this->get_id());
         text msg = get_message_desc(err);
         if (!msg.empty()) {
@@ -5365,27 +2828,6 @@ void CameraDevice::getThumbnail(SDK::CrContentHandle content)
     SDK::CrError err = SDK::GetContentsThumbnailImage(m_device_handle, content, image_data, &fileType);
     if (CR_FAILED(err))
     {
-        //tout << "[Error] err=0x";
-        //std::ostringstream err_hex;
-        //err_hex << std::hex << std::uppercase << err;
-        //tout << std::dec;
-        //std::string err_str = err_hex.str();
-        //err_str.erase(std::remove(err_str.begin(), err_str.end(), ','), err_str.end());
-        //const char* err_char = err_str.c_str();
-        //tout.fill('0');
-        //tout.width(4);
-        //tout << err_char;
-        //tout << ", handle(0x";
-        //std::ostringstream content_hex;
-        //content_hex << std::hex << std::uppercase << content;
-        //tout << std::dec;
-        //std::string content_str = content_hex.str();
-        //content_str.erase(std::remove(content_str.begin(), content_str.end(), ','), content_str.end());
-        //const char* content_char = content_str.c_str();
-        //tout.fill('0');
-        //tout.width(8);
-        //tout << content_char << "), \n";
-
         text id(this->get_id());
         text msg = get_message_desc(err);
         if (!msg.empty()) {
@@ -5650,9 +3092,9 @@ void CameraDevice::get_mediaprofile()
     get_media_slot_status();
 
     // If there are no slots with OK status, exit
-    if ((0 <= m_prop.media_slot1_status.writable) && (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot1_status.current) 
+    if ((0 <= Prop.at(PCode::CrDeviceProperty_MediaSLOT1_Status).writable) && (SDK::CrSlotStatus::CrSlotStatus_OK != Prop.at(PCode::CrDeviceProperty_MediaSLOT1_Status).current) 
         &&
-        (0 <= m_prop.media_slot2_status.writable) && (SDK::CrSlotStatus::CrSlotStatus_OK != m_prop.media_slot2_status.current)) 
+        (0 <= Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).writable) && (SDK::CrSlotStatus::CrSlotStatus_OK != Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).current)) 
     {
         tout << "\nThere is no SLOT that can display Media profile.\n";
         return;
@@ -5676,20 +3118,20 @@ void CameraDevice::get_mediaprofile()
     {
     case 1:
         slot = SCRSDK::CrMediaProfile_Slot1;
-        if ((SDK::CrSlotStatus::CrSlotStatus_OK == m_prop.media_slot1_status.current) 
+        if ((SDK::CrSlotStatus::CrSlotStatus_OK == Prop.at(PCode::CrDeviceProperty_MediaSLOT1_Status).current) 
             &&
-            (-1 != m_prop.media_slot1_recording_available_type.writable))
+            (-1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType).writable))
             canExec = true;
         break;
     case 2:
         slot = SCRSDK::CrMediaProfile_Slot2;
-        if (-1 == m_prop.media_slot2_status.writable) {
+        if (-1 == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).writable) {
             tout << "Media SLOT2 is not supported.\n";
             selected_index = -1;
         }
-        else if ((SDK::CrSlotStatus::CrSlotStatus_OK == m_prop.media_slot2_status.current)
+        else if ((SDK::CrSlotStatus::CrSlotStatus_OK == Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).current)
             &&
-            (-1 != m_prop.media_slot2_recording_available_type.writable))
+            (-1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType).writable))
             canExec = true;
         break;
     default:
@@ -5780,33 +3222,18 @@ void CameraDevice::get_mediaprofile()
 bool CameraDevice::get_focus_position_setting()
 {
     load_properties();
-    if (m_prop.focus_position_setting.possible.size() < 1) {
+    if (Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.size() < 1) {
         tout << "Focus Position Setting is not supported.\n";
         return false;
     }
 
-    tout << "Focus Position Current Value : ";
-    format_focus_position_value(m_prop.focus_position_current_value.current);
-    tout << "Focus Position Setting min   : ";
-    format_focus_position_value(m_prop.focus_position_setting.possible.at(0));
-    tout << "Focus Position Setting max   : ";
-    format_focus_position_value(m_prop.focus_position_setting.possible.at(1));
-    tout << "Focus Position Setting Step  : ";
-    format_focus_position_value(m_prop.focus_position_setting.possible.at(2));
+    tout << "Focus Position Current Value : " << format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionCurrentValue).current) << std::endl;
+    tout << "Focus Position Setting min   : " << format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(0)) << std::endl;
+    tout << "Focus Position Setting max   : " << format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(1)) << std::endl;
+    tout << "Focus Position Setting Step  : " << format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(2)) << std::endl;
 
-    tout << "Focus Driving Status: " << format_focus_driving_status(m_prop.focus_driving_status.current) << std::endl;
+    tout << "Focus Driving Status: " << format_focus_driving_status(Prop.at(PCode::CrDeviceProperty_FocusDrivingStatus).current) << std::endl;
     return true;
-}
-
-void CameraDevice::format_focus_position_value(uint16_t value)
-{
-    char dspValue[10];
-#if defined (WIN32) || defined(WIN64)
-    sprintf_s(dspValue, sizeof(dspValue), "0x%04X", value);
-#else
-    snprintf(dspValue, sizeof(dspValue), "0x%04X", value);
-#endif
-    tout << dspValue << std::endl;
 }
 
 void CameraDevice::set_focus_position_setting()
@@ -5819,7 +3246,7 @@ void CameraDevice::set_focus_position_setting()
     if (false == get_focus_position_setting())
         return;
 
-    if (1 != m_prop.focus_position_setting.writable) {
+    if (1 != Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).writable) {
         // Not a settable property
         tout << "Focus Position Setting is not writable\n";
         return;
@@ -5854,7 +3281,7 @@ void CameraDevice::set_focus_position_setting()
         return;
     }
 
-    if (((int)m_prop.focus_position_setting.possible.at(0) > value) || ((int)m_prop.focus_position_setting.possible.at(1) < value)) {
+    if (((int)Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(0) > value) || ((int)Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(1) < value)) {
         tout << "\nThe set value is out of range.\n";
         return;
     }
@@ -5863,7 +3290,7 @@ void CameraDevice::set_focus_position_setting()
     format_focus_position_value(value);
 
     SDK::CrDeviceProperty prop;
-    prop.SetCode(SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting);
+    prop.SetCode(PCode::CrDeviceProperty_FocusPositionSetting);
     prop.SetCurrentValue((CrInt64u)value);
     prop.SetValueType(SDK::CrDataType::CrDataType_UInt16);
     SDK::SetDeviceProperty(m_device_handle, &prop);
@@ -5874,12 +3301,12 @@ void CameraDevice::set_focus_position_setting()
     {
         load_properties();
         tout << "Focus Position Current Value : ";
-        format_focus_position_value(m_prop.focus_position_current_value.current);
-        if (m_prop.focus_driving_status.current != SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving)
+        format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionCurrentValue).current);
+        if (Prop.at(PCode::CrDeviceProperty_FocusDrivingStatus).current != SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving)
         {
             break;
         }
-        if (m_prop.focus_driving_status.current == SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving)
+        if (Prop.at(PCode::CrDeviceProperty_FocusDrivingStatus).current == SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving)
         {
             if (true == execute_focus_position_cancel())
             {
@@ -5905,7 +3332,7 @@ bool CameraDevice::execute_focus_position_cancel()
     }
 
     load_properties();
-    if (m_prop.focus_driving_status.current == SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving) {
+    if (Prop.at(PCode::CrDeviceProperty_FocusDrivingStatus).current == SDK::CrFocusDrivingStatus::CrFocusDrivingStatus_Driving) {
         SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_CancelFocusPosition, SDK::CrCommandParam::CrCommandParam_Down);
         //std::this_thread::sleep_for(10ms);
         SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_CancelFocusPosition, SDK::CrCommandParam::CrCommandParam_Up);
@@ -6018,141 +3445,26 @@ std::int32_t CameraDevice::get_live_view(std::uint8_t* buf[])
     return -1;
 }
 
-text CameraDevice::GetFormatMsg(SDK::CrDevicePropertyCode id, std::uint32_t value)
+PCode CameraDevice::Prop_tag2id(std::string tag) const
 {
-	switch(id) {
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type:		return format_remocon_zoom_speed_type(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia:					return format_playback_media(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity:			return format_gain_base_sensitivity(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity:		return format_gain_base_iso_sensitivity(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting:				return format_monitor_lut_setting(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting:				return format_iris_mode_setting(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting:			return format_shutter_mode_setting(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting:			return format_gain_control_setting(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType:				return format_exposure_control_type(value);
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_GaindBValue:					return format_なし(value);
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTint:				return format_なし(value);
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketFocusRange:		return format_なし(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot:	return format_image_stabilization_steady_shot(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot: return format_movie_image_stabilization_steady_shot(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode:					return format_silent_mode(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF:	return format_silent_mode_aperture_drive_in_af(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff:	return format_silent_mode_shutter_when_power_off(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping:	return format_silent_mode_auto_pixel_mapping(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType:					return format_shutter_type(value);
-
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber:						return format_f_number(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings:			return format_position_key_setting(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode:						return format_focus_mode(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea:						return format_focus_area(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality:		return format_live_view_image_quality(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance:					return format_white_balance(value);
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureIndex:					return format_exposure_index(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue:					return format_baselook_value(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting:		return format_recording_setting(value);
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketShotNumber:		return format_なし(value);
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting:			return format_focus_position_setting(value);
-
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity:				return format_iso_sensitivity(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed:					return format_shutter_speed(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:			return format_exposure_program_mode(value);
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:						return format_still_capture_mode(value);
-
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:				return format_focus_indication(value);
-	default:
-		return TEXT("");
+	for (const auto& _prop : Prop) {
+		if(_prop.second.tag == tag) {
+			return _prop.first;
+		}
 	}
+	return (PCode)0;
 }
 
-void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop)
-{
-	switch(id) {
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type:		prop = m_prop.remocon_zoom_speed_type; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia:					prop = m_prop.playback_media; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity:			prop = m_prop.gain_base_sensitivity; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity:		prop = m_prop.gain_base_iso_sensitivity; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting:				prop = m_prop.monitor_lut_setting; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting:				prop = m_prop.iris_mode_setting; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting:			prop = m_prop.shutter_mode_setting; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting:			prop = m_prop.gain_control_setting; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType:				prop = m_prop.exposure_control_type; break;
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_GaindBValue:					prop = m_prop.gain_db_value; break;
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalanceTint:				prop = m_prop.white_balance_tint; break;
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketFocusRange:		prop = m_prop.focus_bracket_focus_range; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot:	prop = m_prop.image_stabilization_steady_shot; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot:prop = m_prop.movie_image_stabilization_steady_shot; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode:					prop = m_prop.silent_mode; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF:	prop = m_prop.silent_mode_aperture_drive_in_af; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff:	prop = m_prop.silent_mode_shutter_when_power_off; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping:	prop = m_prop.silent_mode_auto_pixel_mapping; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType:					prop = m_prop.shutter_type; break;
-	default:
-        tout << "unknown(" << __LINE__ << ")\n";
-		break;
-	}
-}
-
-void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop)
-{
-	switch(id) {
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FNumber:						prop = m_prop.f_number; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings:			prop = m_prop.position_key_setting; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode:						prop = m_prop.focus_mode; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea:						prop = m_prop.focus_area; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality:		prop = m_prop.live_view_image_quality; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance:					prop = m_prop.white_balance; break;
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureIndex:					prop = m_prop.exposure_index; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue:					prop = m_prop.baselook_value; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting:		prop = m_prop.recording_setting; break;
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusBracketShotNumber:		prop = m_prop.focus_bracket_shot_num; break;
-//	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusPositionSetting:			prop = m_prop.focus_position_setting; break;
-	default:
-        tout << "unknown(" << __LINE__ << ")\n";
-		break;
-	}
-}
-
-void CameraDevice::_getProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop)
-{
-	switch(id) {
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity:				prop = m_prop.iso_sensitivity; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed:					prop = m_prop.shutter_speed; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode:			prop = m_prop.exposure_program_mode; break;
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode:						prop = m_prop.still_capture_mode; break;
-
-	case SDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication:				prop = m_prop.focus_indication; break;
-	default:
-        tout << "unknown(" << __LINE__ << ")\n";
-		break;
-	}
-}
-
-void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint8_t>& prop)
+struct PropertyValue* CameraDevice::GetProp(PCode id)
 {
 	CrInt32u code = static_cast<CrInt32u>(id);
 	load_properties(1, &code);
-	CameraDevice::_getProp(id, prop);
+	return &Prop.at(id);
 }
 
-void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint16_t>& prop)
+std::int32_t CameraDevice::SetProp(PCode id, std::uint32_t value) const
 {
-	CrInt32u code = static_cast<CrInt32u>(id);
-	load_properties(1, &code);
-	CameraDevice::_getProp(id, prop);
-}
-
-void CameraDevice::GetProp(SDK::CrDevicePropertyCode id, PropertyValueEntry<std::uint32_t>& prop)
-{
-	CrInt32u code = static_cast<CrInt32u>(id);
-	load_properties(1, &code);
-	CameraDevice::_getProp(id, prop);
-}
-
-std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint8_t value)
-{
-	PropertyValueEntry<std::uint8_t> prop;
-	CameraDevice::_getProp(id, prop);
-	if (1 != prop.writable) {
+	if (0 == Prop.at(id).writable) {
 		tout << "not writable\n";
 		return -1;
 	}
@@ -6160,39 +3472,7 @@ std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint8_t value)
 	SDK::CrDeviceProperty devProp;
 	devProp.SetCode(id);
 	devProp.SetCurrentValue(value);
-	devProp.SetValueType(SDK::CrDataType::CrDataType_UInt8Array);
-	return SDK::SetDeviceProperty(m_device_handle, &devProp);
-}
-
-std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint16_t value)
-{
-	PropertyValueEntry<std::uint16_t> prop;
-	CameraDevice::_getProp(id, prop);
-	if (1 != prop.writable) {
-		tout << "not writable\n";
-		return -1;
-	}
-
-	SDK::CrDeviceProperty devProp;
-	devProp.SetCode(id);
-	devProp.SetCurrentValue(value);
-	devProp.SetValueType(SDK::CrDataType::CrDataType_UInt16Array);
-	return SDK::SetDeviceProperty(m_device_handle, &devProp);
-}
-
-std::int32_t CameraDevice::SetProp(SDK::CrDevicePropertyCode id, uint32_t value)
-{
-	PropertyValueEntry<std::uint32_t> prop;
-	CameraDevice::_getProp(id, prop);
-	if (1 != prop.writable) {
-		tout << "not writable\n";
-		return -1;
-	}
-
-	SDK::CrDeviceProperty devProp;
-	devProp.SetCode(id);
-	devProp.SetCurrentValue(value);
-	devProp.SetValueType(SDK::CrDataType::CrDataType_UInt32Array);
+	devProp.SetValueType(Prop.at(id).dataType);
 	return SDK::SetDeviceProperty(m_device_handle, &devProp);
 }
 

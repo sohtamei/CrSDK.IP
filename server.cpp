@@ -21,6 +21,7 @@
 
 #include "app/CRSDK/CameraRemote_SDK.h"
 #include "app/CameraDevice.h"
+#include "app/PropertyValueTable.h"
 #include "server.h"
 
 namespace beast = boost::beast;         // from <boost/beast.hpp>
@@ -55,235 +56,70 @@ void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 	ws.write(resp_buffer.data());
 }
 
-void sendProp8(websocket::stream<tcp::socket>& ws,
+void sendProp(websocket::stream<tcp::socket>& ws,
 	SCRSDK::CrDevicePropertyCode id,
 	bool sendPossible)
 {
-	cli::PropertyValueEntry<std::uint8_t> prop;
-	camera->GetProp(id, prop);
+	struct cli::PropertyValue* prop = camera->GetProp(id);
 
 	pt::ptree resp_tree;
 	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(camera->GetFormatMsg(id, prop.current)));
-	item_tree.put("value", std::to_string(prop.current));
+	item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->current)));
+	item_tree.put("value", std::to_string(prop->current));
 	resp_tree.add_child("current", item_tree);
 
 	pt::ptree sub_tree;
 	int index = -1;
-	for(int i = 0; i < prop.possible.size(); i++) {
-		if(prop.current == prop.possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(camera->GetFormatMsg(id, prop.possible[i])));
-		item_tree.put("value", std::to_string(prop.possible[i]));
+	for(int i = 0; i < prop->possible.size(); i++) {
+		if(prop->current == prop->possible[i]) index = i;
+		item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->possible[i])));
+		item_tree.put("value", std::to_string(prop->possible[i]));
 		sub_tree.push_back(std::make_pair("", item_tree));
 	}
 	if(sendPossible)
 		resp_tree.add_child("possible", sub_tree);
 
 	std::string incrementable = "none";
-	if(prop.writable != 1)
+	if(prop->writable != 1)
 		;
 	else if(index == 0)
 		incrementable = "inc";
-	else if(index == prop.possible.size()-1)
+	else if(index == prop->possible.size()-1)
 		incrementable = "dec";
-	else if(index > 0 && index < prop.possible.size()-1)
+	else if(index > 0 && index < prop->possible.size()-1)
 		incrementable = "incdec";
 	resp_tree.put("incrementable", incrementable);
 
 	write_json(ws, resp_tree);
 }
 
-void sendProp16(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	bool sendPossible)
-{
-	cli::PropertyValueEntry<std::uint16_t> prop;
-	camera->GetProp(id, prop);
-
-	pt::ptree resp_tree;
-	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(camera->GetFormatMsg(id, prop.current)));
-	item_tree.put("value", std::to_string(prop.current));
-	resp_tree.add_child("current", item_tree);
-
-	pt::ptree sub_tree;
-	int index = -1;
-	for(int i = 0; i < prop.possible.size(); i++) {
-		if(prop.current == prop.possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(camera->GetFormatMsg(id, prop.possible[i])));
-		item_tree.put("value", std::to_string(prop.possible[i]));
-		sub_tree.push_back(std::make_pair("", item_tree));
-	}
-	if(sendPossible)
-		resp_tree.add_child("possible", sub_tree);
-
-	std::string incrementable = "none";
-	if(prop.writable != 1)
-		;
-	else if(index == 0)
-		incrementable = "inc";
-	else if(index == prop.possible.size()-1)
-		incrementable = "dec";
-	else if(index > 0 && index < prop.possible.size()-1)
-		incrementable = "incdec";
-	resp_tree.put("incrementable", incrementable);
-
-	write_json(ws, resp_tree);
-}
-
-void sendProp32(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	bool sendPossible)
-{
-	cli::PropertyValueEntry<std::uint32_t> prop;
-	camera->GetProp(id, prop);
-
-	pt::ptree resp_tree;
-	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(camera->GetFormatMsg(id, prop.current)));
-	item_tree.put("value", std::to_string(prop.current));
-	resp_tree.add_child("current", item_tree);
-
-	pt::ptree sub_tree;
-	int index = -1;
-	for(int i = 0; i < prop.possible.size(); i++) {
-		if(prop.current == prop.possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(camera->GetFormatMsg(id, prop.possible[i])));
-		item_tree.put("value", std::to_string(prop.possible[i]));
-		sub_tree.push_back(std::make_pair("", item_tree));
-	}
-	if(sendPossible)
-		resp_tree.add_child("possible", sub_tree);
-
-	std::string incrementable = "none";
-	if(prop.writable != 1)
-		;
-	else if(index == 0)
-		incrementable = "inc";
-	else if(index == prop.possible.size()-1)
-		incrementable = "dec";
-	else if(index > 0 && index < prop.possible.size()-1)
-		incrementable = "incdec";
-	resp_tree.put("incrementable", incrementable);
-
-	write_json(ws, resp_tree);
-}
-
-void incProp8(websocket::stream<tcp::socket>& ws,
+void incProp(websocket::stream<tcp::socket>& ws,
 	SCRSDK::CrDevicePropertyCode id,
 	bool inc_dec)
 {
-	cli::PropertyValueEntry<std::uint8_t> prop;
-	camera->GetProp(id, prop);
+	struct cli::PropertyValue* prop = camera->GetProp(id);
 
-	if(prop.writable == 1) {
-		for(int i = 0; i < prop.possible.size(); i++) {
-			if(prop.current == prop.possible[i]) {
+	if(prop->writable == 1) {
+		for(int i = 0; i < prop->possible.size(); i++) {
+			if(prop->current == prop->possible[i]) {
 				int index = i;
 				if(inc_dec) index++;
 				else index--;
-				if(index >= 0 && index <= prop.possible.size()-1) {
-					camera->SetProp(id, prop.possible[index]);
+				if(index >= 0 && index <= prop->possible.size()-1) {
+					camera->SetProp(id, prop->possible[index]);
 				}
 				break;
 			}
 		}
 	}
 	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	sendProp8(ws, id, false);
+	sendProp(ws, id, false);
 }
 
-void incProp16(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	bool inc_dec)
-{
-	cli::PropertyValueEntry<std::uint16_t> prop;
-	camera->GetProp(id, prop);
-
-	if(prop.writable == 1) {
-		for(int i = 0; i < prop.possible.size(); i++) {
-			if(prop.current == prop.possible[i]) {
-				int index = i;
-				if(inc_dec) index++;
-				else index--;
-				if(index >= 0 && index <= prop.possible.size()-1) {
-					camera->SetProp(id, prop.possible[index]);
-				}
-				break;
-			}
-		}
-	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	sendProp16(ws, id, false);
-}
-
-void incProp32(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	bool inc_dec)
-{
-	cli::PropertyValueEntry<std::uint32_t> prop;
-	camera->GetProp(id, prop);
-
-	if(prop.writable == 1) {
-		for(int i = 0; i < prop.possible.size(); i++) {
-			if(prop.current == prop.possible[i]) {
-				int index = i;
-				if(inc_dec) index++;
-				else index--;
-				if(index >= 0 && index <= prop.possible.size()-1) {
-					camera->SetProp(id, prop.possible[index]);
-				}
-				break;
-			}
-		}
-	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
-	sendProp32(ws, id, false);
-}
-
-void opeProp8(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	std::string ope)
-{
-	if(ope == "get") {
-		sendProp8(ws, id, true/*sendPossible*/);
-	} else if(ope == "inc") {
-		incProp8(ws, id, true/*inc_dec*/);
-	} else if(ope == "dec") {
-		incProp8(ws, id, false/*inc_dec*/);
-	}
-}
-
-void opeProp16(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	std::string ope)
-{
-	if(ope == "get") {
-		sendProp16(ws, id, true/*sendPossible*/);
-	} else if(ope == "inc") {
-		incProp16(ws, id, true/*inc_dec*/);
-	} else if(ope == "dec") {
-		incProp16(ws, id, false/*inc_dec*/);
-	}
-}
-
-void opeProp32(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id,
-	std::string ope)
-{
-	if(ope == "get") {
-		sendProp32(ws, id, true/*sendPossible*/);
-	} else if(ope == "inc") {
-		incProp32(ws, id, true/*inc_dec*/);
-	} else if(ope == "dec") {
-		incProp32(ws, id, false/*inc_dec*/);
-	}
-}
-
-void SendProp32(SCRSDK::CrDevicePropertyCode id)
+void SendProp(SCRSDK::CrDevicePropertyCode id)
 {
 	if(p_ws) {
-		sendProp32(*p_ws, id, false);
+		sendProp(*p_ws, id, false);
 	}
 }
 
@@ -371,40 +207,19 @@ void do_thread_ws(void)
 							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity, value);
 						} else {
-							std::string ope = cmd_tree.get<std::string>("ope");
-							if(0) {
-							} else if (cmd == "remocon_Zoom_Speed_Type") {			opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_Remocon_Zoom_Speed_Type, ope); continue;
-							} else if (cmd == "playbackMedia") {					opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_PlaybackMedia, ope); continue;
-							} else if (cmd == "gainBaseSensitivity") {				opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseSensitivity, ope); continue;
-							} else if (cmd == "gainBaseIsoSensitivity") {			opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_GainBaseIsoSensitivity, ope); continue;
-							} else if (cmd == "monitorLUTSetting") {				opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_MonitorLUTSetting, ope); continue;
-							} else if (cmd == "irisModeSetting") {					opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IrisModeSetting, ope); continue;
-							} else if (cmd == "shutterModeSetting") {				opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ShutterModeSetting, ope); continue;
-							} else if (cmd == "gainControlSetting") {				opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_GainControlSetting, ope); continue;
-							} else if (cmd == "exposureCtrlType") {					opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ExposureCtrlType, ope); continue;
-							} else if (cmd == "imageStabilizationSteadyShot") {		opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ImageStabilizationSteadyShot, ope); continue;
-							} else if (cmd == "movie_ImageStabilizationSteadyShot") {opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot, ope); continue;
-							} else if (cmd == "silentMode") {						opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_SilentMode, ope); continue;
-							} else if (cmd == "silentModeApertureDriveInAF") {		opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeApertureDriveInAF, ope); continue;
-							} else if (cmd == "silentModeShutterWhenPowerOff") {	opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeShutterWhenPowerOff, ope); continue;
-							} else if (cmd == "silentModeAutoPixelMapping") {		opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_SilentModeAutoPixelMapping, ope); continue;
-							} else if (cmd == "shutterType") {						opeProp8(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ShutterType, ope); continue;
-
-							} else if (cmd == "aperture") {						opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FNumber, ope); continue;
-							} else if (cmd == "priorityKeySettings") {			opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_PriorityKeySettings, ope); continue;
-							} else if (cmd == "focusMode") {					opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FocusMode, ope); continue;
-							} else if (cmd == "focusArea") {					opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FocusArea, ope); continue;
-							} else if (cmd == "liveView_Image_Quality") {		opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, ope); continue;
-							} else if (cmd == "whiteBalance") {					opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_WhiteBalance, ope); continue;
-							} else if (cmd == "baseLookValue") {				opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_BaseLookValue, ope); continue;
-							} else if (cmd == "movie_Recording_Setting") {		opeProp16(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_Movie_Recording_Setting, ope); continue;
-
-							} else if (cmd == "iso") {							opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity, ope); continue;
-							} else if (cmd == "shutterSpeed") {					opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed, ope); continue;
-							} else if (cmd == "exposureProgramMode") {			opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ExposureProgramMode, ope); continue;
-							} else if (cmd == "driveMode") {					opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_DriveMode, ope); continue;
-
-							} else if (cmd == "focusIndication") {				opeProp32(ws, SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FocusIndication, ope); continue;
+							SCRSDK::CrDevicePropertyCode id = camera->Prop_tag2id(cmd);
+							if(id) {
+								std::string ope = cmd_tree.get<std::string>("ope");
+								if(ope == "set") {
+									std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
+									camera->SetProp(id, value);
+								} else if(ope == "get") {
+									sendProp(ws, id, true/*sendPossible*/);
+								} else if(ope == "inc") {
+									incProp(ws, id, true/*inc_dec*/);
+								} else if(ope == "dec") {
+									incProp(ws, id, false/*inc_dec*/);
+								}
 							} else {
 								std::clog << "unknown command" << std::endl;
 							}
