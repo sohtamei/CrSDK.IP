@@ -64,7 +64,14 @@ void sendProp(websocket::stream<tcp::socket>& ws,
 
 	pt::ptree resp_tree;
 	pt::ptree item_tree;
-	item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->current)));
+	if(prop->mapEnum) {
+		auto iter = prop->mapEnum->find(prop->current);
+		if(iter != end(*prop->mapEnum)) {
+			item_tree.put("text", iter->second);
+		}
+	} else if(prop->formatFunc) {
+		item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->current)));
+	}
 	item_tree.put("value", std::to_string(prop->current));
 	resp_tree.add_child("current", item_tree);
 
@@ -72,7 +79,14 @@ void sendProp(websocket::stream<tcp::socket>& ws,
 	int index = -1;
 	for(int i = 0; i < prop->possible.size(); i++) {
 		if(prop->current == prop->possible[i]) index = i;
-		item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->possible[i])));
+		if(prop->mapEnum) {
+			auto iter = prop->mapEnum->find(prop->possible[i]);
+			if(iter != end(*prop->mapEnum)) {
+				item_tree.put("text", iter->second);
+			}
+		} else if(prop->formatFunc) {
+			item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->possible[i])));
+		}
 		item_tree.put("value", std::to_string(prop->possible[i]));
 		sub_tree.push_back(std::make_pair("", item_tree));
 	}

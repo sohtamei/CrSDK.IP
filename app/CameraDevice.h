@@ -190,16 +190,11 @@ public:
 	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint32_t value) const;
 
-void parse_para(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
+private:
+	void parse_para(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
+	std::vector<std::uint64_t> parse_uint64(unsigned char const* buf, std::uint32_t nval);
 
-std::vector<std::uint32_t> parse_para(unsigned char const* buf, std::uint32_t nval);
-std::vector<std::uint32_t> parse_int8(unsigned char const* buf, std::uint32_t nval);
-std::vector<std::uint32_t> parse_uint8(unsigned char const* buf, std::uint32_t nval);
-std::vector<std::uint32_t> parse_int16(unsigned char const* buf, std::int32_t nval);
-std::vector<std::uint32_t> parse_uint16(unsigned char const* buf, std::uint32_t nval);
-std::vector<std::uint32_t> parse_uint32(unsigned char const* buf, std::uint32_t nval);
-std::vector<std::uint64_t> parse_uint64(unsigned char const* buf, std::uint32_t nval);
-
+	std::string PropCurrentText(SCRSDK::CrDevicePropertyCode id) const;
 };
 } // namespace cli
 

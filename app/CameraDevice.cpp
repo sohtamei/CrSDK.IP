@@ -7,6 +7,7 @@
 #include <windows.h>
 #include <memory>
 #include <map>
+#include <iostream>
 
 // TODO: reference additional headers your program requires here
 #pragma warning (push)
@@ -88,96 +89,421 @@ using PCode = SDK::CrDevicePropertyCode;
 
 //(.*)\t(.*)\t(.*)\t(.*)\t(.*)\t(.*)
 //	{ PCode::CrDeviceProperty_\2,	{ -1, SDK::CrDataType::CrDataType_\4, Possible\5, "\1",		format_\6, } },
+//	{ PCode::CrDeviceProperty_\2,	{ -1, SDK::CrDataType::CrDataType_\3, "\1", format_\6, &map_\5, } },
 //Prop.at(PCode::CrDeviceProperty_FNumber)
 
 //LensModelName		m_prop.lensModelNameStr
 //shutter_speed_value	m_prop.shutter_speed_values
 //CrDeviceProperty_ContentsTransferStatus
-//CrDeviceProperty_LensModelName
 //CrDeviceProperty_Media_FormatProgressRate
+//CrDeviceProperty_LensModelName
 //CrDeviceProperty_ShutterSpeedValue
 
+#include "CrDeviceProperty.cpp"
 
 std::map<PCode, struct PropertyValue> Prop {
-	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "aps_c_or_Full_SwitchingEnableStatus",		format_aps_c_or_full_switching_enable_status, } },
-	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "aps_c_or_Full_SwitchingSetting",		format_aps_c_or_full_switching_setting, } },
-	{ PCode::CrDeviceProperty_BaseLookValue,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "baseLookValue",		format_baselook_value, } },
-	{ PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSetting_ReadOperationEnableStatus",		format_camera_setting_read_operation, } },
-	{ PCode::CrDeviceProperty_CameraSettingsResetEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSettingsResetEnableStatus",		format_camera_setting_reset_enable_status, } },
-	{ PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSetting_SaveOperationEnableStatus",		format_camera_setting_save_operation, } },
-	{ PCode::CrDeviceProperty_CameraSetting_SaveRead_State,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "cameraSetting_SaveRead_State",		format_camera_setting_save_read_state, } },
-	{ PCode::CrDeviceProperty_CustomWB_Execution_State,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Execution_State",		format_customwb_capture_execution_state, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Operation,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Capture_Operation",		format_customwb_capture_operation, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Capture_Standby",		format_customwb_capture_standby, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "customWB_Capture_Standby_Cancel",		format_customwb_capture_standby_cancel, } },
-	{ PCode::CrDeviceProperty_DispMode,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "dispMode",		format_dispmode, } },
-	{ PCode::CrDeviceProperty_ExposureCtrlType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "exposureCtrlType",		format_exposure_control_type, } },
-	{ PCode::CrDeviceProperty_ExposureProgramMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "exposureProgramMode",		format_exposure_program_mode, } },
-	{ PCode::CrDeviceProperty_FNumber,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "aperture",		format_f_number, } },
-	{ PCode::CrDeviceProperty_FocusArea,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "focusArea",		format_focus_area, } },
-	{ PCode::CrDeviceProperty_FocusDrivingStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "focusDrivingStatus",		format_focus_driving_status, } },
-	{ PCode::CrDeviceProperty_FocusIndication,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "focusIndication",		format_focus_indication, } },
-	{ PCode::CrDeviceProperty_FocusMode,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "focusMode",		format_focus_mode, } },
-	{ PCode::CrDeviceProperty_FocusPositionCurrentValue,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "focusPositionCurrentValue",		format_focus_position_value, } },
-	{ PCode::CrDeviceProperty_GainBaseIsoSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "gainBaseIsoSensitivity",		format_gain_base_iso_sensitivity, } },
-	{ PCode::CrDeviceProperty_GainBaseSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "gainBaseSensitivity",		format_gain_base_sensitivity, } },
-	{ PCode::CrDeviceProperty_GainControlSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "gainControlSetting",		format_gain_control_setting, } },
-	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShot,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "imageStabilizationSteadyShot",		format_image_stabilization_steady_shot, } },
-	{ PCode::CrDeviceProperty_IrisModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "irisModeSetting",		format_iris_mode_setting, } },
-	{ PCode::CrDeviceProperty_IsoSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "iso",		format_iso_sensitivity, } },
-	{ PCode::CrDeviceProperty_IsoCurrentSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "isoCurrentSensitivity",		format_iso_sensitivity, } },
-	{ PCode::CrDeviceProperty_LiveView_Image_Quality,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "liveView_Image_Quality",		format_live_view_image_quality, } },
-	{ PCode::CrDeviceProperty_S1,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "S1",		format_lock_indicator, } },
-	{ PCode::CrDeviceProperty_FEL,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "FEL",		format_lock_indicator, } },
-	{ PCode::CrDeviceProperty_AWBL,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "AWBL",		format_lock_indicator, } },
-	{ PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT1_FormatEnableStatus",		format_media_slotx_format_enable_status, } },
-	{ PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT1_QuickFormatEnableStatus",		format_media_slotx_format_enable_status, } },
-	{ PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT2_FormatEnableStatus",		format_media_slotx_format_enable_status, } },
-	{ PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT2_QuickFormatEnableStatus",		format_media_slotx_format_enable_status, } },
-	{ PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT1_RecordingAvailableType",		format_media_slotx_rec_available, } },
-	{ PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "mediaSLOT2_RecordingAvailableType",		format_media_slotx_rec_available, } },
-	{ PCode::CrDeviceProperty_MediaSLOT1_Status,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "mediaSLOT1_Status",		format_media_slotx_status, } },
-	{ PCode::CrDeviceProperty_MediaSLOT2_Status,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "mediaSLOT2_Status",		format_media_slotx_status, } },
-	{ PCode::CrDeviceProperty_MonitorLUTSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "monitorLUTSetting",		format_monitor_lut_setting, } },
-	{ PCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "movie_ImageStabilizationSteadyShot",		format_movie_image_stabilization_steady_shot, } },
-	{ PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "movieRecButtonToggleEnableStatus",		format_movie_rec_button_toggle_enable_status, } },
-	{ PCode::CrDeviceProperty_MovieShootingMode,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "movieShootingMode",		format_movie_shooting_mode, } },
-	{ PCode::CrDeviceProperty_DispModeCandidate,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "dispModeCandidate",		format_number, } },
-	{ PCode::CrDeviceProperty_DispModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "dispModeSetting",		format_number, } },
-	{ PCode::CrDeviceProperty_ExposureIndex,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "exposureIndex",		format_number, } },
-	{ PCode::CrDeviceProperty_ZoomDistance,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleRange, "zoomDistance",		format_number, } },
-	{ PCode::CrDeviceProperty_WhiteBalanceTint,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "whiteBalanceTint",		format_number, } },
-	{ PCode::CrDeviceProperty_WhiteBalanceTintStep,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleRange, "whiteBalanceTintStep",		format_number, } },
-	{ PCode::CrDeviceProperty_GaindBValue,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "gaindBValue",		format_number, } },
-	{ PCode::CrDeviceProperty_FocusBracketShotNumber,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleRange, "focusBracketShotNumber",		format_number, } },
-	{ PCode::CrDeviceProperty_FocusBracketFocusRange,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "focusBracketFocusRange",		format_number, } },
-	{ PCode::CrDeviceProperty_FocusPositionSetting,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleRange, "focusPositionSetting",		format_number, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleNone, "customWB_Capture",		format_number, } },
-	{ PCode::CrDeviceProperty_AF_Area_Position,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleNone, "af_Area_Position",		format_number, } },
-	{ PCode::CrDeviceProperty_Zoom_Bar_Information,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleNone, "zoom_Bar_Information",		format_number, } },
-	{ PCode::CrDeviceProperty_Zoom_Speed_Range,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleRange, "zoom_Speed_Range",		format_number, } },
-	{ PCode::CrDeviceProperty_Zoom_Operation,	{ -1, SDK::CrDataType::CrDataType_Int8, PossibleRange, "zoom_Operation",		format_number, } },
-	{ PCode::CrDeviceProperty_PlaybackMedia,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "playbackMedia",		format_playback_media, } },
-	{ PCode::CrDeviceProperty_PriorityKeySettings,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "priorityKeySettings",		format_position_key_setting, } },
-	{ PCode::CrDeviceProperty_Movie_Recording_Setting,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "movie_Recording_Setting",		format_recording_setting, } },
-	{ PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "remocon_Zoom_Speed_Type",		format_remocon_zoom_speed_type, } },
-	{ PCode::CrDeviceProperty_SdkControlMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "sdkControlMode",		format_SdkControlMode, } },
-	{ PCode::CrDeviceProperty_ShutterModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "shutterModeSetting",		format_shutter_mode_setting, } },
-	{ PCode::CrDeviceProperty_ShutterSpeed,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "shutterSpeed",		format_shutter_speed, } },
-//	{ PCode::CrDeviceProperty_ShutterSpeedValue,	{ -1, SDK::CrDataType::CrDataType_UInt64, PossibleList, "shutterSpeedValue",		format_shutter_speed_value, } },
-	{ PCode::CrDeviceProperty_ShutterType,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "shutterType",		format_shutter_type, } },
-	{ PCode::CrDeviceProperty_SilentMode,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentMode",		format_silent_mode, } },
-	{ PCode::CrDeviceProperty_SilentModeApertureDriveInAF,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentModeApertureDriveInAF",		format_silent_mode_aperture_drive_in_af, } },
-	{ PCode::CrDeviceProperty_SilentModeAutoPixelMapping,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentModeAutoPixelMapping",		format_silent_mode_auto_pixel_mapping, } },
-	{ PCode::CrDeviceProperty_SilentModeShutterWhenPowerOff,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "silentModeShutterWhenPowerOff",		format_silent_mode_shutter_when_power_off, } },
-	{ PCode::CrDeviceProperty_DriveMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, PossibleList, "driveMode",		format_still_capture_mode, } },
-	{ PCode::CrDeviceProperty_WhiteBalance,	{ -1, SDK::CrDataType::CrDataType_UInt16, PossibleList, "whiteBalance",		format_white_balance, } },
-	{ PCode::CrDeviceProperty_Zoom_Operation_Status,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoom_Operation_Status",		format_zoom_operation_status, } },
-	{ PCode::CrDeviceProperty_Zoom_Setting,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoom_Setting",		format_zoom_setting_type, } },
-	{ PCode::CrDeviceProperty_Zoom_Type_Status,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoom_Type_Status",		format_zoom_types_status, } },
 
-	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Save,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoomAndFocusPosition_Save",		format_number, } },
-	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Load,	{ -1, SDK::CrDataType::CrDataType_UInt8, PossibleList, "zoomAndFocusPosition_Load",		format_number, } },
+	{ PCode::CrDeviceProperty_AEL,	{ -1, SDK::CrDataType::CrDataType_UInt16, "AEL", 0, &map_CrLockIndicator, } },
+	{ PCode::CrDeviceProperty_AF_Area_Position,	{ -1, SDK::CrDataType::CrDataType_UInt32, "af_Area_Position", 0, 0, } },
+	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "aps_c_or_Full_SwitchingEnableStatus", 0, &map_CrAPS_C_or_Full_SwitchingEnableStatus, } },
+	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, "aps_c_or_Full_SwitchingSetting", 0, &map_CrAPS_C_or_Full_SwitchingSetting, } },
+	{ PCode::CrDeviceProperty_AWBL,	{ -1, SDK::CrDataType::CrDataType_UInt16, "AWBL", 0, &map_CrLockIndicator, } },
+	{ PCode::CrDeviceProperty_BaseLookValue,	{ -1, SDK::CrDataType::CrDataType_UInt16, "baseLookValue", 0, 0, } },
+	{ PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "cameraSetting_ReadOperationEnableStatus", 0, &map_CrCameraSettingReadOperation, } },
+	{ PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "cameraSetting_SaveOperationEnableStatus", 0, &map_CrCameraSettingSaveOperation, } },
+	{ PCode::CrDeviceProperty_CameraSetting_SaveRead_State,	{ -1, SDK::CrDataType::CrDataType_UInt8, "cameraSetting_SaveRead_State", 0, &map_CrCameraSettingSaveReadState, } },
+	{ PCode::CrDeviceProperty_CameraSettingsResetEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "cameraSettingsResetEnableStatus", 0, &map_CrCameraSettingsResetEnableStatus, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture,	{ -1, SDK::CrDataType::CrDataType_UInt32, "customWB_Capture", 0, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Operation,	{ -1, SDK::CrDataType::CrDataType_UInt16, "customWB_Capture_Operation", 0, &map_CrPropertyCustomWBOperation, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, SDK::CrDataType::CrDataType_UInt16, "customWB_Capture_Standby", 0, &map_CrPropertyCustomWBOperation, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, SDK::CrDataType::CrDataType_UInt16, "customWB_Capture_Standby_Cancel", 0, &map_CrPropertyCustomWBOperation, } },
+	{ PCode::CrDeviceProperty_CustomWB_Execution_State,	{ -1, SDK::CrDataType::CrDataType_UInt16, "customWB_Execution_State", 0, &map_CrPropertyCustomWBExecutionState, } },
+	{ PCode::CrDeviceProperty_DispMode,	{ -1, SDK::CrDataType::CrDataType_UInt8, "dispMode", 0, &map_CrDispMode, } },
+	{ PCode::CrDeviceProperty_DispModeCandidate,	{ -1, SDK::CrDataType::CrDataType_UInt32, "dispModeCandidate", 0, 0, } },
+	{ PCode::CrDeviceProperty_DispModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt32, "dispModeSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_DriveMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, "driveMode", 0, &map_CrDriveMode, } },
+	{ PCode::CrDeviceProperty_ExposureBiasCompensation,	{ -1, SDK::CrDataType::CrDataType_UInt16, "exposureBiasCompensation", format_f_number, 0, } },
+	{ PCode::CrDeviceProperty_ExposureCtrlType,	{ -1, SDK::CrDataType::CrDataType_UInt8, "exposureCtrlType", 0, &map_CrExposureCtrlType, } },
+	{ PCode::CrDeviceProperty_ExposureIndex,	{ -1, SDK::CrDataType::CrDataType_UInt16, "exposureIndex", 0, 0, } },
+	{ PCode::CrDeviceProperty_ExposureProgramMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, "exposureProgramMode", 0, &map_CrExposureProgram, } },
+	{ PCode::CrDeviceProperty_FEL,	{ -1, SDK::CrDataType::CrDataType_UInt16, "FEL", 0, &map_CrLockIndicator, } },
+	{ PCode::CrDeviceProperty_FlashCompensation,	{ -1, SDK::CrDataType::CrDataType_UInt16, "flashCompensation", format_f_number, 0, } },
+	{ PCode::CrDeviceProperty_FNumber,	{ -1, SDK::CrDataType::CrDataType_UInt16, "aperture", format_f_number, 0, } },
+	{ PCode::CrDeviceProperty_FocusArea,	{ -1, SDK::CrDataType::CrDataType_UInt16, "focusArea", 0, &map_CrFocusArea, } },
+	{ PCode::CrDeviceProperty_FocusBracketFocusRange,	{ -1, SDK::CrDataType::CrDataType_UInt8, "focusBracketFocusRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocusBracketShotNumber,	{ -1, SDK::CrDataType::CrDataType_UInt16, "focusBracketShotNumber", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocusDrivingStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "focusDrivingStatus", 0, &map_CrFocusDrivingStatus, } },
+	{ PCode::CrDeviceProperty_FocusIndication,	{ -1, SDK::CrDataType::CrDataType_UInt32, "focusIndication", 0, &map_CrFocusIndicator, } },
+	{ PCode::CrDeviceProperty_FocusMode,	{ -1, SDK::CrDataType::CrDataType_UInt16, "focusMode", 0, &map_CrFocusMode, } },
+	{ PCode::CrDeviceProperty_FocusPositionCurrentValue,	{ -1, SDK::CrDataType::CrDataType_UInt16, "focusPositionCurrentValue", format_focus_position_value, 0, } },
+	{ PCode::CrDeviceProperty_FocusPositionSetting,	{ -1, SDK::CrDataType::CrDataType_UInt16, "focusPositionSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_GainBaseIsoSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt8, "gainBaseIsoSensitivity", 0, &map_CrGainBaseIsoSensitivity, } },
+	{ PCode::CrDeviceProperty_GainBaseSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt8, "gainBaseSensitivity", 0, &map_CrGainBaseSensitivity, } },
+	{ PCode::CrDeviceProperty_GainControlSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, "gainControlSetting", 0, &map_CrGainControlSetting, } },
+	{ PCode::CrDeviceProperty_GaindBValue,	{ -1, SDK::CrDataType::CrDataType_UInt8, "gaindBValue", 0, 0, } },
+	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShot,	{ -1, SDK::CrDataType::CrDataType_UInt8, "imageStabilizationSteadyShot", 0, &map_CrImageStabilizationSteadyShot, } },
+	{ PCode::CrDeviceProperty_IrisModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, "irisModeSetting", 0, &map_CrIrisModeSetting, } },
+	{ PCode::CrDeviceProperty_IsoCurrentSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt32, "isoCurrentSensitivity", format_iso_sensitivity, 0, } },
+	{ PCode::CrDeviceProperty_IsoSensitivity,	{ -1, SDK::CrDataType::CrDataType_UInt32, "iso", format_iso_sensitivity, 0, } },
+	{ PCode::CrDeviceProperty_LiveView_Image_Quality,	{ -1, SDK::CrDataType::CrDataType_UInt16, "liveView_Image_Quality", 0, &map_CrPropertyLiveViewImageQuality, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "mediaSLOT1_FormatEnableStatus", 0, &map_CrMediaFormat, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "mediaSLOT1_QuickFormatEnableStatus", 0, &map_CrMediaFormat, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType,	{ -1, SDK::CrDataType::CrDataType_UInt8, "mediaSLOT1_RecordingAvailableType", 0, &map_CrMediaSlotRecordingAvailableType, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_Status,	{ -1, SDK::CrDataType::CrDataType_UInt16, "mediaSLOT1_Status", 0, &map_CrSlotStatus, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "mediaSLOT2_FormatEnableStatus", 0, &map_CrMediaFormat, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "mediaSLOT2_QuickFormatEnableStatus", 0, &map_CrMediaFormat, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType,	{ -1, SDK::CrDataType::CrDataType_UInt8, "mediaSLOT2_RecordingAvailableType", 0, &map_CrMediaSlotRecordingAvailableType, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_Status,	{ -1, SDK::CrDataType::CrDataType_UInt16, "mediaSLOT2_Status", 0, &map_CrSlotStatus, } },
+	{ PCode::CrDeviceProperty_MonitorLUTSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, "monitorLUTSetting", 0, &map_CrMonitorLUTSetting, } },
+	{ PCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot,	{ -1, SDK::CrDataType::CrDataType_UInt8, "movie_ImageStabilizationSteadyShot", 0, &map_CrImageStabilizationSteadyShotMovie, } },
+	{ PCode::CrDeviceProperty_Movie_Recording_Setting,	{ -1, SDK::CrDataType::CrDataType_UInt16, "movie_Recording_Setting", 0, &map_CrRecordingSettingMovie, } },
+	{ PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus,	{ -1, SDK::CrDataType::CrDataType_UInt8, "movieRecButtonToggleEnableStatus", 0, &map_CrMovieRecButtonToggleEnableStatus, } },
+	{ PCode::CrDeviceProperty_MovieShootingMode,	{ -1, SDK::CrDataType::CrDataType_UInt16, "movieShootingMode", 0, &map_CrMovieShootingMode, } },
+	{ PCode::CrDeviceProperty_PlaybackMedia,	{ -1, SDK::CrDataType::CrDataType_UInt8, "playbackMedia", 0, &map_CrPlaybackMedia, } },
+	{ PCode::CrDeviceProperty_PriorityKeySettings,	{ -1, SDK::CrDataType::CrDataType_UInt16, "priorityKeySettings", 0, &map_CrPriorityKeySettings, } },
+	{ PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type,	{ -1, SDK::CrDataType::CrDataType_UInt8, "remocon_Zoom_Speed_Type", 0, &map_CrRemoconZoomSpeedType, } },
+	{ PCode::CrDeviceProperty_S1,	{ -1, SDK::CrDataType::CrDataType_UInt16, "S1", 0, &map_CrLockIndicator, } },
+	{ PCode::CrDeviceProperty_SdkControlMode,	{ -1, SDK::CrDataType::CrDataType_UInt32, "sdkControlMode", 0, &map_CrSdkControlMode, } },
+	{ PCode::CrDeviceProperty_ShutterModeSetting,	{ -1, SDK::CrDataType::CrDataType_UInt8, "shutterModeSetting", 0, &map_CrShutterMode, } },
+	{ PCode::CrDeviceProperty_ShutterSpeed,	{ -1, SDK::CrDataType::CrDataType_UInt32, "shutterSpeed", format_shutter_speed, 0, } },
+	{ PCode::CrDeviceProperty_ShutterType,	{ -1, SDK::CrDataType::CrDataType_UInt8, "shutterType", 0, &map_CrShutterType, } },
+	{ PCode::CrDeviceProperty_SilentMode,	{ -1, SDK::CrDataType::CrDataType_UInt8, "silentMode", 0, &map_CrSilentMode, } },
+	{ PCode::CrDeviceProperty_SilentModeApertureDriveInAF,	{ -1, SDK::CrDataType::CrDataType_UInt8, "silentModeApertureDriveInAF", 0, &map_CrSilentModeApertureDriveInAF, } },
+	{ PCode::CrDeviceProperty_SilentModeAutoPixelMapping,	{ -1, SDK::CrDataType::CrDataType_UInt8, "silentModeAutoPixelMapping", 0, &map_CrSilentModeAutoPixelMapping, } },
+	{ PCode::CrDeviceProperty_SilentModeShutterWhenPowerOff,	{ -1, SDK::CrDataType::CrDataType_UInt8, "silentModeShutterWhenPowerOff", 0, &map_CrSilentModeShutterWhenPowerOff, } },
+	{ PCode::CrDeviceProperty_WhiteBalance,	{ -1, SDK::CrDataType::CrDataType_UInt16, "whiteBalance", 0, &map_CrWhiteBalanceSetting, } },
+	{ PCode::CrDeviceProperty_WhiteBalanceTint,	{ -1, SDK::CrDataType::CrDataType_UInt8, "whiteBalanceTint", 0, 0, } },
+	{ PCode::CrDeviceProperty_WhiteBalanceTintStep,	{ -1, SDK::CrDataType::CrDataType_UInt16, "whiteBalanceTintStep", 0, 0, } },
+	{ PCode::CrDeviceProperty_Zoom_Bar_Information,	{ -1, SDK::CrDataType::CrDataType_UInt32, "zoom_Bar_Information", 0, 0, } },
+	{ PCode::CrDeviceProperty_Zoom_Operation,	{ -1, SDK::CrDataType::CrDataType_Int8, "zoom_Operation", 0, 0, } },
+	{ PCode::CrDeviceProperty_Zoom_Operation_Status,	{ -1, SDK::CrDataType::CrDataType_UInt8, "zoom_Operation_Status", 0, &map_CrZoomOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_Zoom_Setting,	{ -1, SDK::CrDataType::CrDataType_UInt8, "zoom_Setting", 0, &map_CrZoomSettingType, } },
+	{ PCode::CrDeviceProperty_Zoom_Speed_Range,	{ -1, SDK::CrDataType::CrDataType_UInt8, "zoom_Speed_Range", 0, 0, } },
+	{ PCode::CrDeviceProperty_Zoom_Type_Status,	{ -1, SDK::CrDataType::CrDataType_UInt8, "zoom_Type_Status", 0, &map_CrZoomTypeStatus, } },
+	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Load,	{ -1, SDK::CrDataType::CrDataType_UInt8, "zoomAndFocusPosition_Load", 0, 0, } },
+	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Save,	{ -1, SDK::CrDataType::CrDataType_UInt8, "zoomAndFocusPosition_Save", 0, 0, } },
+	{ PCode::CrDeviceProperty_ZoomDistance,	{ -1, SDK::CrDataType::CrDataType_UInt32, "zoomDistance", 0, 0, } },
+
+	{ PCode::CrDeviceProperty_AFAssist,	{ -1, (SDK::CrDataType)0, "aFAssist", 0, &map_CrAFAssist, } },
+	{ PCode::CrDeviceProperty_AFSubjShiftSens,	{ -1, (SDK::CrDataType)0, "aFSubjShiftSens", 0, 0, } },
+	{ PCode::CrDeviceProperty_AFTrackingSensitivity,	{ -1, (SDK::CrDataType)0, "aFTrackingSensitivity", 0, &map_CrAFTrackingSensitivity, } },
+	{ PCode::CrDeviceProperty_AFTransitionSpeed,	{ -1, (SDK::CrDataType)0, "aFTransitionSpeed", 0, 0, } },
+	{ PCode::CrDeviceProperty_AspectRatio,	{ -1, (SDK::CrDataType)0, "aspectRatio", 0, &map_CrAspectRatioIndex, } },
+	{ PCode::CrDeviceProperty_AssignableButton1,	{ -1, (SDK::CrDataType)0, "assignableButton1", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton2,	{ -1, (SDK::CrDataType)0, "assignableButton2", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton3,	{ -1, (SDK::CrDataType)0, "assignableButton3", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton4,	{ -1, (SDK::CrDataType)0, "assignableButton4", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton5,	{ -1, (SDK::CrDataType)0, "assignableButton5", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton6,	{ -1, (SDK::CrDataType)0, "assignableButton6", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton7,	{ -1, (SDK::CrDataType)0, "assignableButton7", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton8,	{ -1, (SDK::CrDataType)0, "assignableButton8", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButton9,	{ -1, (SDK::CrDataType)0, "assignableButton9", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator1,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator1", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator2,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator2", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator3,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator3", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator4,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator4", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator5,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator5", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator6,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator6", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator7,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator7", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator8,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator8", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator9,	{ -1, (SDK::CrDataType)0, "assignableButtonIndicator9", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_AudioInputMasterLevel,	{ -1, (SDK::CrDataType)0, "audioInputMasterLevel", 0, 0, } },
+	{ PCode::CrDeviceProperty_AudioRecording,	{ -1, (SDK::CrDataType)0, "audioRecording", 0, &map_CrAudioRecording, } },
+	{ PCode::CrDeviceProperty_AudioSignals,	{ -1, (SDK::CrDataType)0, "audioSignals", 0, &map_CrAudioSignals, } },
+	{ PCode::CrDeviceProperty_AutoPowerOffTemperature,	{ -1, (SDK::CrDataType)0, "autoPowerOffTemperature", 0, &map_CrAutoPowerOffTemperature, } },
+	{ PCode::CrDeviceProperty_AutoReview,	{ -1, (SDK::CrDataType)0, "autoReview", 0, 0, } },
+	{ PCode::CrDeviceProperty_AutoSlowShutter,	{ -1, (SDK::CrDataType)0, "autoSlowShutter", 0, &map_CrAutoSlowShutter, } },
+	{ PCode::CrDeviceProperty_AWB,	{ -1, (SDK::CrDataType)0, "aWB", 0, &map_CrAWB, } },
+	{ PCode::CrDeviceProperty_BaseISOSwitchEI,	{ -1, (SDK::CrDataType)0, "baseISOSwitchEI", 0, 0, } },
+	{ PCode::CrDeviceProperty_BaseLookImportOperationEnableStatus,	{ -1, (SDK::CrDataType)0, "baseLookImportOperationEnableStatus", 0, &map_CrBaseLookImportOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_BatteryLevel,	{ -1, (SDK::CrDataType)0, "batteryLevel", 0, &map_CrBatteryLevel, } },
+	{ PCode::CrDeviceProperty_BatteryRemain,	{ -1, (SDK::CrDataType)0, "batteryRemain", 0, 0, } },
+	{ PCode::CrDeviceProperty_BatteryRemainDisplayUnit,	{ -1, (SDK::CrDataType)0, "batteryRemainDisplayUnit", 0, &map_CrBatteryRemainDisplayUnit, } },
+	{ PCode::CrDeviceProperty_BatteryRemainingInMinutes,	{ -1, (SDK::CrDataType)0, "batteryRemainingInMinutes", 0, 0, } },
+	{ PCode::CrDeviceProperty_BatteryRemainingInVoltage,	{ -1, (SDK::CrDataType)0, "batteryRemainingInVoltage", 0, 0, } },
+	{ PCode::CrDeviceProperty_BodyKeyLock,	{ -1, (SDK::CrDataType)0, "bodyKeyLock", 0, &map_CrBodyKeyLock, } },
+	{ PCode::CrDeviceProperty_BracketOrder,	{ -1, (SDK::CrDataType)0, "bracketOrder", 0, &map_CrBracketOrder, } },
+	{ PCode::CrDeviceProperty_BulbExposureTimeSetting,	{ -1, (SDK::CrDataType)0, "bulbExposureTimeSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_BulbTimerSetting,	{ -1, (SDK::CrDataType)0, "bulbTimerSetting", 0, &map_CrBulbTimerSetting, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable1,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable1", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable2,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable2", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable3,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable3", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable4,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable4", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable5,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable5", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable6,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable6", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable7,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable7", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable8,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable8", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable9,	{ -1, (SDK::CrDataType)0, "buttonAssignmentAssignable9", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentLensAssignable1,	{ -1, (SDK::CrDataType)0, "buttonAssignmentLensAssignable1", 0, 0, } },
+	{ PCode::CrDeviceProperty_CameraEframing,	{ -1, (SDK::CrDataType)0, "cameraEframing", 0, &map_CrCameraEframing, } },
+	{ PCode::CrDeviceProperty_CameraShakeStatus,	{ -1, (SDK::CrDataType)0, "cameraShakeStatus", 0, &map_CrCameraShakeStatus, } },
+	{ PCode::CrDeviceProperty_Cancel_Media_FormatEnableStatus,	{ -1, (SDK::CrDataType)0, "cancel_Media_FormatEnableStatus", 0, &map_CrCancelMediaFormat, } },
+	{ PCode::CrDeviceProperty_CancelRemoteTouchOperationEnableStatus,	{ -1, (SDK::CrDataType)0, "cancelRemoteTouchOperationEnableStatus", 0, &map_CrCancelRemoteTouchOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_ColorSpace,	{ -1, (SDK::CrDataType)0, "colorSpace", 0, &map_CrColorSpace, } },
+	{ PCode::CrDeviceProperty_Colortemp,	{ -1, (SDK::CrDataType)0, "colortemp", 0, 0, } },
+	{ PCode::CrDeviceProperty_ColortempStep,	{ -1, (SDK::CrDataType)0, "colortempStep", 0, 0, } },
+	{ PCode::CrDeviceProperty_ColorTuningAB,	{ -1, (SDK::CrDataType)0, "colorTuningAB", 0, 0, } },
+	{ PCode::CrDeviceProperty_ColorTuningGM,	{ -1, (SDK::CrDataType)0, "colorTuningGM", 0, 0, } },
+	{ PCode::CrDeviceProperty_CompressionFileFormatStill,	{ -1, (SDK::CrDataType)0, "compressionFileFormatStill", 0, &map_CrCompressionFileFormat, } },
+	{ PCode::CrDeviceProperty_ContentsTransferCancelEnableStatus,	{ -1, (SDK::CrDataType)0, "contentsTransferCancelEnableStatus", 0, &map_CrCancelContentsTransferEnableStatus, } },
+	{ PCode::CrDeviceProperty_ContentsTransferProgress,	{ -1, (SDK::CrDataType)0, "contentsTransferProgress", 0, 0, } },
+	{ PCode::CrDeviceProperty_ContentsTransferStatus,	{ -1, (SDK::CrDataType)0, "contentsTransferStatus", 0, &map_CrContentsTransferStatus, } },
+	{ PCode::CrDeviceProperty_CreativeLook,	{ -1, (SDK::CrDataType)0, "creativeLook", 0, &map_CrCreativeLook, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Clarity,	{ -1, (SDK::CrDataType)0, "creativeLook_Clarity", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Contrast,	{ -1, (SDK::CrDataType)0, "creativeLook_Contrast", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_CustomLook,	{ -1, (SDK::CrDataType)0, "creativeLook_CustomLook", 0, &map_CrCreativeLook, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Fade,	{ -1, (SDK::CrDataType)0, "creativeLook_Fade", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Highlights,	{ -1, (SDK::CrDataType)0, "creativeLook_Highlights", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Saturation,	{ -1, (SDK::CrDataType)0, "creativeLook_Saturation", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Shadows,	{ -1, (SDK::CrDataType)0, "creativeLook_Shadows", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_Sharpness,	{ -1, (SDK::CrDataType)0, "creativeLook_Sharpness", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLook_SharpnessRange,	{ -1, (SDK::CrDataType)0, "creativeLook_SharpnessRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_CreativeLookResetEnableStatus,	{ -1, (SDK::CrDataType)0, "creativeLookResetEnableStatus", 0, &map_CrCreativeLookResetEnableStatus, } },
+	{ PCode::CrDeviceProperty_CurrentSceneFileEdited,	{ -1, (SDK::CrDataType)0, "currentSceneFileEdited", 0, &map_CrCurrentSceneFileEdited, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capturable_Area,	{ -1, (SDK::CrDataType)0, "customWB_Capturable_Area", 0, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Frame_Size,	{ -1, (SDK::CrDataType)0, "customWB_Capture_Frame_Size", 0, 0, } },
+	{ PCode::CrDeviceProperty_DateTime_Settings,	{ -1, (SDK::CrDataType)0, "dateTime_Settings", 0, 0, } },
+	{ PCode::CrDeviceProperty_DCVoltage,	{ -1, (SDK::CrDataType)0, "dCVoltage", 0, 0, } },
+	{ PCode::CrDeviceProperty_DeleteUserBaseLook,	{ -1, (SDK::CrDataType)0, "deleteUserBaseLook", 0, 0, } },
+	{ PCode::CrDeviceProperty_DepthOfFieldAdjustmentInterlockingMode,	{ -1, (SDK::CrDataType)0, "depthOfFieldAdjustmentInterlockingMode", 0, &map_CrDepthOfFieldAdjustmentInterlockingMode, } },
+	{ PCode::CrDeviceProperty_DepthOfFieldAdjustmentMode,	{ -1, (SDK::CrDataType)0, "depthOfFieldAdjustmentMode", 0, &map_CrDepthOfFieldAdjustmentMode, } },
+	{ PCode::CrDeviceProperty_DeviceOverheatingState,	{ -1, (SDK::CrDataType)0, "deviceOverheatingState", 0, &map_CrDeviceOverheatingState, } },
+	{ PCode::CrDeviceProperty_DigitalZoomScale,	{ -1, (SDK::CrDataType)0, "digitalZoomScale", 0, 0, } },
+	{ PCode::CrDeviceProperty_DRO,	{ -1, (SDK::CrDataType)0, "dRO", 0, &map_CrDRangeOptimizer, } },
+	{ PCode::CrDeviceProperty_EframingHDMICrop,	{ -1, (SDK::CrDataType)0, "eframingHDMICrop", 0, &map_CrEframingHDMICrop, } },
+	{ PCode::CrDeviceProperty_EframingModeAuto,	{ -1, (SDK::CrDataType)0, "eframingModeAuto", 0, &map_CrEframingModeAuto, } },
+	{ PCode::CrDeviceProperty_EframingRecordingImageCrop,	{ -1, (SDK::CrDataType)0, "eframingRecordingImageCrop", 0, &map_CrEframingRecordingImageCrop, } },
+	{ PCode::CrDeviceProperty_EframingScaleAuto,	{ -1, (SDK::CrDataType)0, "eframingScaleAuto", 0, &map_CrEframingScaleAuto, } },
+	{ PCode::CrDeviceProperty_EframingSpeedAuto,	{ -1, (SDK::CrDataType)0, "eframingSpeedAuto", 0, 0, } },
+	{ PCode::CrDeviceProperty_ExtendedInterfaceMode,	{ -1, (SDK::CrDataType)0, "extendedInterfaceMode", 0, &map_CrExtendedInterfaceMode, } },
+	{ PCode::CrDeviceProperty_FileType,	{ -1, SDK::CrDataType::CrDataType_UInt16, "fileType", 0, &map_CrFileType, } },
+	{ PCode::CrDeviceProperty_FlashMode,	{ -1, (SDK::CrDataType)0, "flashMode", 0, &map_CrFlashMode, } },
+	{ PCode::CrDeviceProperty_FlickerLessShooting,	{ -1, (SDK::CrDataType)0, "flickerLessShooting", 0, &map_CrFlickerLessShooting, } },
+	{ PCode::CrDeviceProperty_FlickerScanEnableStatus,	{ -1, (SDK::CrDataType)0, "flickerScanEnableStatus", 0, &map_CrFlickerScanEnableStatus, } },
+	{ PCode::CrDeviceProperty_FlickerScanStatus,	{ -1, (SDK::CrDataType)0, "flickerScanStatus", 0, &map_CrFlickerScanStatus, } },
+	{ PCode::CrDeviceProperty_FocalDistanceInFeet,	{ -1, (SDK::CrDataType)0, "focalDistanceInFeet", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocalDistanceInMeter,	{ -1, (SDK::CrDataType)0, "focalDistanceInMeter", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocalDistanceUnitSetting,	{ -1, (SDK::CrDataType)0, "focalDistanceUnitSetting", 0, &map_CrFocalDistanceUnitSetting, } },
+	{ PCode::CrDeviceProperty_Focus_Magnifier_Setting,	{ -1, (SDK::CrDataType)0, "focus_Magnifier_Setting", 0, 0, } },
+	{ PCode::CrDeviceProperty_Focus_Operation,	{ -1, (SDK::CrDataType)0, "focus_Operation", 0, 0, } },
+	{ PCode::CrDeviceProperty_Focus_Speed_Range,	{ -1, (SDK::CrDataType)0, "focus_Speed_Range", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocusBracketExposureLock1stImg,	{ -1, (SDK::CrDataType)0, "focusBracketExposureLock1stImg", 0, &map_CrFocusBracketExposureLock1stImg, } },
+	{ PCode::CrDeviceProperty_FocusBracketIntervalUntilNextShot,	{ -1, (SDK::CrDataType)0, "focusBracketIntervalUntilNextShot", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocusBracketOrder,	{ -1, (SDK::CrDataType)0, "focusBracketOrder", 0, &map_CrFocusBracketOrder, } },
+	{ PCode::CrDeviceProperty_FocusBracketShootingStatus,	{ -1, (SDK::CrDataType)0, "focusBracketShootingStatus", 0, &map_CrFocusBracketShootingStatus, } },
+	{ PCode::CrDeviceProperty_FocusMagnificationTime,	{ -1, (SDK::CrDataType)0, "focusMagnificationTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocusModeSetting,	{ -1, (SDK::CrDataType)0, "focusModeSetting", 0, &map_CrFocusModeSetting, } },
+	{ PCode::CrDeviceProperty_FocusTouchSpotStatus,	{ -1, (SDK::CrDataType)0, "focusTouchSpotStatus", 0, &map_CrFocusTouchSpotStatus, } },
+	{ PCode::CrDeviceProperty_FocusTrackingStatus,	{ -1, (SDK::CrDataType)0, "focusTrackingStatus", 0, &map_CrFocusTrackingStatus, } },
+	{ PCode::CrDeviceProperty_FollowFocusPositionCurrentValue,	{ -1, (SDK::CrDataType)0, "followFocusPositionCurrentValue", 0, 0, } },
+	{ PCode::CrDeviceProperty_FollowFocusPositionSetting,	{ -1, (SDK::CrDataType)0, "followFocusPositionSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_FTP_AutoTransfer,	{ -1, (SDK::CrDataType)0, "fTP_AutoTransfer", 0, &map_CrFTPAutoTransfer, } },
+	{ PCode::CrDeviceProperty_FTP_AutoTransferTarget,	{ -1, (SDK::CrDataType)0, "fTP_AutoTransferTarget", 0, &map_CrFTPAutoTransferTarget, } },
+	{ PCode::CrDeviceProperty_FTP_ConnectionErrorInfo,	{ -1, (SDK::CrDataType)0, "fTP_ConnectionErrorInfo", 0, &map_CrFTPConnectionErrorInfo, } },
+	{ PCode::CrDeviceProperty_FTP_ConnectionStatus,	{ -1, (SDK::CrDataType)0, "fTP_ConnectionStatus", 0, &map_CrFTPConnectionStatus, } },
+	{ PCode::CrDeviceProperty_FTP_Function,	{ -1, (SDK::CrDataType)0, "fTP_Function", 0, &map_CrFTPFunction, } },
+	{ PCode::CrDeviceProperty_FTP_PowerSave,	{ -1, (SDK::CrDataType)0, "fTP_PowerSave", 0, &map_CrFTPPowerSave, } },
+	{ PCode::CrDeviceProperty_FTP_TransferTarget,	{ -1, (SDK::CrDataType)0, "fTP_TransferTarget", 0, &map_CrFTPTransferTargetStill, } },
+	{ PCode::CrDeviceProperty_FTPJobListDataVersion,	{ -1, (SDK::CrDataType)0, "fTPJobListDataVersion", 0, 0, } },
+	{ PCode::CrDeviceProperty_FTPServerSettingOperationEnableStatus,	{ -1, (SDK::CrDataType)0, "fTPServerSettingOperationEnableStatus", 0, &map_CrFTPServerSettingOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_FTPServerSettingVersion,	{ -1, (SDK::CrDataType)0, "fTPServerSettingVersion", 0, 0, } },
+	{ PCode::CrDeviceProperty_FTPTransferSetting_ReadOperationEnableStatus,	{ -1, (SDK::CrDataType)0, "fTPTransferSetting_ReadOperationEnableStatus", 0, &map_CrFTPTransferSettingReadOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_FTPTransferSetting_SaveOperationEnableStatus,	{ -1, (SDK::CrDataType)0, "fTPTransferSetting_SaveOperationEnableStatus", 0, &map_CrFTPTransferSettingSaveOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_FTPTransferSetting_SaveRead_State,	{ -1, (SDK::CrDataType)0, "fTPTransferSetting_SaveRead_State", 0, &map_CrFTPTransferSettingSaveReadState, } },
+	{ PCode::CrDeviceProperty_FunctionOfRemoteTouchOperation,	{ -1, (SDK::CrDataType)0, "functionOfRemoteTouchOperation", 0, &map_CrFunctionOfRemoteTouchOperation, } },
+	{ PCode::CrDeviceProperty_FunctionOfTouchOperation,	{ -1, (SDK::CrDataType)0, "functionOfTouchOperation", 0, &map_CrFunctionOfTouchOperation, } },
+	{ PCode::CrDeviceProperty_GaindBCurrentValue,	{ -1, (SDK::CrDataType)0, "gaindBCurrentValue", 0, 0, } },
+	{ PCode::CrDeviceProperty_GainUnitSetting,	{ -1, (SDK::CrDataType)0, "gainUnitSetting", 0, &map_CrGainUnitSetting, } },
+	{ PCode::CrDeviceProperty_HDMIResolutionStillPlay,	{ -1, (SDK::CrDataType)0, "hDMIResolutionStillPlay", 0, &map_CrHDMIResolution, } },
+	{ PCode::CrDeviceProperty_HighIsoNR,	{ -1, (SDK::CrDataType)0, "highIsoNR", 0, &map_CrHighIsoNR, } },
+	{ PCode::CrDeviceProperty_HighResolutionShutterSpeed,	{ -1, (SDK::CrDataType)0, "highResolutionShutterSpeed", 0, 0, } },
+	{ PCode::CrDeviceProperty_HighResolutionShutterSpeedSetting,	{ -1, (SDK::CrDataType)0, "highResolutionShutterSpeedSetting", 0, &map_CrHighResolutionShutterSpeedSetting, } },
+	{ PCode::CrDeviceProperty_HLGStillImage,	{ -1, (SDK::CrDataType)0, "hLGStillImage", 0, &map_CrHLGStillImage, } },
+	{ PCode::CrDeviceProperty_ImageID_Num,	{ -1, (SDK::CrDataType)0, "imageID_Num", 0, 0, } },
+	{ PCode::CrDeviceProperty_ImageID_Num_Setting,	{ -1, (SDK::CrDataType)0, "imageID_Num_Setting", 0, &map_CrImageIDNumSetting, } },
+	{ PCode::CrDeviceProperty_ImageID_String,	{ -1, (SDK::CrDataType)0, "imageID_String", 0, 0, } },
+	{ PCode::CrDeviceProperty_ImageSize,	{ -1, (SDK::CrDataType)0, "imageSize", 0, &map_CrImageSize, } },
+	{ PCode::CrDeviceProperty_Interval_Rec_Mode,	{ -1, (SDK::CrDataType)0, "interval_Rec_Mode", 0, &map_CrIntervalRecMode, } },
+	{ PCode::CrDeviceProperty_Interval_Rec_Status,	{ -1, (SDK::CrDataType)0, "interval_Rec_Status", 0, &map_CrIntervalRecStatus, } },
+	{ PCode::CrDeviceProperty_IntervalRec_AETrackingSensitivity,	{ -1, (SDK::CrDataType)0, "intervalRec_AETrackingSensitivity", 0, &map_CrIntervalRecAETrackingSensitivity, } },
+	{ PCode::CrDeviceProperty_IntervalRec_NumberOfShots,	{ -1, (SDK::CrDataType)0, "intervalRec_NumberOfShots", 0, 0, } },
+	{ PCode::CrDeviceProperty_IntervalRec_ShootingInterval,	{ -1, (SDK::CrDataType)0, "intervalRec_ShootingInterval", 0, 0, } },
+	{ PCode::CrDeviceProperty_IntervalRec_ShootingStartTime,	{ -1, (SDK::CrDataType)0, "intervalRec_ShootingStartTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_IntervalRec_ShootIntervalPriority,	{ -1, (SDK::CrDataType)0, "intervalRec_ShootIntervalPriority", 0, &map_CrIntervalRecShootIntervalPriority, } },
+	{ PCode::CrDeviceProperty_IntervalRec_ShutterType,	{ -1, (SDK::CrDataType)0, "intervalRec_ShutterType", 0, &map_CrIntervalRecShutterType, } },
+	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedManual,	{ -1, (SDK::CrDataType)0, "isoAutoMinShutterSpeedManual", 0, 0, } },
+	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedMode,	{ -1, (SDK::CrDataType)0, "isoAutoMinShutterSpeedMode", 0, &map_CrIsoAutoMinShutterSpeedMode, } },
+	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedPreset,	{ -1, (SDK::CrDataType)0, "isoAutoMinShutterSpeedPreset", 0, &map_CrIsoAutoMinShutterSpeedPreset, } },
+	{ PCode::CrDeviceProperty_LensAssignableButton1,	{ -1, (SDK::CrDataType)0, "lensAssignableButton1", 0, &map_CrAssignableButton, } },
+	{ PCode::CrDeviceProperty_LensAssignableButtonIndicator1,	{ -1, (SDK::CrDataType)0, "lensAssignableButtonIndicator1", 0, &map_CrAssignableButtonIndicator, } },
+	{ PCode::CrDeviceProperty_LensInformationEnableStatus,	{ -1, (SDK::CrDataType)0, "lensInformationEnableStatus", 0, &map_CrLensInformationEnableStatus, } },
+	{ PCode::CrDeviceProperty_LensModelName,	{ -1, (SDK::CrDataType)0, "lensModelName", 0, 0, } },
+	{ PCode::CrDeviceProperty_LensVersionNumber,	{ -1, (SDK::CrDataType)0, "lensVersionNumber", 0, 0, } },
+	{ PCode::CrDeviceProperty_LiveViewDisplayEffect,	{ -1, (SDK::CrDataType)0, "liveViewDisplayEffect", 0, &map_CrLiveViewDisplayEffect, } },
+	{ PCode::CrDeviceProperty_LiveViewStatus,	{ -1, (SDK::CrDataType)0, "liveViewStatus", 0, &map_CrLiveViewStatus, } },
+	{ PCode::CrDeviceProperty_LongExposureNR,	{ -1, (SDK::CrDataType)0, "longExposureNR", 0, &map_CrLongExposureNR, } },
+	{ PCode::CrDeviceProperty_Media_FormatProgressRate,	{ -1, (SDK::CrDataType)0, "media_FormatProgressRate", 0, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_FileType,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_FileType", 0, &map_CrFileType, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_ImageQuality,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_ImageQuality", 0, &map_CrImageQuality, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_ImageSize,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_ImageSize", 0, &map_CrImageSize, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_RAW_FileCompressionType,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_RAW_FileCompressionType", 0, &map_CrRAWFileCompressionType, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_RemainingNumber,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_RemainingNumber", 0, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_RemainingTime,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_RemainingTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1_WritingState,	{ -1, (SDK::CrDataType)0, "mediaSLOT1_WritingState", 0, &map_CrMediaSlotWritingState, } },
+	{ PCode::CrDeviceProperty_MediaSLOT1Player,	{ -1, (SDK::CrDataType)0, "mediaSLOT1Player", 0, &map_CrMediaPlayer, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_FileType,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_FileType", 0, &map_CrFileType, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_ImageQuality,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_ImageQuality", 0, &map_CrImageQuality, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_ImageSize,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_ImageSize", 0, &map_CrImageSize, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_RAW_FileCompressionType,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_RAW_FileCompressionType", 0, &map_CrRAWFileCompressionType, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_RemainingNumber,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_RemainingNumber", 0, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_RemainingTime,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_RemainingTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2_WritingState,	{ -1, (SDK::CrDataType)0, "mediaSLOT2_WritingState", 0, &map_CrMediaSlotWritingState, } },
+	{ PCode::CrDeviceProperty_MediaSLOT2Player,	{ -1, (SDK::CrDataType)0, "mediaSLOT2Player", 0, &map_CrMediaPlayer, } },
+	{ PCode::CrDeviceProperty_MeteringMode,	{ -1, (SDK::CrDataType)0, "meteringMode", 0, &map_CrMeteringMode, } },
+	{ PCode::CrDeviceProperty_MonitoringOutputDisplayHDMI,	{ -1, (SDK::CrDataType)0, "monitoringOutputDisplayHDMI", 0, &map_CrMonitoringOutputDisplayHDMI, } },
+	{ PCode::CrDeviceProperty_Movie_File_Format,	{ -1, (SDK::CrDataType)0, "movie_File_Format", 0, &map_CrFileFormatMovie, } },
+	{ PCode::CrDeviceProperty_Movie_FTP_AutoTransferTarget,	{ -1, (SDK::CrDataType)0, "movie_FTP_AutoTransferTarget", 0, &map_CrFTPAutoTransferTargetMovie, } },
+	{ PCode::CrDeviceProperty_Movie_FTP_TransferTarget,	{ -1, (SDK::CrDataType)0, "movie_FTP_TransferTarget", 0, &map_CrFTPTransferTargetMovie, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutput4KSetting,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutput4KSetting", 0, &map_CrHDMIOutput4KSettingMovie, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputAudioCH,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputAudioCH", 0, &map_CrHDMIOutputAudioCH, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputRAW,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputRAW", 0, &map_CrHDMIOutputRAWMovie, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputRawSetting,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputRawSetting", 0, &map_CrHDMIOutputRawSettingMovie, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputRecControl,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputRecControl", 0, &map_CrHDMIOutputRecControlMovie, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputRecMedia,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputRecMedia", 0, &map_CrHDMIOutputRecMediaMovie, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputResolution,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputResolution", 0, &map_CrHDMIResolution, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputTimeCode,	{ -1, (SDK::CrDataType)0, "movie_HDMIOutputTimeCode", 0, &map_CrHDMIOutputTimeCodeMovie, } },
+	{ PCode::CrDeviceProperty_Movie_IntervalRec_CountDownIntervalTime,	{ -1, (SDK::CrDataType)0, "movie_IntervalRec_CountDownIntervalTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_Movie_IntervalRec_FrameRateSetting,	{ -1, (SDK::CrDataType)0, "movie_IntervalRec_FrameRateSetting", 0, &map_CrRecordingFrameRateSettingMovie, } },
+	{ PCode::CrDeviceProperty_Movie_IntervalRec_IntervalTime,	{ -1, (SDK::CrDataType)0, "movie_IntervalRec_IntervalTime", 0, &map_CrIntervalRecTimeMovie, } },
+	{ PCode::CrDeviceProperty_Movie_IntervalRec_RecordingDuration,	{ -1, (SDK::CrDataType)0, "movie_IntervalRec_RecordingDuration", 0, 0, } },
+	{ PCode::CrDeviceProperty_Movie_IntervalRec_RecordingSetting,	{ -1, (SDK::CrDataType)0, "movie_IntervalRec_RecordingSetting", 0, &map_CrRecordingSettingMovie, } },
+	{ PCode::CrDeviceProperty_Movie_ProxyFileFormat,	{ -1, (SDK::CrDataType)0, "movie_ProxyFileFormat", 0, &map_CrFileFormatMovie, } },
+	{ PCode::CrDeviceProperty_Movie_Recording_FrameRateProxySetting,	{ -1, (SDK::CrDataType)0, "movie_Recording_FrameRateProxySetting", 0, &map_CrRecordingFrameRateSettingMovie, } },
+	{ PCode::CrDeviceProperty_Movie_Recording_FrameRateSetting,	{ -1, (SDK::CrDataType)0, "movie_Recording_FrameRateSetting", 0, &map_CrRecordingFrameRateSettingMovie, } },
+	{ PCode::CrDeviceProperty_Movie_Recording_ResolutionForMain,	{ -1, (SDK::CrDataType)0, "movie_Recording_ResolutionForMain", 0, 0, } },
+	{ PCode::CrDeviceProperty_Movie_Recording_ResolutionForProxy,	{ -1, (SDK::CrDataType)0, "movie_Recording_ResolutionForProxy", 0, 0, } },
+	{ PCode::CrDeviceProperty_MovieForwardButton,	{ -1, (SDK::CrDataType)0, "movieForwardButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MovieNextButton,	{ -1, (SDK::CrDataType)0, "movieNextButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MoviePlayButton,	{ -1, (SDK::CrDataType)0, "moviePlayButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MoviePlayingSpeed,	{ -1, (SDK::CrDataType)0, "moviePlayingSpeed", 0, 0, } },
+	{ PCode::CrDeviceProperty_MoviePlayingState,	{ -1, (SDK::CrDataType)0, "moviePlayingState", 0, &map_CrMoviePlayingState, } },
+	{ PCode::CrDeviceProperty_MoviePlayPauseButton,	{ -1, (SDK::CrDataType)0, "moviePlayPauseButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MoviePlayStopButton,	{ -1, (SDK::CrDataType)0, "moviePlayStopButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MoviePrevButton,	{ -1, (SDK::CrDataType)0, "moviePrevButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MovieRecReviewButton,	{ -1, (SDK::CrDataType)0, "movieRecReviewButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MovieRewindButton,	{ -1, (SDK::CrDataType)0, "movieRewindButton", 0, &map_CrMovieXButton, } },
+	{ PCode::CrDeviceProperty_MovieShootingModeColorGamut,	{ -1, (SDK::CrDataType)0, "movieShootingModeColorGamut", 0, &map_CrMovieShootingModeColorGamut, } },
+	{ PCode::CrDeviceProperty_MovieShootingModeTargetDisplay,	{ -1, (SDK::CrDataType)0, "movieShootingModeTargetDisplay", 0, &map_CrMovieShootingModeTargetDisplay, } },
+	{ PCode::CrDeviceProperty_NDFilter,	{ -1, (SDK::CrDataType)0, "nDFilter", 0, &map_CrNDFilter, } },
+	{ PCode::CrDeviceProperty_NDFilterMode,	{ -1, (SDK::CrDataType)0, "nDFilterMode", 0, &map_CrNDFilterMode, } },
+	{ PCode::CrDeviceProperty_NDFilterModeSetting,	{ -1, (SDK::CrDataType)0, "nDFilterModeSetting", 0, &map_CrNDFilterModeSetting, } },
+	{ PCode::CrDeviceProperty_NDFilterSwitchingSetting,	{ -1, (SDK::CrDataType)0, "nDFilterSwitchingSetting", 0, &map_CrNDFilterSwitchingSetting, } },
+	{ PCode::CrDeviceProperty_NDFilterValue,	{ -1, (SDK::CrDataType)0, "nDFilterValue", 0, 0, } },
+	{ PCode::CrDeviceProperty_NearFar,	{ -1, (SDK::CrDataType)0, "nearFar", 0, &map_CrNearFarEnableStatus, } },
+	{ PCode::CrDeviceProperty_PictureEffect,	{ -1, (SDK::CrDataType)0, "pictureEffect", 0, &map_CrPictureEffect, } },
+	{ PCode::CrDeviceProperty_PictureProfile,	{ -1, (SDK::CrDataType)0, "pictureProfile", 0, &map_CrPictureProfile, } },
+	{ PCode::CrDeviceProperty_PictureProfile_BlackGammaLevel,	{ -1, (SDK::CrDataType)0, "pictureProfile_BlackGammaLevel", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_BlackGammaRange,	{ -1, (SDK::CrDataType)0, "pictureProfile_BlackGammaRange", 0, &map_CrPictureProfileBlackGammaRange, } },
+	{ PCode::CrDeviceProperty_PictureProfile_BlackLevel,	{ -1, (SDK::CrDataType)0, "pictureProfile_BlackLevel", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorDepthBlue,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorDepthBlue", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorDepthCyan,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorDepthCyan", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorDepthGreen,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorDepthGreen", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorDepthMagenta,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorDepthMagenta", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorDepthRed,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorDepthRed", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorDepthYellow,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorDepthYellow", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorMode,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorMode", 0, &map_CrPictureProfileColorMode, } },
+	{ PCode::CrDeviceProperty_PictureProfile_ColorPhase,	{ -1, (SDK::CrDataType)0, "pictureProfile_ColorPhase", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_Copy,	{ -1, (SDK::CrDataType)0, "pictureProfile_Copy", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailAdjustBWBalance,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailAdjustBWBalance", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailAdjustCrispening,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailAdjustCrispening", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailAdjustHiLightDetail,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailAdjustHiLightDetail", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailAdjustLimit,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailAdjustLimit", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailAdjustMode,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailAdjustMode", 0, &map_CrPictureProfileDetailAdjustMode, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailAdjustVHBalance,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailAdjustVHBalance", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_DetailLevel,	{ -1, (SDK::CrDataType)0, "pictureProfile_DetailLevel", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_Gamma,	{ -1, (SDK::CrDataType)0, "pictureProfile_Gamma", 0, &map_CrPictureProfileGamma, } },
+	{ PCode::CrDeviceProperty_PictureProfile_KneeAutoSet_MaxPoint,	{ -1, (SDK::CrDataType)0, "pictureProfile_KneeAutoSet_MaxPoint", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_KneeAutoSet_Sensitivity,	{ -1, (SDK::CrDataType)0, "pictureProfile_KneeAutoSet_Sensitivity", 0, &map_CrPictureProfileKneeAutoSetSensitivity, } },
+	{ PCode::CrDeviceProperty_PictureProfile_KneeManualSet_Point,	{ -1, (SDK::CrDataType)0, "pictureProfile_KneeManualSet_Point", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_KneeManualSet_Slope,	{ -1, (SDK::CrDataType)0, "pictureProfile_KneeManualSet_Slope", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfile_KneeMode,	{ -1, (SDK::CrDataType)0, "pictureProfile_KneeMode", 0, &map_CrPictureProfileKneeMode, } },
+	{ PCode::CrDeviceProperty_PictureProfile_Saturation,	{ -1, (SDK::CrDataType)0, "pictureProfile_Saturation", 0, 0, } },
+	{ PCode::CrDeviceProperty_PictureProfileResetEnableStatus,	{ -1, (SDK::CrDataType)0, "pictureProfileResetEnableStatus", 0, &map_CrPictureProfileResetEnableStatus, } },
+	{ PCode::CrDeviceProperty_PixelMappingEnableStatus,	{ -1, (SDK::CrDataType)0, "pixelMappingEnableStatus", 0, &map_CrPixelMappingEnableStatus, } },
+	{ PCode::CrDeviceProperty_PlaybackVolumeSettings,	{ -1, (SDK::CrDataType)0, "playbackVolumeSettings", 0, 0, } },
+	{ PCode::CrDeviceProperty_PowerSource,	{ -1, (SDK::CrDataType)0, "powerSource", 0, &map_CrPowerSource, } },
+	{ PCode::CrDeviceProperty_PrioritySetInAF_C,	{ -1, (SDK::CrDataType)0, "prioritySetInAF_C", 0, &map_CrPrioritySetInAF, } },
+	{ PCode::CrDeviceProperty_PrioritySetInAF_S,	{ -1, (SDK::CrDataType)0, "prioritySetInAF_S", 0, &map_CrPrioritySetInAF, } },
+	{ PCode::CrDeviceProperty_ProxyRecordingSetting,	{ -1, (SDK::CrDataType)0, "proxyRecordingSetting", 0, &map_CrProxyRecordingSetting, } },
+	{ PCode::CrDeviceProperty_RAW_FileCompressionType,	{ -1, (SDK::CrDataType)0, "rAW_FileCompressionType", 0, &map_CrRAWFileCompressionType, } },
+	{ PCode::CrDeviceProperty_RAW_J_PC_Save_Image,	{ -1, (SDK::CrDataType)0, "rAW_J_PC_Save_Image", 0, &map_CrPropertyRAWJPCSaveImage, } },
+	{ PCode::CrDeviceProperty_RecognitionTarget,	{ -1, (SDK::CrDataType)0, "recognitionTarget", 0, &map_CrRecognitionTarget, } },
+	{ PCode::CrDeviceProperty_RecorderClipName,	{ -1, (SDK::CrDataType)0, "recorderClipName", 0, 0, } },
+	{ PCode::CrDeviceProperty_RecorderControlMainSetting,	{ -1, (SDK::CrDataType)0, "recorderControlMainSetting", 0, &map_CrRecorderControlSetting, } },
+	{ PCode::CrDeviceProperty_RecorderControlProxySetting,	{ -1, (SDK::CrDataType)0, "recorderControlProxySetting", 0, &map_CrRecorderControlSetting, } },
+	{ PCode::CrDeviceProperty_RecorderExtRawStatus,	{ -1, (SDK::CrDataType)0, "recorderExtRawStatus", 0, &map_CrRecorderStatus, } },
+	{ PCode::CrDeviceProperty_RecorderMainStatus,	{ -1, (SDK::CrDataType)0, "recorderMainStatus", 0, &map_CrRecorderStatus, } },
+	{ PCode::CrDeviceProperty_RecorderProxyStatus,	{ -1, (SDK::CrDataType)0, "recorderProxyStatus", 0, &map_CrRecorderStatus, } },
+	{ PCode::CrDeviceProperty_RecorderSaveDestination,	{ -1, (SDK::CrDataType)0, "recorderSaveDestination", 0, &map_CrRecorderSaveDestination, } },
+	{ PCode::CrDeviceProperty_RecorderStartMain,	{ -1, (SDK::CrDataType)0, "recorderStartMain", 0, &map_CrRecorderStart, } },
+	{ PCode::CrDeviceProperty_RecorderStartProxy,	{ -1, (SDK::CrDataType)0, "recorderStartProxy", 0, &map_CrRecorderStart, } },
+	{ PCode::CrDeviceProperty_RecordingSelfTimer,	{ -1, (SDK::CrDataType)0, "recordingSelfTimer", 0, &map_CrMovieRecordingSelfTimer, } },
+	{ PCode::CrDeviceProperty_RecordingSelfTimerContinuous,	{ -1, (SDK::CrDataType)0, "recordingSelfTimerContinuous", 0, &map_CrMovieRecordingSelfTimerContinuous, } },
+	{ PCode::CrDeviceProperty_RecordingSelfTimerCountTime,	{ -1, (SDK::CrDataType)0, "recordingSelfTimerCountTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_RecordingSelfTimerStatus,	{ -1, (SDK::CrDataType)0, "recordingSelfTimerStatus", 0, &map_CrMovieRecordingSelfTimerStatus, } },
+	{ PCode::CrDeviceProperty_RecordingState,	{ -1, (SDK::CrDataType)0, "recordingState", 0, &map_CrMovie_Recording_State, } },
+	{ PCode::CrDeviceProperty_RedEyeReduction,	{ -1, (SDK::CrDataType)0, "redEyeReduction", 0, &map_CrRedEyeReduction, } },
+	{ PCode::CrDeviceProperty_RemoteTouchOperation,	{ -1, (SDK::CrDataType)0, "remoteTouchOperation", 0, 0, } },
+	{ PCode::CrDeviceProperty_RemoteTouchOperationEnableStatus,	{ -1, (SDK::CrDataType)0, "remoteTouchOperationEnableStatus", 0, &map_CrRemoteTouchOperationEnableStatus, } },
+	{ PCode::CrDeviceProperty_RightLeftEyeSelect,	{ -1, (SDK::CrDataType)0, "rightLeftEyeSelect", 0, &map_CrRightLeftEyeSelect, } },
+	{ PCode::CrDeviceProperty_SceneFileIndex,	{ -1, (SDK::CrDataType)0, "sceneFileIndex", 0, 0, } },
+	{ PCode::CrDeviceProperty_SelectFinder,	{ -1, (SDK::CrDataType)0, "selectFinder", 0, &map_CrSelectFinder, } },
+	{ PCode::CrDeviceProperty_SelectFTPServer,	{ -1, (SDK::CrDataType)0, "selectFTPServer", 0, 0, } },
+	{ PCode::CrDeviceProperty_SelectFTPServerID,	{ -1, (SDK::CrDataType)0, "selectFTPServerID", 0, 0, } },
+	{ PCode::CrDeviceProperty_SelectUserBaseLookToEdit,	{ -1, (SDK::CrDataType)0, "selectUserBaseLookToEdit", 0, 0, } },
+	{ PCode::CrDeviceProperty_SelectUserBaseLookToSetInPPLUT,	{ -1, (SDK::CrDataType)0, "selectUserBaseLookToSetInPPLUT", 0, 0, } },
+	{ PCode::CrDeviceProperty_SensorCleaningEnableStatus,	{ -1, (SDK::CrDataType)0, "sensorCleaningEnableStatus", 0, &map_CrSensorCleaningEnableStatus, } },
+	{ PCode::CrDeviceProperty_ShutterAngle,	{ -1, (SDK::CrDataType)0, "shutterAngle", 0, 0, } },
+	{ PCode::CrDeviceProperty_ShutterECSFrequency,	{ -1, (SDK::CrDataType)0, "shutterECSFrequency", 0, 0, } },
+	{ PCode::CrDeviceProperty_ShutterECSNumber,	{ -1, (SDK::CrDataType)0, "shutterECSNumber", 0, 0, } },
+	{ PCode::CrDeviceProperty_ShutterECSNumberStep,	{ -1, (SDK::CrDataType)0, "shutterECSNumberStep", 0, 0, } },
+	{ PCode::CrDeviceProperty_ShutterECSSetting,	{ -1, (SDK::CrDataType)0, "shutterECSSetting", 0, &map_CrShutterECSSetting, } },
+	{ PCode::CrDeviceProperty_ShutterMode,	{ -1, (SDK::CrDataType)0, "shutterMode", 0, &map_CrShutterModeSetting, } },
+	{ PCode::CrDeviceProperty_ShutterModeStatus,	{ -1, (SDK::CrDataType)0, "shutterModeStatus", 0, &map_CrShutterModeStatus, } },
+	{ PCode::CrDeviceProperty_ShutterSetting,	{ -1, (SDK::CrDataType)0, "shutterSetting", 0, &map_CrShutterSetting, } },
+	{ PCode::CrDeviceProperty_ShutterSlow,	{ -1, (SDK::CrDataType)0, "shutterSlow", 0, &map_CrShutterSlow, } },
+	{ PCode::CrDeviceProperty_ShutterSlowFrames,	{ -1, (SDK::CrDataType)0, "shutterSlowFrames", 0, 0, } },
+	{ PCode::CrDeviceProperty_ShutterSpeedCurrentValue,	{ -1, (SDK::CrDataType)0, "shutterSpeedCurrentValue", 0, 0, } },
+//	{ PCode::CrDeviceProperty_ShutterSpeedValue,	{ -1, SDK::CrDataType::CrDataType_UInt64, "shutterSpeedValue", format_shutter_speed_value, 0, } },
+	{ PCode::CrDeviceProperty_SnapshotInfo,	{ -1, (SDK::CrDataType)0, "snapshotInfo", 0, 0, } },
+	{ PCode::CrDeviceProperty_SoftSkinEffect,	{ -1, (SDK::CrDataType)0, "softSkinEffect", 0, &map_CrSoftSkinEffect, } },
+	{ PCode::CrDeviceProperty_SoftwareVersion,	{ -1, (SDK::CrDataType)0, "softwareVersion", 0, 0, } },
+	{ PCode::CrDeviceProperty_SQFrameRate,	{ -1, (SDK::CrDataType)0, "sQFrameRate", 0, 0, } },
+	{ PCode::CrDeviceProperty_SQRecordingFrameRateSetting,	{ -1, (SDK::CrDataType)0, "sQRecordingFrameRateSetting", 0, &map_CrRecordingFrameRateSettingMovie, } },
+	{ PCode::CrDeviceProperty_SQRecordingSetting,	{ -1, (SDK::CrDataType)0, "sQRecordingSetting", 0, &map_CrRecordingSettingMovie, } },
+	{ PCode::CrDeviceProperty_Still_Image_Trans_Size,	{ -1, (SDK::CrDataType)0, "still_Image_Trans_Size", 0, &map_CrPropertyStillImageTransSize, } },
+	{ PCode::CrDeviceProperty_StillImageQuality,	{ -1, SDK::CrDataType::CrDataType_UInt16, "stillImageQuality", 0, &map_CrImageQuality, } },
+	{ PCode::CrDeviceProperty_StillImageStoreDestination,	{ -1, (SDK::CrDataType)0, "stillImageStoreDestination", 0, &map_CrStillImageStoreDestination, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAF,	{ -1, (SDK::CrDataType)0, "subjectRecognitionAF", 0, &map_CrSubjectRecognitionAF, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionInAF,	{ -1, (SDK::CrDataType)0, "subjectRecognitionInAF", 0, &map_CrSubjectRecognitionInAF, } },
+	{ PCode::CrDeviceProperty_TimeCodeFormat,	{ -1, (SDK::CrDataType)0, "timeCodeFormat", 0, &map_CrTimeCodeFormat, } },
+	{ PCode::CrDeviceProperty_TimeCodeMake,	{ -1, (SDK::CrDataType)0, "timeCodeMake", 0, &map_CrTimeCodeMake, } },
+	{ PCode::CrDeviceProperty_TimeCodePreset,	{ -1, (SDK::CrDataType)0, "timeCodePreset", 0, 0, } },
+	{ PCode::CrDeviceProperty_TimeCodePresetResetEnableStatus,	{ -1, (SDK::CrDataType)0, "timeCodePresetResetEnableStatus", 0, &map_CrTimeCodePresetResetEnableStatus, } },
+	{ PCode::CrDeviceProperty_TimeCodeRun,	{ -1, (SDK::CrDataType)0, "timeCodeRun", 0, &map_CrTimeCodeRun, } },
+	{ PCode::CrDeviceProperty_TouchOperation,	{ -1, (SDK::CrDataType)0, "touchOperation", 0, &map_CrTouchOperation, } },
+	{ PCode::CrDeviceProperty_UpdateBodyStatus,	{ -1, (SDK::CrDataType)0, "updateBodyStatus", 0, &map_CrUpdateStatus, } },
+	{ PCode::CrDeviceProperty_USBPowerSupply,	{ -1, (SDK::CrDataType)0, "uSBPowerSupply", 0, &map_CrUSBPowerSupply, } },
+	{ PCode::CrDeviceProperty_UserBaseLookAELevelOffset,	{ -1, (SDK::CrDataType)0, "userBaseLookAELevelOffset", 0, 0, } },
+	{ PCode::CrDeviceProperty_UserBaseLookInput,	{ -1, (SDK::CrDataType)0, "userBaseLookInput", 0, &map_CrUserBaseLookInput, } },
+	{ PCode::CrDeviceProperty_UserBitPreset,	{ -1, (SDK::CrDataType)0, "userBitPreset", 0, 0, } },
+	{ PCode::CrDeviceProperty_UserBitPresetResetEnableStatus,	{ -1, (SDK::CrDataType)0, "userBitPresetResetEnableStatus", 0, &map_CrUserBitPresetResetEnableStatus, } },
+	{ PCode::CrDeviceProperty_UserBitTimeRec,	{ -1, (SDK::CrDataType)0, "userBitTimeRec", 0, &map_CrUserBitTimeRec, } },
+	{ PCode::CrDeviceProperty_WhiteBalanceModeSetting,	{ -1, (SDK::CrDataType)0, "whiteBalanceModeSetting", 0, &map_CrWhiteBalanceModeSetting, } },
+	{ PCode::CrDeviceProperty_WindNoiseReduct,	{ -1, (SDK::CrDataType)0, "windNoiseReduct", 0, &map_CrWindNoiseReduction, } },
+	{ PCode::CrDeviceProperty_WirelessFlash,	{ -1, (SDK::CrDataType)0, "wirelessFlash", 0, &map_CrWirelessFlash, } },
+	{ PCode::CrDeviceProperty_Zoom_Scale,	{ -1, (SDK::CrDataType)0, "zoom_Scale", 0, 0, } },
+	{ PCode::CrDeviceProperty_ZoomDistanceUnitSetting,	{ -1, (SDK::CrDataType)0, "zoomDistanceUnitSetting", 0, &map_CrZoomDistanceUnitSetting, } },
 
 };
 
@@ -586,15 +912,33 @@ void CameraDevice::get_live_view()
     }
 }
 #endif
+
+std::string CameraDevice::PropCurrentText(PCode id) const
+{
+	auto iter1 = Prop.find(id);
+	if(iter1 == end(Prop))
+		return "";
+
+	uint32_t current = iter1->second.current;
+	if(iter1->second.mapEnum) {
+		auto iter2 = iter1->second.mapEnum->find(current);
+		if(iter2 != end(*iter1->second.mapEnum))
+			return iter2->second;
+//	} else if(iter1->second->formatFunc) {
+//		return iter1->second->formatFunc(
+	}
+	return std::to_string(current);
+}
+
 void CameraDevice::get_select_media_format()
 {
     load_properties();
-    tout << "Media SLOT1 Full Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus).current) << std::endl;
-    tout << "Media SLOT2 Full Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus).current) << std::endl;
+    std::cout << "Media SLOT1 Full Format Enable Status: " << PropCurrentText(PCode::CrDeviceProperty_MediaSLOT1_FormatEnableStatus) << std::endl;
+    std::cout << "Media SLOT2 Full Format Enable Status: " << PropCurrentText(PCode::CrDeviceProperty_MediaSLOT2_FormatEnableStatus) << std::endl;
     // Valid Quick format
     if (-1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).writable || -1 != Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).writable){
-        tout << "Media SLOT1 Quick Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).current) << std::endl;
-        tout << "Media SLOT2 Quick Format Enable Status: " << format_media_slotx_format_enable_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).current) << std::endl;
+        std::cout << "Media SLOT1 Quick Format Enable Status: " << PropCurrentText(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus) << std::endl;
+        std::cout << "Media SLOT2 Quick Format Enable Status: " << PropCurrentText(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus) << std::endl;
     }
 }
 
@@ -602,10 +946,10 @@ bool CameraDevice::get_custom_wb()
 {
     bool state = false;
     load_properties();
-    tout << "CustomWB Capture Standby Operation: " << format_customwb_capture_standby(Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Standby).current) << '\n';
-    tout << "CustomWB Capture Standby CancelOperation: " << format_customwb_capture_standby_cancel(Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel).current) << '\n';
-    tout << "CustomWB Capture Operation: " << format_customwb_capture_operation(Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Operation).current) << '\n';
-    tout << "CustomWB Capture Execution State: " << format_customwb_capture_execution_state(Prop.at(PCode::CrDeviceProperty_CustomWB_Execution_State).current) << '\n';
+    std::cout << "CustomWB Capture Standby Operation: " << PropCurrentText(PCode::CrDeviceProperty_CustomWB_Capture_Standby) << '\n';
+    std::cout << "CustomWB Capture Standby CancelOperation: " << PropCurrentText(PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel) << '\n';
+    std::cout << "CustomWB Capture Operation: " << PropCurrentText(PCode::CrDeviceProperty_CustomWB_Capture_Operation) << '\n';
+    std::cout << "CustomWB Capture Execution State: " << PropCurrentText(PCode::CrDeviceProperty_CustomWB_Execution_State) << '\n';
     if (Prop.at(PCode::CrDeviceProperty_CustomWB_Capture_Operation).current == 1) {
         state = true;
     }
@@ -615,22 +959,22 @@ bool CameraDevice::get_custom_wb()
 void CameraDevice::get_zoom_operation()
 {
     load_properties();
-    tout << "Zoom Operation Status: " << format_zoom_operation_status(Prop.at(PCode::CrDeviceProperty_Zoom_Operation_Status).current) << '\n';
+    std::cout << "Zoom Operation Status: " << PropCurrentText(PCode::CrDeviceProperty_Zoom_Operation_Status) << '\n';
     if (Prop.at(PCode::CrDeviceProperty_Zoom_Setting).current > 0) {
-        tout << "Zoom Setting Type    : " << format_zoom_setting_type(Prop.at(PCode::CrDeviceProperty_Zoom_Setting).current) << '\n';
+        std::cout << "Zoom Setting Type    : " << PropCurrentText(PCode::CrDeviceProperty_Zoom_Setting) << '\n';
     }
     if (Prop.at(PCode::CrDeviceProperty_Zoom_Type_Status).current > 0) {
-        tout << "Zoom Type Status     : " << format_zoom_types_status(Prop.at(PCode::CrDeviceProperty_Zoom_Type_Status).current) << '\n';
+        std::cout << "Zoom Type Status     : " << PropCurrentText(PCode::CrDeviceProperty_Zoom_Type_Status) << '\n';
     }
 
     // Zoom Speed Range is not supported
     if (Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.size() < 2) {
-        tout << "Zoom Speed Range     : -1 to 1" << std::endl 
-             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(Prop.at(PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type).current) << std::endl;
+        std::cout << "Zoom Speed Range     : -1 to 1" << std::endl 
+             << "Zoom Speed Type      : " <<  PropCurrentText(PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type) << std::endl;
     }
     else {
-        tout << "Zoom Speed Range     : " << (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(0) << " to " << (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(1) << std::endl
-             << "Zoom Speed Type      : " << format_remocon_zoom_speed_type(Prop.at(PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type).current) << std::endl;
+        std::cout << "Zoom Speed Range     : " << (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(0) << " to " << (int)Prop.at(PCode::CrDeviceProperty_Zoom_Speed_Range).possible.at(1) << std::endl
+             << "Zoom Speed Type      : " <<  PropCurrentText(PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type) << std::endl;
     }
 
     // Zoom Bar Information
@@ -643,7 +987,7 @@ void CameraDevice::get_zoom_operation()
         return;
     }
     if (prop_list && 0 < nprop) {
-        auto prop = prop_list[0];
+        auto& prop = prop_list[0];
         if (PCode::CrDeviceProperty_Zoom_Bar_Information == prop.GetCode())
         {
             tout << "Zoom Bar Information : 0x" << std::hex << prop.GetCurrentValue() << std::dec << '\n';
@@ -684,8 +1028,8 @@ bool CameraDevice::get_aps_c_or_full_switching_setting()
         tout << "APS-C/FULL Switching Setting is not supported\n";
         return false;
     }
-    tout << "APS-C/FULL Switching Enable Status: " << format_aps_c_or_full_switching_enable_status(Prop.at(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus).current) << '\n';
-    tout << "APS-C/FULL Switching Setting: " << format_aps_c_or_full_switching_setting(Prop.at(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting).current) << '\n';
+    std::cout << "APS-C/FULL Switching Enable Status: " <<  PropCurrentText(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus) << '\n';
+    std::cout << "APS-C/FULL Switching Setting: " <<  PropCurrentText(PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting) << '\n';
     return true;
 }
 
@@ -696,7 +1040,7 @@ bool CameraDevice::get_camera_setting_saveread_state()
         tout << "Unable to download/upload Camera-Setting file. \n";
         return false;
     }
-    tout << "Camera-Setting Save/Read State: " << format_camera_setting_save_read_state(Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveRead_State).current) << '\n';
+    std::cout << "Camera-Setting Save/Read State: " <<  PropCurrentText(PCode::CrDeviceProperty_CameraSetting_SaveRead_State) << '\n';
     return true;
 }
 
@@ -728,7 +1072,7 @@ bool CameraDevice::get_baselook_value()
     else {
         CrInt8u valHI = (Prop.at(PCode::CrDeviceProperty_BaseLookValue).current >>8 ) & 0x01;
         CrInt8u valLO = Prop.at(PCode::CrDeviceProperty_BaseLookValue).current & 0xFF;
-        tout << "BaseLook Value: Index" << (int)valLO << " " << format_baselook_value(valHI) << '\n';
+        tout << "BaseLook Value: Index" << (int)valLO << " " << (int)(valHI) << '\n';
     }
 
     return true;
@@ -758,10 +1102,10 @@ void CameraDevice::get_media_slot_status()
     load_properties();
 
     // SLOT1
-    tout << "Media SLOT1 Status                  : " << format_media_slotx_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_Status).current) << std::endl;
+    std::cout << "Media SLOT1 Status                  : " <<  PropCurrentText(PCode::CrDeviceProperty_MediaSLOT1_Status) << std::endl;
     if (0 <= Prop.at(PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType).writable)
     {
-        tout << "Media SLOT1 Recording Available Type: " << format_media_slotx_rec_available(Prop.at(PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType).current) << std::endl;
+        std::cout << "Media SLOT1 Recording Available Type: " <<  PropCurrentText(PCode::CrDeviceProperty_MediaSLOT1_RecordingAvailableType) << std::endl;
     }
 
     // SLOT2
@@ -771,10 +1115,10 @@ void CameraDevice::get_media_slot_status()
     }
     else
     {
-        tout << "Media SLOT2 Status                  : " << format_media_slotx_status(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_Status).current) << std::endl;
+        std::cout << "Media SLOT2 Status                  : " <<  PropCurrentText(PCode::CrDeviceProperty_MediaSLOT2_Status) << std::endl;
         if (0 <= Prop.at(PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType).writable)
         {
-            tout << "Media SLOT2 Recording Available Type: " << format_media_slotx_rec_available(Prop.at(PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType).current) << std::endl;
+            std::cout << "Media SLOT2 Recording Available Type: " <<  PropCurrentText(PCode::CrDeviceProperty_MediaSLOT2_RecordingAvailableType) << std::endl;
         }
     }
 }
@@ -787,7 +1131,7 @@ bool CameraDevice::get_movie_rec_button_toggle_enable_status()
         tout << "Movie Rec Button(Toggle) is not supported\n";
         return false;
     }
-    tout << "Movie Rec Button(Toggle) Enable Status: " << format_movie_rec_button_toggle_enable_status(Prop.at(PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus).current) << '\n';
+    std::cout << "Movie Rec Button(Toggle) Enable Status: " <<  PropCurrentText(PCode::CrDeviceProperty_MovieRecButtonToggleEnableStatus) << '\n';
     return true;
 }
 
@@ -1225,7 +1569,7 @@ void CameraDevice::set_custom_wb()
     }
     std::this_thread::sleep_for(2000ms);
     load_properties();
-    tout << "White Balance: " << format_white_balance(Prop.at(PCode::CrDeviceProperty_WhiteBalance).current) << '\n';
+    std::cout << "White Balance: " <<  PropCurrentText(PCode::CrDeviceProperty_WhiteBalance) << '\n';
 
     execStat = false;
     // Set, custom WB capture standby 
@@ -1445,7 +1789,7 @@ void CameraDevice::set_baselook_value()
         for (std::size_t i = 0; i < values.size(); ++i) {
             baseValueSetter = (values[i] >> 8 ) & 0x01;
             get_baseLookValue = values[i] & 0xFF;
-            tout << '[' << i << "] Index" << (int)get_baseLookValue << " " << format_baselook_value(baseValueSetter) << '\n';
+            tout << '[' << i << "] Index" << (int)get_baseLookValue << " " << (int)(baseValueSetter) << '\n';
         }
     }
 
@@ -1717,7 +2061,8 @@ void CameraDevice::execute_focus_bracket()
 {
     load_properties();
 
-    if (1 != Prop.at(PCode::CrDeviceProperty_FocusBracketShotNumber).writable || 1 != Prop.at(PCode::CrDeviceProperty_FocusBracketFocusRange).writable) {
+    if (1 != Prop.at(PCode::CrDeviceProperty_FocusBracketShotNumber).writable
+     || 1 != Prop.at(PCode::CrDeviceProperty_FocusBracketFocusRange).writable) {
         tout << "Focus Bracket Shooting is not executable\n";
         return;
     }
@@ -2379,28 +2724,31 @@ void CameraDevice::parse_para(SDK::CrDeviceProperty& devProp, PCode id)
 
 	prop.writable = devProp.IsSetEnableCurrentValue();
 	prop.current = devProp.GetCurrentValue();
+	prop.dataType = devProp.GetValueType();
 
-	unsigned char const* buf = devProp.GetValues();
-	std::uint32_t nval = devProp.GetValueSize();
-
-	switch(prop.dataType) {
-	case SDK::CrDataType::CrDataType_UInt8:		nval /= sizeof(std::uint8_t); break;
-	case SDK::CrDataType::CrDataType_Int8:		nval /= sizeof(std::int8_t); break;
-	case SDK::CrDataType::CrDataType_UInt16:	nval /= sizeof(std::uint16_t); break;
-	case SDK::CrDataType::CrDataType_Int16:		nval /= sizeof(std::int16_t); break;
-	case SDK::CrDataType::CrDataType_UInt32:	nval /= sizeof(std::uint32_t); break;
-	default: break;
+	int dataLen = 1;
+	switch(prop.dataType & 0x100F) {
+	case SDK::CrDataType::CrDataType_UInt8:   dataLen = sizeof(std::uint8_t); break;
+	case SDK::CrDataType::CrDataType_Int8:    dataLen = sizeof(std::int8_t); break;
+	case SDK::CrDataType::CrDataType_UInt16:  dataLen = sizeof(std::uint16_t); break;
+	case SDK::CrDataType::CrDataType_Int16:   dataLen = sizeof(std::int16_t); break;
+	case SDK::CrDataType::CrDataType_UInt32:  dataLen = sizeof(std::uint32_t); break;
+	case SDK::CrDataType::CrDataType_UInt64:  dataLen = sizeof(std::uint64_t); break;
+	default: return;
 	}
 
+	unsigned char const* buf = devProp.GetValues();
+	std::uint32_t nval = devProp.GetValueSize() / dataLen;
 	prop.possible.resize(nval);
 	for (std::uint32_t i = 0; i < nval; ++i) {
 		int32_t data = 0;
-		switch(prop.dataType) {
+		switch(prop.dataType & 0x100F) {
 		case SDK::CrDataType::CrDataType_UInt8:		data = (reinterpret_cast<std::uint8_t const*>(buf))[i]; break;
 		case SDK::CrDataType::CrDataType_Int8:		data = (reinterpret_cast<std::int8_t const*>(buf))[i]; break;
 		case SDK::CrDataType::CrDataType_UInt16:	data = (reinterpret_cast<std::uint16_t const*>(buf))[i]; break;
 		case SDK::CrDataType::CrDataType_Int16:		data = (reinterpret_cast<std::int16_t const*>(buf))[i]; break;
 		case SDK::CrDataType::CrDataType_UInt32:	data = (reinterpret_cast<std::uint32_t const*>(buf))[i]; break;
+		case SDK::CrDataType::CrDataType_UInt64:	data = (reinterpret_cast<std::uint64_t const*>(buf))[i]; break;		// **
 		default: break;
 		}
 		prop.possible.at(i) = data;
@@ -2442,25 +2790,22 @@ void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
     }
 
     if (prop_list && nprop > 0) {
-#if 1
-		for (std::int32_t i = 0; i < nprop; ++i) {
-			auto devProp = prop_list[i];
-			uint32_t id = devProp.GetCode();
-			tout << std::hex << id << ":";
-			auto iter = Prop.find((PCode)id);
-			if ( iter != end(Prop) ) {
-				tout << iter->second.tag.c_str() << "\n";
-			} else {
-				tout << "unknown\n";
-			}
-		}
-#endif
         // Got properties list
         for (std::int32_t i = 0; i < nprop; ++i) {
             auto devProp = prop_list[i];
-
 			PCode id = (PCode)devProp.GetCode();
-			auto iter = Prop.find((PCode)id);
+			auto iter = Prop.find(id);
+#if 1
+			std::cout << std::hex << id << ":";
+			if ( iter != end(Prop) ) {
+				std::cout << iter->second.tag.c_str();
+			} else {
+				std::cout << "unknown ";
+			}
+		//	std::cout << " " << devProp.GetValueType() << "\n";
+			std::cout << " " << PropCurrentText(id) << "\n";
+#endif
+
 			if ( iter != end(Prop) ) {
 				parse_para(devProp, id);
 				switch(id) {
@@ -3232,7 +3577,7 @@ bool CameraDevice::get_focus_position_setting()
     tout << "Focus Position Setting max   : " << format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(1)) << std::endl;
     tout << "Focus Position Setting Step  : " << format_focus_position_value(Prop.at(PCode::CrDeviceProperty_FocusPositionSetting).possible.at(2)) << std::endl;
 
-    tout << "Focus Driving Status: " << format_focus_driving_status(Prop.at(PCode::CrDeviceProperty_FocusDrivingStatus).current) << std::endl;
+    std::cout << "Focus Driving Status: " <<  PropCurrentText(PCode::CrDeviceProperty_FocusDrivingStatus) << std::endl;
     return true;
 }
 
@@ -3469,10 +3814,14 @@ std::int32_t CameraDevice::SetProp(PCode id, std::uint32_t value) const
 		return -1;
 	}
 
+	SDK::CrDataType type = (SDK::CrDataType)(Prop.at(id).dataType & 0x100F);
+	if(type == SDK::CrDataType::CrDataType_Undefined)
+		type = SDK::CrDataType::CrDataType_UInt32;
+
 	SDK::CrDeviceProperty devProp;
 	devProp.SetCode(id);
 	devProp.SetCurrentValue(value);
-	devProp.SetValueType(Prop.at(id).dataType);
+	devProp.SetValueType(type);
 	return SDK::SetDeviceProperty(m_device_handle, &devProp);
 }
 
