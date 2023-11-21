@@ -54,16 +54,9 @@ public:
     CameraDevice(std::int32_t no, SCRSDK::ICrCameraObjectInfo const* camera_info);
     ~CameraDevice();
 
-    // Get fingerprint
     bool getfingerprint();
-
-    // Try to connect to the device
     bool connect(SCRSDK::CrSdkControlMode openMode, SCRSDK::CrReconnectingSet reconnect);
-
-    // Disconnect from the device
     bool disconnect();
-
-    // Release from the device
     bool release();
 
     CrInt32u get_sshsupport();
@@ -76,10 +69,9 @@ public:
     void af_shutter(std::uint32_t delay_ms) const;
     void continuous_shooting();
 
-    /*** Property operations ***/
-    // Should be const functions, but requires load property, which is not
+/*
+    void get_live_view();
 
-  //void get_live_view();
     void get_select_media_format();
     bool get_custom_wb();
     void get_zoom_operation();
@@ -114,7 +106,7 @@ public:
 
     bool is_live_view_enable() { return m_lvEnbSet; };
     void change_live_view_enable();
-
+*/
     // Check if this device is connected
     bool is_connected() const;
     std::uint32_t ip_address() const;
@@ -141,9 +133,9 @@ public:
     virtual void OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;
     virtual void OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;
     virtual void OnNotifyContentsTransfer(CrInt32u notify, SCRSDK::CrContentHandle contentHandle, CrChar* filename) override;
-    void load_properties(CrInt32u num = 0, CrInt32u* codes = nullptr);
 
 public:
+/*
     void getContentsList();
     void pullContents(SCRSDK::CrContentHandle content);
     void getScreennail(SCRSDK::CrContentHandle content);
@@ -159,7 +151,7 @@ public:
     bool get_focus_position_setting();
     void set_focus_position_setting();
     bool execute_focus_position_cancel();
-
+*/
 private:
     std::int32_t m_number;
     SCRSDK::ICrCameraObjectInfo* m_info;
@@ -182,13 +174,16 @@ private:
 
 public:
 	bool set_save_info(text prefix) const;
-
 	std::int32_t get_live_view(uint8_t* buf[]);
 
-	SCRSDK::CrDevicePropertyCode Prop_tag2id(std::string tag) const;
+    void load_properties(CrInt32u num = 0, CrInt32u* codes = nullptr);
 
+	SCRSDK::CrDevicePropertyCode Prop_tag2id(std::string tag) const;
 	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint32_t value) const;
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::string _text) const;
+
+	void GetPropList(std::vector<std::string>& propList);
 
 private:
 	void parse_para(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);

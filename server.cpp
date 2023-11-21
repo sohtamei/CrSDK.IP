@@ -56,42 +56,62 @@ void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 	ws.write(resp_buffer.data());
 }
 
+std::string convVal2Text(struct cli::PropertyValue* prop, std::uint32_t value)
+{
+	if(prop->mapEnum) {
+		auto iter = prop->mapEnum->find(value);
+		if(iter != end(*prop->mapEnum)) {
+			return iter->second;
+		}
+	} else if(prop->formatFunc) {
+		return prop->formatFunc(value);
+	}
+	return "";
+}
+
+
 void sendProp(websocket::stream<tcp::socket>& ws,
 	SCRSDK::CrDevicePropertyCode id,
-	bool sendPossible)
+	bool sendInfo)
 {
 	struct cli::PropertyValue* prop = camera->GetProp(id);
 
 	pt::ptree resp_tree;
 	pt::ptree item_tree;
-	if(prop->mapEnum) {
-		auto iter = prop->mapEnum->find(prop->current);
-		if(iter != end(*prop->mapEnum)) {
-			item_tree.put("text", iter->second);
-		}
-	} else if(prop->formatFunc) {
-		item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->current)));
-	}
+
+	resp_tree.put("code", prop->tag);
+
+	std::string _text = convVal2Text(prop, prop->current);
+	if(_text != "") item_tree.put("text", _text);
 	item_tree.put("value", std::to_string(prop->current));
 	resp_tree.add_child("current", item_tree);
 
-	pt::ptree sub_tree;
+	if(sendInfo) {
+		pt::ptree sub_tree;
+		if((prop->dataType & SCRSDK::CrDataType::CrDataType_ArrayBit) && prop->possible.size() >= 1) {
+			for(int i = 0; i < prop->possible.size(); i++) {
+				item_tree.clear();
+				_text = convVal2Text(prop, prop->possible[i]);
+				if(_text != "") item_tree.put("text", _text);
+				item_tree.put("value", std::to_string(prop->possible[i]));
+				sub_tree.push_back(std::make_pair("", item_tree));
+			}
+			resp_tree.add_child("list", sub_tree);
+
+		} else if((prop->dataType & SCRSDK::CrDataType::CrDataType_RangeBit) && prop->possible.size() >= 2) {
+			item_tree.clear();
+			item_tree.put("min", std::to_string(prop->possible[0]));
+			item_tree.put("max", std::to_string(prop->possible[1]));
+			if(prop->possible.size() >= 3)
+				item_tree.put("step", std::to_string(prop->possible[2]));
+			resp_tree.add_child("range", item_tree);
+		}
+	}
+
 	int index = -1;
 	for(int i = 0; i < prop->possible.size(); i++) {
 		if(prop->current == prop->possible[i]) index = i;
-		if(prop->mapEnum) {
-			auto iter = prop->mapEnum->find(prop->possible[i]);
-			if(iter != end(*prop->mapEnum)) {
-				item_tree.put("text", iter->second);
-			}
-		} else if(prop->formatFunc) {
-			item_tree.put("text", wstring_convert.to_bytes(prop->formatFunc(prop->possible[i])));
-		}
-		item_tree.put("value", std::to_string(prop->possible[i]));
-		sub_tree.push_back(std::make_pair("", item_tree));
 	}
-	if(sendPossible)
-		resp_tree.add_child("possible", sub_tree);
 
 	std::string incrementable = "none";
 	if(prop->writable != 1)
@@ -126,7 +146,7 @@ void incProp(websocket::stream<tcp::socket>& ws,
 			}
 		}
 	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));
+	std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
 	sendProp(ws, id, false);
 }
 
@@ -173,7 +193,7 @@ void do_thread_ws(void)
 				ws.read(buffer, err);
 				if(err) break;
 
-				if (ws.got_text()) {
+				if(ws.got_text()) {
 					std::unique_lock<std::mutex> crsdk_lock(crsdk_mtx);		// CrSDK mutex
 
 					std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
@@ -183,21 +203,36 @@ void do_thread_ws(void)
 					pt::ptree cmd_tree;
 					pt::read_json(cmd_is, cmd_tree);
 
-					std::cout << "Received JSON: " << cmd_tree.get<std::string>("cmd") << std::endl;
-
 					if(cmd_tree.get_child_optional("cmd")) {
 						std::string cmd = cmd_tree.get<std::string>("cmd");
-						if (cmd == "afShutter") {
+						std::cout << "Received JSON: " << cmd << std::endl;
+
+						if(cmd == "disconnect") {
+							if(camera->is_connected()) {
+								camera->disconnect();
+							}
+							std::this_thread::sleep_for(std::chrono::milliseconds(500));
+						//	exit(0);
+						} else if(cmd == "getPropList") {
+							std::vector<std::string> propList;
+							camera->GetPropList(propList);
+							pt::ptree resp_tree;
+							for (const auto& iter : propList) {
+								resp_tree.put(iter, "");
+							}
+							write_json(ws, resp_tree);
+							continue;
+						} else if(cmd == "afShutter") {
 							uint32_t delay_ms = 500;
 							if(cmd_tree.get_child_optional("delay"))
 								delay_ms = cmd_tree.get<std::uint32_t>("delay");
 							camera->af_shutter(delay_ms);
-						} else if (cmd == "afHalfShutter") {
+						} else if(cmd == "afHalfShutter") {
 							camera->s1_shooting();
-						} else if (cmd == "liveview") {
+						} else if(cmd == "liveview") {
 							uint8_t* imageBuf = NULL;
 							int imageSize = camera->get_live_view(&imageBuf);
-							if (imageSize > 0) {
+							if(imageSize > 0) {
 							//	server.send(conn, imageBuf, imageSize);
 								std::vector<uint8_t> v_buffer(imageBuf, imageBuf+imageSize);
 								delete[] imageBuf;
@@ -205,19 +240,19 @@ void do_thread_ws(void)
 								ws.write(asio::buffer(v_buffer));
 								continue;
 							}
-						} else if (cmd == "setSaveInfo") {
+						} else if(cmd == "setSaveInfo") {
 							std::string prefix = cmd_tree.get<std::string>("prefix");
 							camera->set_save_info(wstring_convert.from_bytes(prefix));
 
-						} else if (cmd == "setAperture") {
+						} else if(cmd == "setAperture") {
 							std::uint16_t value = cmd_tree.get<std::uint16_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FNumber, value);
 
-						} else if (cmd == "setShutterSpeed") {
+						} else if(cmd == "setShutterSpeed") {
 							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed, value);
 
-						} else if (cmd == "setIso") {
+						} else if(cmd == "setIso") {
 							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity, value);
 						} else {
@@ -225,15 +260,25 @@ void do_thread_ws(void)
 							if(id) {
 								std::string ope = cmd_tree.get<std::string>("ope");
 								if(ope == "set") {
-									std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
-									camera->SetProp(id, value);
+									if(cmd_tree.get_child_optional("value")) {
+										std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
+										camera->SetProp(id, value);
+									} else if(cmd_tree.get_child_optional("text")) {
+										std::string _text = cmd_tree.get<std::string>("text");
+										camera->SetProp(id, _text);
+									}
+									std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
+									sendProp(ws, id, false/*sendInfo*/);
 								} else if(ope == "get") {
-									sendProp(ws, id, true/*sendPossible*/);
+									sendProp(ws, id, false/*sendInfo*/);
+								} else if(ope == "info") {
+									sendProp(ws, id, true/*sendInfo*/);
 								} else if(ope == "inc") {
 									incProp(ws, id, true/*inc_dec*/);
 								} else if(ope == "dec") {
 									incProp(ws, id, false/*inc_dec*/);
 								}
+								continue;
 							} else {
 								std::clog << "unknown command" << std::endl;
 							}
@@ -266,7 +311,7 @@ void do_thread_ws(void)
 void uploadFile(const wchar_t* filename)
 {
 	std::ifstream ifs(filename, std::ios::in | std::ios::binary);
-	if (!ifs) return;
+	if(!ifs) return;
 
 	ifs.seekg(0, std::ios::end);
 	auto filesize = ifs.tellg();
@@ -340,7 +385,7 @@ void do_thread_http(void)
 					std::unique_lock<std::mutex> crsdk_lock(crsdk_mtx);		// CrSDK mutex
 					imageSize = camera->get_live_view(&imageBuf);
 				}
-				if (imageSize > 0) {
+				if(imageSize > 0) {
 				//	std::cout << ".";
 
 					beast::error_code err;
@@ -380,7 +425,17 @@ int main(int argc, char* argv[])
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 	camera->load_properties();
-	camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, static_cast<std::uint16_t>(0));
+	ret = camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, static_cast<std::uint16_t>(0));
+#if 0
+	if(ret) {
+		std::clog << "Error!" << std::endl;
+		if (camera->is_connected()) {
+			camera->disconnect();
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		return 1;
+	}
+#endif
 
 	std::thread serverThread1(do_thread_ws);
 	std::thread serverThread2(do_thread_http);

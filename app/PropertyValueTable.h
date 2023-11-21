@@ -10,15 +10,14 @@
 
 namespace cli
 {
-static const int MAX_CURRENT_STR = 255;
-
+/*
 enum PossibleType : std::uint32_t {
 	PossibleNone = 0,
 	PossibleList,
 	PossibleRange,
 	PossibleString,
 };
-
+*/
 template <typename T>
 struct PropertyValueEntry
 {
@@ -34,13 +33,13 @@ struct PropertyValueEntry
 struct PropertyValue
 {
 	int writable; // -1:Initial, 0:false, 1:true
-	SCRSDK::CrDataType dataType;
 	const std::string tag;
-	text (*const formatFunc)(std::uint32_t val);
 	const std::map<std::uint32_t, std::string>* mapEnum;
+	std::string (*const formatFunc)(std::uint32_t val);
 
-	std::uint32_t current;
-	std::vector<std::uint32_t> possible;
+	SCRSDK::CrDataType dataType;
+	std::int32_t current;
+	std::vector<std::int32_t> possible;
 };
 
 struct PropertyStringValueEntry
@@ -61,13 +60,13 @@ struct PropertyValueTable
     PropertyValueEntry<std::uint64_t> shutter_speed_value;
 };
 
-text format_number(std::uint32_t value);
+std::string format_number(std::uint32_t value);
 
-text format_f_number(std::uint32_t f_number);
-text format_iso_sensitivity(std::uint32_t iso);
-text format_shutter_speed(std::uint32_t shutter_speed);
+std::string format_f_number(std::uint32_t f_number);
+std::string format_iso_sensitivity(std::uint32_t iso);
+std::string format_shutter_speed(std::uint32_t shutter_speed);
 
-text format_focus_position_value(std::uint32_t value);
+std::string format_focus_position_value(std::uint32_t value);
 
 } // namespace cli
 
