@@ -3689,10 +3689,6 @@ void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
 {
 	std::int32_t nprop = 0;
 	SDK::CrDeviceProperty* prop_list = nullptr;
-
-	Prop.at(PCode::CrDeviceProperty_MediaSLOT1_QuickFormatEnableStatus).writable = -1;
-	Prop.at(PCode::CrDeviceProperty_MediaSLOT2_QuickFormatEnableStatus).writable = -1;
-
 	SDK::CrError status = SDK::CrError_Generic;
 	if (0 == num){
 		status = SDK::GetDeviceProperties(m_device_handle, &prop_list, &nprop);
@@ -3764,6 +3760,7 @@ void CameraDevice::load_properties(CrInt32u num, CrInt32u* codes)
 				std::cout << "unknown(" << std::hex << id << ")";
 			}
 		//	std::cout << " " << devProp.GetValueType() << "\n";
+		//	std::cout << "," << devProp.IsGetEnableCurrentValue() << "," << devProp.IsSetEnableCurrentValue() << "," << (int)devProp.GetPropertyEnableFlag() << "=" << PropCurrentText(id) << "\n";
 			std::cout << "=" << PropCurrentText(id) << "\n";
 #endif
         }
