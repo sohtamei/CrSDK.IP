@@ -1,52 +1,26 @@
 ﻿#include <map>
 #include <cmath>
-#include <cstring>
+#include <sstream>
 #include "PropertyValueTable.h"
 
 
 namespace SDK = SCRSDK;
 
-namespace impl
+namespace cli
 {
+
 inline double Round(double value, int figure)
 {
     bool isNegative = ( value < 0 );
     if (isNegative == true) value = -value;
-
     double rate = std::pow(10.0, figure);
-    //double value1 = value * rate + 0.5;
-
     long tmp = (long)(value * rate + 0.5);
     value = tmp/rate;
-
     if (isNegative == true) value = -value;
-
     return value;
 }
 
-// Retrieve the hi-order word (16-bit value) of a dword (32-bit value)
-constexpr std::uint16_t HIWORD(std::uint32_t dword)
-{
-    return static_cast<std::uint16_t>((dword >> 16) & 0xFFFF);
-}
-
-// Retrieve the low-order word (16-bit value) of a dword (32-bit value)
-constexpr std::uint16_t LOWORD(std::uint32_t dword)
-{
-    return static_cast<std::uint16_t>(dword & 0xFFFF);
-}
-} // namespace impl
-
-namespace cli
-{
-std::string format_number(std::uint32_t value)
-{
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-std::string format_f_number(std::uint32_t f_number)
+std::string format_f_number(std::uint64_t f_number)
 {
     std::stringstream ss;
     if ((0x0000 == f_number) || (SDK::CrFnumber_Unknown == f_number)) {
@@ -58,7 +32,7 @@ std::string format_f_number(std::uint32_t f_number)
     else {
         auto modValue = static_cast<std::uint16_t>(f_number % 100);
         if (modValue > 0) {
-            ss << 'F' << impl::Round((f_number / 100.0), 1);
+            ss << 'F' << Round((f_number / 100.0), 1);
         }
         else {
             ss << 'F' << f_number / 100;
@@ -68,7 +42,7 @@ std::string format_f_number(std::uint32_t f_number)
     return ss.str();
 }
 
-std::string format_iso_sensitivity(std::uint32_t iso)
+std::string format_iso_sensitivity(std::uint64_t iso)
 {
     std::stringstream ss;
 
@@ -77,17 +51,17 @@ std::string format_iso_sensitivity(std::uint32_t iso)
     std::uint32_t iso_value = (iso & 0x00FFFFFF);      // bit  0-23
 
     if (iso_mode == SDK::CrISO_MultiFrameNR) {
-        ss << "Multi Frame NR ";
+        ss << "MultiFrameNR_";
     }
     else if (iso_mode == SDK::CrISO_MultiFrameNR_High) {
-        ss << "Multi Frame NR High ";
+        ss << "MultiFrameNR_High_";
     }
 
     if (iso_value == SDK::CrISO_AUTO) {
-        ss << "ISO AUTO";
+        ss << "ISO_AUTO";
     }
     else {
-        ss << "ISO " << iso_value;
+        ss << "ISO_" << iso_value;
     }
 
     //if (iso_ext == SDK::CrISO_Ext) {
@@ -97,12 +71,12 @@ std::string format_iso_sensitivity(std::uint32_t iso)
     return ss.str();
 }
 
-std::string format_shutter_speed(std::uint32_t shutter_speed)
+std::string format_shutter_speed(std::uint64_t shutter_speed)
 {
     std::stringstream ss;
 
-    CrInt16u numerator = impl::HIWORD(shutter_speed);
-    CrInt16u denominator = impl::LOWORD(shutter_speed);
+    CrInt16u numerator   = static_cast<std::uint16_t>((shutter_speed >> 16) & 0xFFFF);
+    CrInt16u denominator = static_cast<std::uint16_t>(shutter_speed & 0xFFFF);
 
     if (0 == shutter_speed) {
         ss << "Bulb";
@@ -124,16 +98,25 @@ std::string format_shutter_speed(std::uint32_t shutter_speed)
     return ss.str();
 }
 
-std::string format_focus_position_value(std::uint32_t value)
+std::string format_focus_position_value(std::uint64_t value)
 {
 	std::stringstream ss;
 	char dspValue[10];
 #if defined (WIN32) || defined(WIN64)
-	sprintf_s(dspValue, sizeof(dspValue), "0x%04X", value);
+	sprintf_s(dspValue, sizeof(dspValue), "0x%04llX", value);
 #else
-	snprintf(dspValue, sizeof(dspValue), "0x%04X", value);
+	snprintf(dspValue, sizeof(dspValue), "0x%04llX", value);
 #endif
 	ss << dspValue;
+	return ss.str();
+}
+
+std::string format_shutter_speed_value(std::uint64_t value)
+{
+	std::stringstream ss;
+	CrInt32u numerator = (CrInt32u)(value >> 32);
+	CrInt32u denominator = (CrInt32u)(value & 0x0000FFFF);
+	ss << numerator << '/' << denominator;
 	return ss.str();
 }
 

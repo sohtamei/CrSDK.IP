@@ -40,7 +40,7 @@ unsigned short portWS = 8080;
 unsigned short portHttp = 81;
 
 websocket::stream<tcp::socket> *p_ws = NULL;
-std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
+static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
 
 
 std::mutex crsdk_mtx;
@@ -56,7 +56,7 @@ void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 	ws.write(resp_buffer.data());
 }
 
-std::string convVal2Text(struct cli::PropertyValue* prop, std::uint32_t value)
+std::string convVal2Text(struct cli::PropertyValue* prop, std::uint64_t value)
 {
 	if(prop->mapEnum) {
 		auto iter = prop->mapEnum->find(value);
@@ -207,15 +207,9 @@ void do_thread_ws(void)
 						std::string cmd = cmd_tree.get<std::string>("cmd");
 						std::cout << "Received JSON: " << cmd << std::endl;
 
-						if(cmd == "disconnect") {
-							if(camera->is_connected()) {
-								camera->disconnect();
-							}
-							std::this_thread::sleep_for(std::chrono::milliseconds(500));
-						//	exit(0);
-						} else if(cmd == "getPropList") {
+						if(cmd == "getPropList") {
 							std::vector<std::string> propList;
-							camera->GetPropList(propList);
+							camera->GetAvailablePropList(propList);
 							pt::ptree resp_tree;
 							for (const auto& iter : propList) {
 								resp_tree.put(iter, "");
@@ -255,6 +249,9 @@ void do_thread_ws(void)
 						} else if(cmd == "setIso") {
 							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity, value);
+						} else if(cmd == "test") {
+							std::uint32_t code = SCRSDK::CrLiveViewPropertyCode::CrLiveViewProperty_AF_Area_Position;
+							camera->load_liveview_properties(1, &code);
 						} else {
 							SCRSDK::CrDevicePropertyCode id = camera->Prop_tag2id(cmd);
 							if(id) {
@@ -422,26 +419,26 @@ int main(int argc, char* argv[])
 	int ret = remoteCli_init();
 	if(ret) return -1;
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
-	camera->load_properties();
-	ret = camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, static_cast<std::uint16_t>(0));
-#if 0
-	if(ret) {
-		std::clog << "Error!" << std::endl;
-		if (camera->is_connected()) {
-			camera->disconnect();
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		return 1;
-	}
-#endif
-
 	std::thread serverThread1(do_thread_ws);
 	std::thread serverThread2(do_thread_http);
 
-	serverThread1.join();
-	serverThread2.join();
+	while(1) {
+		std::cout << "To exit, please enter 'q'.\n";
+
+		std::string input;
+		std::getline(std::cin, input);
+		if(input == "q" || input == "Q") {
+			if (camera->is_connected()) {
+				camera->disconnect();
+			}
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			serverThread1.detach();
+			serverThread2.detach();
+			return 0;
+		}
+	}
+//	serverThread1.join();
+//	serverThread2.join();
 
 	return 0;
 }

@@ -13,6 +13,8 @@ namespace fs = std::filesystem;
 #include <cstdint>
 #include <iomanip>
 #include <iostream>
+#include <thread>
+#include <boost/beast.hpp>	// camera->SetPropエラー回避
 #include "CRSDK/CameraRemote_SDK.h"
 #include "CameraDevice.h"
 #include "Text.h"
@@ -35,7 +37,7 @@ int remoteCli_init(void)
     cli::tin.imbue(std::locale());
     cli::tout.imbue(std::locale());
 
-    std::cout << "Cr\"Nocode\"SDK running...\n\n";
+    std::cout << "Cr\"Nocode\"SDK running...\n";
 
     auto init_success = SDK::Init();
     if (!init_success) {
@@ -53,7 +55,7 @@ int remoteCli_init(void)
         return -1;
     }
     auto ncams = camera_list->GetCount();
-    std::cout << "Camera enumeration successful. " << ncams << " detected.\n\n";
+    std::cout << "Camera enumeration successful. " << ncams << " detected.\n";
 
     CrInt32u no = 1;
     std::int32_t cameraNumUniq = 1;
@@ -70,15 +72,28 @@ int remoteCli_init(void)
     } else {
          camera->connect(SDK::CrSdkControlMode_Remote, SDK::CrReconnecting_ON);
     }
-
+/*
     if (SDK::CrSdkControlMode_Remote != camera->get_sdkmode()) {
         goto Error;
     }
-
+*/
     if ((SDK::CrSSHsupportValue::CrSSHsupport_ON == camera->get_sshsupport()) && (false == camera->is_getfingerprint())) {
         // Fingerprint is incorrect
         goto Error;
     }
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+	camera->load_properties();
+	int ret = camera->SetProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality,
+						SDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low);
+	if(ret) {
+		if (camera->is_connected()) {
+			camera->disconnect();
+		}
+		std::cout << "ERROR: Please reboot this command(" << __LINE__ << ").\n";
+	}
+
 	return 0;
 
 Error:

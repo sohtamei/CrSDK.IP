@@ -2,4 +2,3 @@
 
 void uploadFile(const wchar_t* filename);
 void SendProp(SCRSDK::CrDevicePropertyCode id);
-

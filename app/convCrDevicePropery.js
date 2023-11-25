@@ -5,7 +5,7 @@ const PWD = process.cwd().replace('/mnt/c','C:');
 const target = process.argv[2];
 
 /*
-	const std::map<std::uint32_t, std::string> map_CrPlaybackMedia 
+	const std::map<std::uint64_t, std::string> map_CrPlaybackMedia 
 	{
 		{ SDK::CrPlaybackMedia::CrPlaybackMedia_Slot1,	"Slot1" },
 		{ SDK::CrPlaybackMedia::CrPlaybackMedia_Slot2,	"Slot2" },
@@ -35,7 +35,7 @@ for(let i = 0; i < lines.length; i++) {
 	switch(words[0]) {
 	case 'enum':
 		enumName = words[1];
-		console.log('const std::map<std::uint32_t, std::string> map_' + enumName);
+		console.log('const std::map<std::uint64_t, std::string> map_' + enumName);
 		break;
 	case '{':
 		console.log(line);

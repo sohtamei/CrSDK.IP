@@ -70,8 +70,6 @@ public:
     void continuous_shooting();
 
 /*
-    void get_live_view();
-
     void get_select_media_format();
     bool get_custom_wb();
     void get_zoom_operation();
@@ -82,18 +80,14 @@ public:
     void get_media_slot_status();
     bool get_movie_rec_button_toggle_enable_status();
 
-    bool set_save_info() const;
-    void get_af_area_position();
     void set_af_area_position();
     void set_select_media_format();
     void execute_movie_rec();
 
     void set_custom_wb();
     void set_zoom_operation();
-    bool set_drive_mode(CrInt64u value);
     void execute_camera_setting_reset();
     void set_baselook_value();
-    void execute_downup_property(CrInt16u code);
     void execute_pos_xy(CrInt16u code);
 
     void execute_preset_focus();
@@ -160,7 +154,6 @@ private:
     ConnectionType m_conn_type;
     NetworkInfo m_net_info;
     UsbInfo m_usb_info;
-    PropertyValueTable m_prop;
     bool m_lvEnbSet;
     SCRSDK::CrSdkControlMode m_modeSDK;
     MtpFolderList   m_foldList;
@@ -176,18 +169,20 @@ public:
 	bool set_save_info(text prefix) const;
 	std::int32_t get_live_view(uint8_t* buf[]);
 
-    void load_properties(CrInt32u num = 0, CrInt32u* codes = nullptr);
+	void load_liveview_properties(std::uint32_t num = 0, std::uint32_t* codes = nullptr);
+	void load_properties(std::uint32_t num = 0, std::uint32_t* codes = nullptr);
 
 	SCRSDK::CrDevicePropertyCode Prop_tag2id(std::string tag) const;
+
 	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint32_t value) const;
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value) const;
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::string _text) const;
 
-	void GetPropList(std::vector<std::string>& propList);
+	void GetAvailablePropList(std::vector<std::string>& propList);
 
 private:
-	void parse_para(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
-	std::vector<std::uint64_t> parse_uint64(unsigned char const* buf, std::uint32_t nval);
+	void parse_prop(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
+	void parse_propStr(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
 
 	std::string PropCurrentText(SCRSDK::CrDevicePropertyCode id) const;
 };
