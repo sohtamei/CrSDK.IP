@@ -85,7 +85,7 @@ int remoteCli_init(void)
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 	camera->load_properties();
-	int ret = camera->SetProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality,
+	int ret = camera->setProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality,
 						SDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low);
 	if(ret) {
 		if (camera->is_connected()) {

@@ -164,6 +164,7 @@ private:
     MediaProfileList m_mediaprofileList;
     std::string m_fingerprint;
     std::string m_userPassword;
+    SCRSDK::CrDevicePropertyCode m_respPropId;
 
 public:
 	bool set_save_info(text prefix) const;
@@ -175,10 +176,14 @@ public:
 	SCRSDK::CrDevicePropertyCode Prop_tag2id(std::string tag) const;
 
 	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value) const;
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::string _text) const;
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value);
+	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::string _text);
+	std::int32_t setProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value) const;
 
 	void GetAvailablePropList(std::vector<std::string>& propList);
+
+	std::int32_t SendCommand(SCRSDK::CrCommandId cmd) const;
+	std::int32_t SendCommand(std::string _text) const;
 
 private:
 	void parse_prop(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);

@@ -141,13 +141,15 @@ void incProp(websocket::stream<tcp::socket>& ws,
 				else index--;
 				if(index >= 0 && index <= prop->possible.size()-1) {
 					camera->SetProp(id, prop->possible[index]);
+				} else {
+					sendProp(ws, id, false);
 				}
 				break;
 			}
 		}
 	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
-	sendProp(ws, id, false);
+//	std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
+//	sendProp(ws, id, false);
 }
 
 void SendProp(SCRSDK::CrDevicePropertyCode id)
@@ -264,8 +266,8 @@ void do_thread_ws(void)
 										std::string _text = cmd_tree.get<std::string>("text");
 										camera->SetProp(id, _text);
 									}
-									std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
-									sendProp(ws, id, false/*sendInfo*/);
+								//	std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
+								//	sendProp(ws, id, false/*sendInfo*/);
 								} else if(ope == "get") {
 									sendProp(ws, id, false/*sendInfo*/);
 								} else if(ope == "info") {
@@ -276,6 +278,8 @@ void do_thread_ws(void)
 									incProp(ws, id, false/*inc_dec*/);
 								}
 								continue;
+							} else if(!camera->SendCommand(cmd)){
+
 							} else {
 								std::clog << "unknown command" << std::endl;
 							}
