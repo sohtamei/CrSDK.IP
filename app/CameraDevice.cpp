@@ -30,6 +30,9 @@ namespace fs = std::filesystem;
 #include "Text.h"
 #include "../server.h"
 
+#include <future>
+#include <chrono>
+
 
 #if defined(__APPLE__) || defined(__linux__)
 #include <sys/stat.h>
@@ -539,6 +542,8 @@ CameraDevice::CameraDevice(std::int32_t no, SCRSDK::ICrCameraObjectInfo const* c
     , m_spontaneous_disconnection(false)
     , m_fingerprint("")
     , m_userPassword("")
+    , m_eventPromise(nullptr)
+    , m_cb_respProp(nullptr)
 {
     m_info = SDK::CreateCameraObjectInfo(
         camera_info->GetName(),
@@ -728,40 +733,29 @@ SCRSDK::CrSdkControlMode CameraDevice::get_sdkmode()
 
 ////////////////
 
-void CameraDevice::capture_image() const
+void CameraDevice::s1_shooting()
 {
-    std::cout << "Capture image...\n";
-    std::cout << "Shutter down&up\n";
-    SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
-    std::this_thread::sleep_for(35ms);
-    SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Up);
+	std::cout << "Shutter Half Press down&up\n";
+	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
+	int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
+	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
 }
 
-void CameraDevice::s1_shooting() const
+void CameraDevice::af_shutter(std::uint32_t delay_ms)
 {
-    std::cout << "S1 shooting...\n";
-    std::cout << "Shutter Half Press down\n";
-    setProp(PCode::CrDeviceProperty_S1, (std::uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
-    std::this_thread::sleep_for(1s);
-    std::cout << "Shutter Half Press up\n";
-    setProp(PCode::CrDeviceProperty_S1, (std::uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
-}
+	std::cout << "S1 shooting...\n";
+	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
+	int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
+	if(ret) {
+		setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
+		return;
+	}
 
-void CameraDevice::af_shutter(std::uint32_t delay_ms) const
-{
-    std::cout << "S1 shooting...\n";
-    std::cout << "Shutter Half Press down\n";
-    setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
+	SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
+	SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Up);
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay_ms));
-    std::cout << "Shutter down&up\n";
-    SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
-    std::this_thread::sleep_for(35ms);
-    SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Up);
-
-    std::this_thread::sleep_for(1s);
-    std::cout << "Shutter Half Press up\n";
-    setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
+	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
+	std::cout << "Shutter down&up\n";
 }
 
 void CameraDevice::continuous_shooting()
@@ -2095,7 +2089,7 @@ void CameraDevice::OnLvPropertyChanged()
 {
     // std::cout << "LvProperty changed.\n";
 }
-
+/*
 void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 {
     //std::cout << "Property changed.  num = " << std::dec << num;
@@ -2105,28 +2099,6 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
     //    std::cout << ", 0x" << codes[i];
     //}
     //std::cout << std::endl << std::dec;
-	for(std::uint32_t i = 0; i < num; ++i) {
-		PCode id = (PCode)codes[i];
-
-	//	auto iter = Prop.find(id);
-	//	if(iter != end(Prop)) std::cout << iter->second.tag.c_str() << "\n";
-
-		bool sendFlag = false;
-
-		switch(id) {
-		case PCode::CrDeviceProperty_FocusIndication:
-			sendFlag = true;
-			break;
-		default:
-			break;
-		}
-		if(m_respPropId == id)
-			sendFlag = true;
-		m_respPropId = (PCode)0;
-
-		if(sendFlag)
-			SendProp(id);	// TODO:排他制御
-	}
 }
 
 void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
@@ -2139,7 +2111,7 @@ void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
     //}
     //std::cout << std::endl;
 }
-
+*/
 void CameraDevice::OnError(CrInt32u error)
 {
     text id(this->get_id());
@@ -2998,6 +2970,54 @@ bool CameraDevice::execute_focus_position_cancel()
 #endif
 //////////////// for Nocode SDK
 
+void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
+{
+	for(std::uint32_t i = 0; i < num; ++i) {
+		SDK::CrLiveViewPropertyCode prop = (SDK::CrLiveViewPropertyCode)codes[i];
+
+		switch(prop) {
+		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_AF_Area_Position:			// FocusFrameInfo
+			load_liveview_properties(1, &codes[i]);
+			break;
+		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_Focus_Magnifier_Position:	// Magnifier_Position
+		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_FaceFrame:					// FaceFrameInfo
+		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_TrackingFrame:				// TrackingFrameInfo
+		default:
+			break;
+		}
+	}
+}
+
+void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
+{
+	for(std::uint32_t i = 0; i < num; ++i) {
+		PCode id = (PCode)codes[i];
+
+	//	auto iter = Prop.find(id);
+	//	if(iter != end(Prop)) std::cout << iter->second.tag.c_str() << "\n";
+
+		if(m_respPropId == id) {
+			m_respPropId = (PCode)0;
+			if(m_cb_respProp) {
+				(*m_cb_respProp)(id);
+				m_cb_respProp = NULL;
+			}
+			if(m_eventPromise) {
+				m_eventPromise->set_value();
+				m_eventPromise = NULL;
+			}
+		}
+
+		switch(id) {
+		case PCode::CrDeviceProperty_FocusIndication:
+			SendProp(id);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 bool CameraDevice::set_save_info(text prefix) const
 {
 #if defined(__APPLE__)
@@ -3137,7 +3157,7 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 	std::int32_t nprop = 0;
 	SDK::CrLiveViewProperty* prop_list = nullptr;
 	SDK::CrError status = SDK::CrError_Generic;
-	if (0 == num){
+	if (0 == num) {
 		status = SDK::GetLiveViewProperties(m_device_handle, &prop_list, &nprop);
 	} else {
 		status = SDK::GetSelectLiveViewProperties(m_device_handle, num, codes, &prop_list, &nprop);
@@ -3308,7 +3328,7 @@ struct PropertyValue* CameraDevice::GetProp(PCode id)
 	return &Prop.at(id);
 }
 
-std::int32_t CameraDevice::setProp(PCode id, std::uint64_t value) const
+std::int32_t CameraDevice::setProp(PCode id, std::uint64_t value)
 {
 	if(1 != Prop.at(id).writable) {
 		std::cout << "not writable\n";
@@ -3332,6 +3352,24 @@ std::int32_t CameraDevice::setProp(PCode id, std::uint64_t value) const
 	return SDK::SetDeviceProperty(m_device_handle, &devProp);
 }
 
+std::int32_t CameraDevice::waitProp(PCode id, std::int32_t timeoutMs)
+{
+	int result = 0;
+
+	std::promise<void> eventPromise;
+	m_eventPromise = &eventPromise;
+	m_cb_respProp = NULL;
+	m_respPropId = id;
+	std::future<void> eventFuture = eventPromise.get_future();
+	if(eventFuture.wait_for(std::chrono::milliseconds(timeoutMs)) == std::future_status::timeout) {
+		std::cout << "Timeout occurred." << std::endl;
+		result = -1;
+	}
+	m_eventPromise = NULL;
+	m_respPropId = (PCode)0;
+	return result;
+}
+
 std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 {
 	if(Prop.at(id).current == value) {
@@ -3341,9 +3379,11 @@ std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 	}
 
 	int ret = setProp(id, value);
-		std::cout << ret << "\n";
-
-	if(!ret) m_respPropId = id;
+	if(!ret) {
+		m_cb_respProp = SendProp;
+		m_eventPromise = NULL;
+		m_respPropId = id;
+	}
 	return id;
 };
 

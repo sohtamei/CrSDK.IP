@@ -14,7 +14,6 @@ namespace fs = std::filesystem;
 #include <iomanip>
 #include <iostream>
 #include <thread>
-#include <boost/beast.hpp>	// camera->SetPropエラー回避
 #include "CRSDK/CameraRemote_SDK.h"
 #include "CameraDevice.h"
 #include "Text.h"
@@ -86,13 +85,14 @@ int remoteCli_init(void)
 
 	camera->load_properties();
 	int ret = camera->setProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality,
-						SDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low);
+							SDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low);
 	if(ret) {
 		if (camera->is_connected()) {
 			camera->disconnect();
 		}
 		std::cout << "ERROR: Please reboot this command(" << __LINE__ << ").\n";
 	}
+	camera->waitProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, 1000);
 
 	return 0;
 

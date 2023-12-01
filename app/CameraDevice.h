@@ -14,6 +14,8 @@ typedef int errno_t;
 
 #include <atomic>
 #include <cstdint>
+#include <future>
+#include <mutex>
 #include "CRSDK/CameraRemote_SDK.h"
 #include "CRSDK/IDeviceCallback.h"
 #include "ConnectionInfo.h"
@@ -64,9 +66,8 @@ public:
 
     /*** Shooting operations ***/
 
-    void capture_image() const;
-    void s1_shooting() const;
-    void af_shutter(std::uint32_t delay_ms) const;
+    void s1_shooting();
+    void af_shutter(std::uint32_t delay_ms);
     void continuous_shooting();
 
 /*
@@ -164,7 +165,10 @@ private:
     MediaProfileList m_mediaprofileList;
     std::string m_fingerprint;
     std::string m_userPassword;
-    SCRSDK::CrDevicePropertyCode m_respPropId;
+    
+	SCRSDK::CrDevicePropertyCode m_respPropId;
+	void (*m_cb_respProp)(SCRSDK::CrDevicePropertyCode id);
+	std::promise<void>* m_eventPromise;
 
 public:
 	bool set_save_info(text prefix) const;
@@ -178,7 +182,8 @@ public:
 	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::string _text);
-	std::int32_t setProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value) const;
+	std::int32_t setProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value);
+	std::int32_t waitProp(SCRSDK::CrDevicePropertyCode id, std::int32_t timeoutMs);
 
 	void GetAvailablePropList(std::vector<std::string>& propList);
 
@@ -190,6 +195,11 @@ private:
 	void parse_propStr(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);
 
 	std::string PropCurrentText(SCRSDK::CrDevicePropertyCode id) const;
+
+	void notifyEvent(SCRSDK::CrDevicePropertyCode id);
+	void sendProp(SCRSDK::CrDevicePropertyCode id);
+
+
 };
 } // namespace cli
 

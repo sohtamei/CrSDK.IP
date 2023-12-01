@@ -43,10 +43,13 @@ websocket::stream<tcp::socket> *p_ws = NULL;
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
 
 
-std::mutex crsdk_mtx;
+std::mutex crsdk_mutex;
+std::mutex ws_mutex;
 
 void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 {
+	std::unique_lock<std::mutex> ws_lock(ws_mutex);		// ws mutex
+
 	std::stringstream resp_stream;
 	pt::write_json(resp_stream, resp_tree);
 	beast::flat_buffer resp_buffer;
@@ -168,10 +171,8 @@ void do_thread_ws(void)
 
 	beast::error_code err;
 
-	while(true)
-	{
-		try
-		{
+	while(true) {
+		try {
 			tcp::socket socket(ioc);
 			acceptor.accept(socket);
 
@@ -196,7 +197,7 @@ void do_thread_ws(void)
 				if(err) break;
 
 				if(ws.got_text()) {
-					std::unique_lock<std::mutex> crsdk_lock(crsdk_mtx);		// CrSDK mutex
+					std::unique_lock<std::mutex> crsdk_lock(crsdk_mutex);		// CrSDK mutex
 
 					std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
 
@@ -213,9 +214,16 @@ void do_thread_ws(void)
 							std::vector<std::string> propList;
 							camera->GetAvailablePropList(propList);
 							pt::ptree resp_tree;
-							for (const auto& iter : propList) {
-								resp_tree.put(iter, "");
+						//	for (const auto& iter : propList) {
+						//		resp_tree.put(iter, "");
+						//	}
+							pt::ptree tmp1;
+							for(auto& iter : propList) {
+								pt::ptree tmp2;
+								tmp2.put("", iter);
+								tmp1.push_back(std::make_pair("", tmp2));
 							}
+							resp_tree.add_child("propList", tmp1);
 							write_json(ws, resp_tree);
 							continue;
 						} else if(cmd == "afShutter") {
@@ -223,8 +231,10 @@ void do_thread_ws(void)
 							if(cmd_tree.get_child_optional("delay"))
 								delay_ms = cmd_tree.get<std::uint32_t>("delay");
 							camera->af_shutter(delay_ms);
+
 						} else if(cmd == "afHalfShutter") {
 							camera->s1_shooting();
+
 						} else if(cmd == "liveview") {
 							uint8_t* imageBuf = NULL;
 							int imageSize = camera->get_live_view(&imageBuf);
@@ -251,9 +261,16 @@ void do_thread_ws(void)
 						} else if(cmd == "setIso") {
 							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
 							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity, value);
+
 						} else if(cmd == "test") {
-							std::uint32_t code = SCRSDK::CrLiveViewPropertyCode::CrLiveViewProperty_AF_Area_Position;
-							camera->load_liveview_properties(1, &code);
+							auto id = SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality;
+							auto prop = camera->GetProp(id);
+							auto value = SCRSDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low;
+							if(prop->current == SCRSDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low)
+								value = SCRSDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_High;
+							camera->setProp(id, value);
+							camera->waitProp(id, 1000);
+
 						} else {
 							SCRSDK::CrDevicePropertyCode id = camera->Prop_tag2id(cmd);
 							if(id) {
@@ -287,8 +304,11 @@ void do_thread_ws(void)
 					}
 				}
 				//Echo the message pack to the client
-				ws.text(true);
-				ws.write(buffer.data());
+				{
+					std::unique_lock<std::mutex> ws_lock(ws_mutex);		// ws mutex
+					ws.text(true);
+					ws.write(buffer.data());
+				}
 			}
 		}
 		catch(beast::system_error const& se)
@@ -331,6 +351,7 @@ void uploadFile(const wchar_t* filename)
 	std::vector<uint8_t> v_buffer(filebuf, filebuf+filesize);
 	delete[] filebuf;
 	if(p_ws) {
+		std::unique_lock<std::mutex> ws_lock(ws_mutex);		// ws mutex
 		p_ws->text(false);
 		p_ws->write(asio::buffer(v_buffer));
 	}
@@ -383,7 +404,7 @@ void do_thread_http(void)
 				uint8_t* imageBuf = NULL;
 				int imageSize = 0;
 				{
-					std::unique_lock<std::mutex> crsdk_lock(crsdk_mtx);		// CrSDK mutex
+					std::unique_lock<std::mutex> crsdk_lock(crsdk_mutex);		// CrSDK mutex
 					imageSize = camera->get_live_view(&imageBuf);
 				}
 				if(imageSize > 0) {
@@ -414,6 +435,26 @@ void do_thread_http(void)
 		socket2.shutdown(tcp::socket::shutdown_send, err);
 		std::clog << "closed." << std::endl;
 	}
+}
+
+void add_array(pt::ptree& pt_, std::string key, std::vector<std::string> array)
+{
+	pt::ptree tmp1;
+	for(auto& iter : array) {
+		pt::ptree tmp2;
+		tmp2.put("", iter);
+		tmp1.push_back(std::make_pair("", tmp2));
+	}
+	pt_.add_child(key, tmp1);
+
+/*
+	pt::ptree pt3;
+	std::vector<std::string> temp = {"123","456"};
+	add_array(pt3, "tmp2", temp);
+
+	std::stringstream ss2;
+	pt::write_json(ss2, pt3); std::cout << ss2.str() << "\n";
+*/
 }
 
 int main(int argc, char* argv[])
