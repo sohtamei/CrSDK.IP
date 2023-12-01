@@ -1,3 +1,5 @@
+//#define PORT82
+
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/beast.hpp>
@@ -36,8 +38,13 @@ extern std::shared_ptr<cli::CameraDevice> camera;
 int remoteCli_init(void);
 
 std::string address = "0.0.0.0";
+#ifndef PORT82
 unsigned short portWS = 8080;
 unsigned short portHttp = 81;
+#else
+unsigned short portWS = 8082;
+unsigned short portHttp = 82;
+#endif
 
 websocket::stream<tcp::socket> *p_ws = NULL;
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
@@ -162,6 +169,25 @@ void SendProp(SCRSDK::CrDevicePropertyCode id)
 	}
 }
 
+void Send2DArray(std::string tag, std::vector<std::vector<uint32_t>>& info)
+{
+	if(!p_ws) return;
+
+	pt::ptree resp_tree;
+	pt::ptree tmp0;
+	for(auto& iter1 : info) {
+		pt::ptree tmp1;
+		for(auto& iter2 : iter1) {
+			pt::ptree tmp2;
+			tmp2.put("", iter2);
+			tmp1.push_back(std::make_pair("", tmp2));
+		}
+		tmp0.push_back(std::make_pair("", tmp1));
+	}
+	resp_tree.put("code", tag);
+	resp_tree.add_child("info", tmp0);
+	write_json(*p_ws, resp_tree);
+}
 
 void do_thread_ws(void)
 {
@@ -214,9 +240,6 @@ void do_thread_ws(void)
 							std::vector<std::string> propList;
 							camera->GetAvailablePropList(propList);
 							pt::ptree resp_tree;
-						//	for (const auto& iter : propList) {
-						//		resp_tree.put(iter, "");
-						//	}
 							pt::ptree tmp1;
 							for(auto& iter : propList) {
 								pt::ptree tmp2;
@@ -448,18 +471,23 @@ void add_array(pt::ptree& pt_, std::string key, std::vector<std::string> array)
 	pt_.add_child(key, tmp1);
 
 /*
-	pt::ptree pt3;
-	std::vector<std::string> temp = {"123","456"};
-	add_array(pt3, "tmp2", temp);
+	pt::ptree pt_;
+	std::vector<std::string> array = {"123","456"};
+	add_array(pt_, "tmp2", array);
 
 	std::stringstream ss2;
-	pt::write_json(ss2, pt3); std::cout << ss2.str() << "\n";
+	pt::write_json(ss2, pt_); std::cout << ss2.str() << "\n";
 */
 }
 
 int main(int argc, char* argv[])
 {
 	std::locale utf8_locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
+#ifndef PORT82
+	std::cout << "Cr\"Nocode\"SDK running...\n";
+#else
+	std::cout << "Cr\"Nocode\"SDK running...(port 8082, 82)\n";
+#endif
 
 	int ret = remoteCli_init();
 	if(ret) return -1;

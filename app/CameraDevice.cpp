@@ -744,14 +744,17 @@ void CameraDevice::s1_shooting()
 void CameraDevice::af_shutter(std::uint32_t delay_ms)
 {
 	std::cout << "S1 shooting...\n";
-	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
-	int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
-	if(ret) {
-		setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
-		return;
+	if(GetProp(PCode::CrDeviceProperty_S1)->current != SDK::CrLockIndicator::CrLockIndicator_Locked) {
+		setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
+		int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
+		if(ret) {
+			setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
+			return;
+		}
 	}
 
 	SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Down);
+	std::this_thread::sleep_for(35ms);
 	SDK::SendCommand(m_device_handle, SDK::CrCommandId::CrCommandId_Release, SDK::CrCommandParam::CrCommandParam_Up);
 
 	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
@@ -2993,8 +2996,11 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 	for(std::uint32_t i = 0; i < num; ++i) {
 		PCode id = (PCode)codes[i];
 
-	//	auto iter = Prop.find(id);
-	//	if(iter != end(Prop)) std::cout << iter->second.tag.c_str() << "\n";
+		auto iter = Prop.find(id);
+		if(iter != end(Prop)) {
+			iter->second.old = true;
+		//	std::cout << iter->second.tag.c_str() << "\n";
+		}
 
 		if(m_respPropId == id) {
 			m_respPropId = (PCode)0;
@@ -3182,19 +3188,15 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 			if(0 == count || nullptr == pFrameInfo) {
 				std::cout << "  FocusFrameInfo nothing\n";
 			} else {
-				for(std::int32_t frame = 0; frame < count; ++frame) {
-					auto lvprop = pFrameInfo[frame];
-					char buff[512];
-					memset(buff, 0, sizeof(buff));
-					sprintf_s(buff, "  FocusFrameInfo no[%d] type[%d] state[%d] w[%d] h[%d] Deno[%d-%d] Nume[%d-%d]",
-						frame + 1,
-						lvprop.type,
-						lvprop.state,
-						lvprop.width, lvprop.height,
-						lvprop.xDenominator, lvprop.yDenominator,
-						lvprop.xNumerator, lvprop.yNumerator);
-					std::cout << buff << std::endl;
+				std::vector<std::vector<uint32_t>> info(count);
+				for(int i = 0; i < count; i++) {
+					auto lvprop = pFrameInfo[i];
+					info.at(i) = { lvprop.type, lvprop.state,
+									lvprop.width, lvprop.height,
+									lvprop.xDenominator, lvprop.yDenominator,
+									lvprop.xNumerator, lvprop.yNumerator};
 				}
+				Send2DArray("FocusFrameInfo", info);
 			}
 			break;
 		  }
@@ -3292,6 +3294,7 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			auto iter = PropStr.find(id);
 			if(iter != end(PropStr)) {
 				parse_propStr(devProp, id);
+				iter->second.old = false;
 				std::cout << iter->second.tag.c_str() << "=" << iter->second.current << "\n";	// debug
 			} else {
 				std::cout << "unknown(" << std::hex << id << ")\n";
@@ -3300,6 +3303,7 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			auto iter = Prop.find(id);
 			if(iter != end(Prop)) {
 				parse_prop(devProp, id);
+				iter->second.old = false;
 				std::cout << iter->second.tag.c_str() << "=" << PropCurrentText(id) << "\n";	// debug
 				if(id == PCode::CrDeviceProperty_SdkControlMode)
 					m_modeSDK = (SDK::CrSdkControlMode)Prop.at(id).current;
@@ -3323,9 +3327,12 @@ PCode CameraDevice::Prop_tag2id(std::string tag) const
 
 struct PropertyValue* CameraDevice::GetProp(PCode id)
 {
-	CrInt32u code = static_cast<CrInt32u>(id);
-	load_properties(1, &code);
-	return &Prop.at(id);
+	auto prop = &Prop.at(id);
+	if(prop->old) {
+		CrInt32u code = static_cast<CrInt32u>(id);
+		load_properties(1, &code);
+	}
+	return prop;
 }
 
 std::int32_t CameraDevice::setProp(PCode id, std::uint64_t value)
@@ -3372,7 +3379,7 @@ std::int32_t CameraDevice::waitProp(PCode id, std::int32_t timeoutMs)
 
 std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 {
-	if(Prop.at(id).current == value) {
+	if(GetProp(id)->current == value) {
 		std::cout << "skipped\n";
 		SendProp(id);
 		return 0;
@@ -3437,6 +3444,7 @@ void CameraDevice::GetAvailablePropList(std::vector<std::string>& propList)
 std::int32_t CameraDevice::SendCommand(SDK::CrCommandId cmd) const
 {
 	SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Down);
+	std::this_thread::sleep_for(35ms);
 	SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Up);
 	return 0;
 }
@@ -3453,4 +3461,3 @@ std::int32_t CameraDevice::SendCommand(std::string _text) const
 
 }
 // namespace cli
-

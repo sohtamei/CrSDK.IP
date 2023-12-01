@@ -25,6 +25,7 @@ CameraDevicePtr camera = NULL;
 
 std::vector<CameraDevicePtr> cameraList; // all
 
+static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
 
 int remoteCli_init(void)
 {
@@ -35,8 +36,6 @@ int remoteCli_init(void)
     // Make the stream's locale the same as the current global locale
     cli::tin.imbue(std::locale());
     cli::tout.imbue(std::locale());
-
-    std::cout << "Cr\"Nocode\"SDK running...\n";
 
     auto init_success = SDK::Init();
     if (!init_success) {
@@ -56,7 +55,27 @@ int remoteCli_init(void)
     auto ncams = camera_list->GetCount();
     std::cout << "Camera enumeration successful. " << ncams << " detected.\n";
 
+    for (CrInt32u i = 0; i < ncams; ++i) {
+        auto camera_info = camera_list->GetCameraObjectInfo(i);
+        std::string model = wstring_convert.to_bytes(camera_info->GetModel());
+        std::string id = wstring_convert.to_bytes((TCHAR*)camera_info->GetId());
+        std::cout << '[' << i + 1 << "] " << model << " (" << id << ")\n";
+    }
+
     CrInt32u no = 1;
+    if(ncams >= 2) {
+        std::cout << "Connect to camera with input number...\n";
+        std::cout << "input> ";
+        std::string connectNo;
+        std::getline(std::cin, connectNo);
+        std::cout << '\n';
+
+        no = stoi(connectNo);
+        if(no < 1 || no > ncams) {
+            std::cout << "error!\n";
+            no = 1;
+        }
+    }
     std::int32_t cameraNumUniq = 1;
 
     std::cout << "Connect to selected camera...\n";

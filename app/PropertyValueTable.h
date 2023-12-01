@@ -18,6 +18,7 @@ struct PropertyValue
 	SCRSDK::CrDataType dataType;
 	std::int64_t current;
 	std::vector<std::int64_t> possible;
+	bool old;
 };
 
 struct PropertyValueString
@@ -27,6 +28,7 @@ struct PropertyValueString
 
 	SCRSDK::CrDataType dataType;
 	std::string current;
+	bool old;
 };
 
 //std::string format_number(std::uint32_t value);
