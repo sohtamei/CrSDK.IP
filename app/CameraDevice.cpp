@@ -2980,10 +2980,10 @@ void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 
 		switch(prop) {
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_AF_Area_Position:			// FocusFrameInfo
+		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_FaceFrame:					// FaceFrameInfo
 			load_liveview_properties(1, &codes[i]);
 			break;
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_Focus_Magnifier_Position:	// Magnifier_Position
-		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_FaceFrame:					// FaceFrameInfo
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_TrackingFrame:				// TrackingFrameInfo
 		default:
 			break;
@@ -3186,7 +3186,9 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 			int count = prop.GetValueSize() / sizeof(SDK::CrFocusFrameInfo);
 			SDK::CrFocusFrameInfo* pFrameInfo = (SDK::CrFocusFrameInfo*)prop.GetValue();
 			if(0 == count || nullptr == pFrameInfo) {
+			#ifdef _DEBUG
 				std::cout << "  FocusFrameInfo nothing\n";
+			#endif
 			} else {
 				std::vector<std::vector<uint32_t>> info(count);
 				for(int i = 0; i < count; i++) {
@@ -3220,21 +3222,19 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 			int count = prop.GetValueSize() / sizeof(SDK::CrFaceFrameInfo);
 			SDK::CrFaceFrameInfo* pFrameInfo = (SDK::CrFaceFrameInfo*)prop.GetValue();
 			if(0 == count || nullptr == pFrameInfo) {
+			#ifdef _DEBUG
 				std::cout << "  FaceFrameInfo nothing\n";
+			#endif
 			} else {
-				for (std::int32_t frame = 0; frame < count; ++frame) {
-					auto lvprop = pFrameInfo[frame];
-					char buff[512];
-					memset(buff, 0, sizeof(buff));
-					sprintf_s(buff, "  FaceFrameInfo no[%d] type[%d] state[%d] w[%d] h[%d] Deno[%d-%d] Nume[%d-%d]",
-						frame + 1,
-						lvprop.type,
-						lvprop.state,
-						lvprop.width, lvprop.height,
-						lvprop.xDenominator, lvprop.yDenominator,
-						lvprop.xNumerator, lvprop.yNumerator);
-					std::cout << buff << std::endl;
+				std::vector<std::vector<uint32_t>> info(count);
+				for(int i = 0; i < count; i++) {
+					auto lvprop = pFrameInfo[i];
+					info.at(i) = { lvprop.type, lvprop.state,
+									lvprop.width, lvprop.height,
+									lvprop.xDenominator, lvprop.yDenominator,
+									lvprop.xNumerator, lvprop.yNumerator};
 				}
+				Send2DArray("FaceFrameInfo", info);
 			}
 			break;
 		  }
@@ -3295,7 +3295,9 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			if(iter != end(PropStr)) {
 				parse_propStr(devProp, id);
 				iter->second.old = false;
+			#ifdef _DEBUG
 				std::cout << iter->second.tag.c_str() << "=" << iter->second.current << "\n";	// debug
+			#endif
 			} else {
 				std::cout << "unknown(" << std::hex << id << ")\n";
 			}
@@ -3304,7 +3306,9 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			if(iter != end(Prop)) {
 				parse_prop(devProp, id);
 				iter->second.old = false;
+			#ifdef _DEBUG
 				std::cout << iter->second.tag.c_str() << "=" << PropCurrentText(id) << "\n";	// debug
+			#endif
 				if(id == PCode::CrDeviceProperty_SdkControlMode)
 					m_modeSDK = (SDK::CrSdkControlMode)Prop.at(id).current;
 			} else {

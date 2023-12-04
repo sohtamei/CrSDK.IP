@@ -61,7 +61,9 @@ void write_json(websocket::stream<tcp::socket>& ws, pt::ptree resp_tree)
 	pt::write_json(resp_stream, resp_tree);
 	beast::flat_buffer resp_buffer;
 	boost::beast::ostream(resp_buffer) << resp_stream.str();
+#ifdef _DEBUG
 	std::clog << resp_stream.str() << std::endl;
+#endif
 	ws.text(true);
 	ws.write(resp_buffer.data());
 }
@@ -225,8 +227,9 @@ void do_thread_ws(void)
 				if(ws.got_text()) {
 					std::unique_lock<std::mutex> crsdk_lock(crsdk_mutex);		// CrSDK mutex
 
+				#ifdef _DEBUG
 					std::cout << beast::buffers_to_string(buffer.data()) << std::endl;
-
+				#endif
 					std::string cmd_data(beast::buffers_to_string(buffer.data()));
 					std::istringstream cmd_is(cmd_data);
 					pt::ptree cmd_tree;
@@ -234,8 +237,9 @@ void do_thread_ws(void)
 
 					if(cmd_tree.get_child_optional("cmd")) {
 						std::string cmd = cmd_tree.get<std::string>("cmd");
+					#ifdef _DEBUG
 						std::cout << "Received JSON: " << cmd << std::endl;
-
+					#endif
 						if(cmd == "getPropList") {
 							std::vector<std::string> propList;
 							camera->GetAvailablePropList(propList);
