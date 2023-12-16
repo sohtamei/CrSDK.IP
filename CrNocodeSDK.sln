@@ -8,19 +8,19 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		MinSizeRel|x64 = MinSizeRel|x64
+		Debug82|x64 = Debug82|x64
 		Release|x64 = Release|x64
-		RelWithDebInfo|x64 = RelWithDebInfo|x64
+		Release82|x64 = Release82|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Debug|x64.ActiveCfg = Debug|x64
 		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Debug|x64.Build.0 = Debug|x64
-		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.MinSizeRel|x64.ActiveCfg = MinSizeRel|x64
-		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.MinSizeRel|x64.Build.0 = MinSizeRel|x64
+		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Debug82|x64.ActiveCfg = Debug82|x64
+		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Debug82|x64.Build.0 = Debug82|x64
 		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Release|x64.ActiveCfg = Release|x64
 		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Release|x64.Build.0 = Release|x64
-		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.RelWithDebInfo|x64.ActiveCfg = RelWithDebInfo|x64
-		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.RelWithDebInfo|x64.Build.0 = RelWithDebInfo|x64
+		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Release82|x64.ActiveCfg = Release82|x64
+		{D1E36939-AAB0-3CB9-A189-4AB62F25C25D}.Release82|x64.Build.0 = Release82|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

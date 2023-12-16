@@ -120,22 +120,26 @@ void sendProp(websocket::stream<tcp::socket>& ws,
 		}
 	}
 
-	int index = -1;
-	for(int i = 0; i < prop->possible.size(); i++) {
-		if(prop->current == prop->possible[i]) index = i;
-	}
-
 	std::string incrementable = "none";
-	if(prop->writable != 1)
-		;
-	else if(index == 0)
-		incrementable = "inc";
-	else if(index == prop->possible.size()-1)
-		incrementable = "dec";
-	else if(index > 0 && index < prop->possible.size()-1)
-		incrementable = "incdec";
-	resp_tree.put("incrementable", incrementable);
+	if((prop->dataType & SCRSDK::CrDataType::CrDataType_ArrayBit) && prop->possible.size() >= 1) {
+		int index = -1;
+		for(int i = 0; i < prop->possible.size(); i++) {
+			if(prop->current == prop->possible[i]) index = i;
+		}
 
+		if(prop->writable != 1)
+			;
+		else if(index == 0)
+			incrementable = "inc";
+		else if(index == prop->possible.size()-1)
+			incrementable = "dec";
+		else if(index > 0 && index < prop->possible.size()-1)
+			incrementable = "incdec";
+	} else {
+		if(prop->writable == 1)
+			incrementable = "writable";
+	}
+	resp_tree.put("incrementable", incrementable);
 	write_json(ws, resp_tree);
 }
 
@@ -164,10 +168,28 @@ void incProp(websocket::stream<tcp::socket>& ws,
 //	sendProp(ws, id, false);
 }
 
+void errorProp(websocket::stream<tcp::socket>& ws,
+	SCRSDK::CrDevicePropertyCode id)
+{
+	struct cli::PropertyValue* prop = camera->GetProp(id);
+
+	pt::ptree resp_tree;
+	resp_tree.put("code", prop->tag);
+	resp_tree.put("error", "");
+	write_json(ws, resp_tree);
+}
+
 void SendProp(SCRSDK::CrDevicePropertyCode id)
 {
 	if(p_ws) {
 		sendProp(*p_ws, id, false);
+	}
+}
+
+void ErrorProp(SCRSDK::CrDevicePropertyCode id)
+{
+	if(p_ws) {
+		errorProp(*p_ws, id);
 	}
 }
 
@@ -216,7 +238,7 @@ void do_thread_ws(void)
 				}));
 			ws.accept();
 
-			std::clog << "Connected." << std::endl;
+			std::clog << "ws Connected." << std::endl;
 
 			while(true) {
 				beast::flat_buffer buffer;
@@ -351,7 +373,7 @@ void do_thread_ws(void)
 
 	//	ws.close(websocket::close_code::normal);
 		p_ws = NULL;
-		std::clog << "Disconnected." << std::endl;
+		std::clog << "ws Disconnected." << std::endl;
 	}
 }
 
@@ -460,7 +482,7 @@ void do_thread_http(void)
 		} while(false);
 
 		socket2.shutdown(tcp::socket::shutdown_send, err);
-		std::clog << "closed." << std::endl;
+		std::clog << "http Closed." << std::endl;
 	}
 }
 

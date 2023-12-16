@@ -25,7 +25,7 @@ typedef int errno_t;
 
 namespace cli
 {
-
+/*
 class CRFolderInfos
 {
 public:
@@ -47,8 +47,7 @@ public:
 
 typedef std::vector<CRFolderInfos*> MtpFolderList;
 typedef std::vector<SCRSDK::CrMtpContentsInfo*> MtpContentsList;
-typedef std::vector<SCRSDK::CrMediaProfileInfo*> MediaProfileList;
-
+*/
 class CameraDevice : public SCRSDK::IDeviceCallback
 {
 public:
@@ -68,39 +67,10 @@ public:
 
     void s1_shooting();
     void af_shutter(std::uint32_t delay_ms);
-    void continuous_shooting();
-
 /*
-    void get_select_media_format();
-    bool get_custom_wb();
-    void get_zoom_operation();
-    bool get_aps_c_or_full_switching_setting();
-    bool get_camera_setting_saveread_state();
-    bool get_baselook_value();
-    bool get_white_balance_tint();
-    void get_media_slot_status();
-    bool get_movie_rec_button_toggle_enable_status();
-
-    void set_af_area_position();
-    void set_select_media_format();
-    void execute_movie_rec();
-
-    void set_custom_wb();
-    void set_zoom_operation();
-    void execute_camera_setting_reset();
-    void set_baselook_value();
-    void execute_pos_xy(CrInt16u code);
-
-    void execute_preset_focus();
-    void execute_APS_C_or_Full();
-    void execute_movie_rec_toggle();
-    void execute_focus_bracket();
     void do_download_camera_setting_file();
     void do_upload_camera_setting_file();
     void getFileNames(std::vector<text> &file_names);
-
-    bool is_live_view_enable() { return m_lvEnbSet; };
-    void change_live_view_enable();
 */
     // Check if this device is connected
     bool is_connected() const;
@@ -135,17 +105,6 @@ public:
     void pullContents(SCRSDK::CrContentHandle content);
     void getScreennail(SCRSDK::CrContentHandle content);
     void getThumbnail(SCRSDK::CrContentHandle content);
-
-    text format_display_string_type(SCRSDK::CrDisplayStringType type);
-    void execute_request_displaystringlist();
-    void execute_get_displaystringtypes();
-    void execute_get_displaystringlist();
-    text format_dispstrlist(SCRSDK::CrDisplayStringListInfo list);
-
-    void get_mediaprofile();
-    bool get_focus_position_setting();
-    void set_focus_position_setting();
-    bool execute_focus_position_cancel();
 */
 private:
     std::int32_t m_number;
@@ -155,14 +114,10 @@ private:
     ConnectionType m_conn_type;
     NetworkInfo m_net_info;
     UsbInfo m_usb_info;
-    bool m_lvEnbSet;
     SCRSDK::CrSdkControlMode m_modeSDK;
-    MtpFolderList   m_foldList;
-    MtpContentsList m_contentList;
+    //MtpFolderList   m_foldList;
+    //MtpContentsList m_contentList;
     bool m_spontaneous_disconnection;
-    // DispStrList
-    std::vector<SCRSDK::CrDisplayStringType> m_dispStrTypeList; // Information returned as a result of GetDisplayStringTypes
-    MediaProfileList m_mediaprofileList;
     std::string m_fingerprint;
     std::string m_userPassword;
     
@@ -198,8 +153,6 @@ private:
 
 	void notifyEvent(SCRSDK::CrDevicePropertyCode id);
 	void sendProp(SCRSDK::CrDevicePropertyCode id);
-
-
 };
 } // namespace cli
 

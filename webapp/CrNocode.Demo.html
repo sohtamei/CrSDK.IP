@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Cr"Nocode"SDK demo</title>
+        <link rel="stylesheet" href="style.css" type="text/css" />
+        <script src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js'></script>
+        <script src="script.js"></script>
+    </head>
+
+    <body>
+    <section class="main">
+    <div id="content">
+        <div id="sidebar">
+            <p></p>
+            <nav id="menu">
+                <div class="input-group">
+                    <label id="outputLabel">disconnected</label>
+                </div>
+
+                <section id="buttons">
+                    <button id="buttonStream">Start Liveview</button>
+                    <button id="buttonS1">S1</button>
+                    <button id="buttonStill">Af Shutter</button>
+                </section>
+
+                <section id="buttons">
+                    <button id="buttonUpdate">Update</button>
+                    <button id="buttonDisconnect">Disconnect</button>
+                </section>
+<!--
+                <div class="input-group">
+                    <label for="buttonTest">IP address</label>
+                    <div class="text">
+                        <input id="test" type="text" minlength="1" maxlength="14" size="14" value="0">
+                    </div>
+                    <button id="buttonTest" class="inline-button">Set</button>
+                </div>
+-->
+                <div id='prop'>not connected</div>
+            </nav>
+        </div>
+
+        <figure>
+            <div id="containerStram" class="image-container">
+                <img id="imgStream1" src="" crossorigin>&nbsp;
+                <img id="imgStream2" src="" crossorigin>
+            </div>
+        </figure>
+    </div>
+    </section>
+    </body>
+</html>
