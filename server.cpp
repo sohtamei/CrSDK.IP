@@ -169,13 +169,14 @@ void incProp(websocket::stream<tcp::socket>& ws,
 }
 
 void errorProp(websocket::stream<tcp::socket>& ws,
-	SCRSDK::CrDevicePropertyCode id)
+	SCRSDK::CrDevicePropertyCode id,
+	std::string message)
 {
 	struct cli::PropertyValue* prop = camera->GetProp(id);
 
 	pt::ptree resp_tree;
 	resp_tree.put("code", prop->tag);
-	resp_tree.put("error", "");
+	resp_tree.put("error", message);
 	write_json(ws, resp_tree);
 }
 
@@ -186,10 +187,10 @@ void SendProp(SCRSDK::CrDevicePropertyCode id)
 	}
 }
 
-void ErrorProp(SCRSDK::CrDevicePropertyCode id)
+void ErrorProp(SCRSDK::CrDevicePropertyCode id, std::string message)
 {
 	if(p_ws) {
-		errorProp(*p_ws, id);
+		errorProp(*p_ws, id, message);
 	}
 }
 

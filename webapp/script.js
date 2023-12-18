@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const imgStream1 = document.getElementById('imgStream1');
 	const imgStream2 = document.getElementById('imgStream2');
 	const containerStram = document.getElementById('containerStram');
-
 /*
 	const prop = { FNumber: document.getElementById('FNumber'),
 								 ShutterSpeed: document.getElementById('ShutterSpeed'),
@@ -52,7 +51,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			console.log('connected(1)');
 			outputLabel.innerHTML = 'connected';
 
-			return loadProps();
+			return SendRecv({cmd:'LiveView_Image_Quality',ope:'set',text:'High'})
+			.then(resp => loadProps());
 		}
 
 		ws1.onerror = function(error) {
@@ -257,11 +257,11 @@ console.log(el);
 			default:
 				return;
 		}
-	let sendObj = {cmd:el.id, ope:'set'};
-	if(isNaN(value))
-		sendObj['text'] = value.trim();
-	else
-		sendObj['value'] = Number(value);
+		let sendObj = {cmd:el.id, ope:'set'};
+		if(isNaN(value))
+			sendObj['text'] = value.trim();
+		else
+			sendObj['value'] = Number(value);
 		const json = JSON.stringify(sendObj);
 		if(ws1) ws1.send(json);
 		if(ws2) ws2.send(json);

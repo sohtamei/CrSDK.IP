@@ -15,6 +15,7 @@ struct PropertyValue
 	const std::map<std::uint64_t, std::string>* mapEnum;
 	std::string (*const formatFunc)(std::uint64_t val);
 
+	int readable;
 	SCRSDK::CrDataType dataType;
 	std::int64_t current;
 	std::vector<std::int64_t> possible;
@@ -26,6 +27,7 @@ struct PropertyValueString
 	int writable; // -1:Initial, 0:false, 1:true
 	const std::string tag;
 
+	int readable;
 	SCRSDK::CrDataType dataType;
 	std::string current;
 	bool old;

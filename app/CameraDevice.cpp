@@ -389,7 +389,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_NDFilterModeSetting,	{ -1, "NDFilterModeSetting", &map_CrNDFilterModeSetting, 0, } },
 	{ PCode::CrDeviceProperty_NDFilterSwitchingSetting,	{ -1, "NDFilterSwitchingSetting", &map_CrNDFilterSwitchingSetting, 0, } },
 	{ PCode::CrDeviceProperty_NDFilterValue,	{ -1, "NDFilterValue", 0, 0, } },
-	{ PCode::CrDeviceProperty_NearFar,	{ -1, "NearFar", &map_CrNearFarEnableStatus, 0, } },
+	{ PCode::CrDeviceProperty_NearFar,	{ -1, "NearFar", 0/*&map_CrNearFarEnableStatus*/, 0, } },
 	{ PCode::CrDeviceProperty_PictureEffect,	{ -1, "PictureEffect", &map_CrPictureEffect, 0, } },
 	{ PCode::CrDeviceProperty_PictureProfile,	{ -1, "PictureProfile", &map_CrPictureProfile, 0, } },
 	{ PCode::CrDeviceProperty_PictureProfile_BlackGammaLevel,	{ -1, "PictureProfile_BlackGammaLevel", 0, 0, } },
@@ -1721,10 +1721,10 @@ void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 		switch(prop) {
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_AF_Area_Position:			// FocusFrameInfo
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_FaceFrame:					// FaceFrameInfo
-			load_liveview_properties(1, &codes[i]);
-			break;
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_Focus_Magnifier_Position:	// Magnifier_Position
 		case SDK::CrLiveViewPropertyCode::CrLiveViewProperty_TrackingFrame:				// TrackingFrameInfo
+			load_liveview_properties(1, &codes[i]);
+			break;
 		default:
 			break;
 		}
@@ -1758,6 +1758,7 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 			case PCode::CrDeviceProperty_FNumber:
 			case PCode::CrDeviceProperty_ShutterSpeed:
 			case PCode::CrDeviceProperty_IsoSensitivity:
+			case PCode::CrDeviceProperty_FollowFocusPositionCurrentValue:	// FX3
 				SendProp(id);
 				break;
 			default:
@@ -1855,8 +1856,9 @@ void CameraDevice::parse_prop(SDK::CrDeviceProperty& devProp, PCode id)
 	PropertyValue& prop = Prop.at(id);
 
 	prop.writable = devProp.IsSetEnableCurrentValue();
-	prop.current = devProp.GetCurrentValue();
+	prop.readable = devProp.IsGetEnableCurrentValue();
 	prop.dataType = devProp.GetValueType();
+	prop.current = devProp.GetCurrentValue();
 
 	int dataLen = 1;
 	switch(prop.dataType & 0x100F) {
@@ -1892,6 +1894,7 @@ void CameraDevice::parse_propStr(SDK::CrDeviceProperty& devProp, PCode id)
 	PropertyValueString& prop = PropStr.at(id);
 
 	prop.writable = devProp.IsSetEnableCurrentValue();
+	prop.readable = devProp.IsGetEnableCurrentValue();
 	prop.dataType = devProp.GetValueType();
 
 	uint16_t* dp = devProp.GetCurrentStr();
@@ -1961,7 +1964,7 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 									lvprop.xDenominator, lvprop.yDenominator,
 									lvprop.xNumerator, lvprop.yNumerator};
 				}
-				Send2DArray("MagPosInfo", info);
+				Send2DArray("Magnifier_Position", info);
 			}
 			break;
 		  }
@@ -2132,7 +2135,8 @@ std::int32_t CameraDevice::waitProp(PCode id, std::int32_t timeoutMs)
 
 std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 {
-	if(GetProp(id)->current == value) {
+	auto prop = GetProp(id);
+	if(prop->readable && id != PCode::CrDeviceProperty_NearFar && prop->current == value) {
 		std::cout << "skipped\n";
 		SendProp(id);
 		return 0;
@@ -2140,7 +2144,11 @@ std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 
 	int ret = setProp(id, value);
 	if(ret) {
-		ErrorProp(id);
+		ErrorProp(id, "write error");
+		return -1;
+	}
+	if(!(prop->readable && id != PCode::CrDeviceProperty_NearFar)) {
+		ErrorProp(id, "not readable");
 		return -1;
 	}
 
