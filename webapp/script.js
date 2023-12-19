@@ -9,15 +9,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	let wsResolve = null;
 	let wsWaitObj = null;
 
-	const outputLabel = document.getElementById('outputLabel');
+	const sidebar = document.getElementById('sidebar');
+	const canvas = document.getElementById('canvas');
+	const ctx = canvas.getContext('2d');
+
+	const labelOutput = document.getElementById('labelOutput');
 	const imgStream1 = document.getElementById('imgStream1');
 	const imgStream2 = document.getElementById('imgStream2');
-	const containerStram = document.getElementById('containerStram');
-/*
+
+	imgStream1.onload = () => {
+		canvas.width = imgStream1.width;
+		canvas.height = imgStream1.height;
+	};
+
+	/*
 	const prop = { FNumber: document.getElementById('FNumber'),
-								 ShutterSpeed: document.getElementById('ShutterSpeed'),
-								 IsoSensitivity: document.getElementById('IsoSensitivity'),
-							 };
+				 ShutterSpeed: document.getElementById('ShutterSpeed'),
+				 IsoSensitivity: document.getElementById('IsoSensitivity'),
+				 };
 */
 	checkResp = function(type, resp) {
 		if(wsResolve) {
@@ -49,13 +58,14 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 		ws1.onopen = function(event) {
 			console.log('connected(1)');
-			outputLabel.innerHTML = 'connected';
+			labelOutput.innerHTML = 'connected';
 
 			return SendRecv({cmd:'LiveView_Image_Quality',ope:'set',text:'High'})
 			.then(resp => loadProps());
 		}
 
 		ws1.onerror = function(error) {
+			console.log('ws1 error');
 			ws1.close();
 			ws1 = null;
 		}
@@ -68,11 +78,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				const reader = new FileReader();
 				reader.onload = () => { 
 					imgStream1.src = reader.result;
+					stopStream();
 				}
 				reader.readAsDataURL(event.data);
 			} else if(type == 'string') {
 				resp = JSON.parse(event.data);
-				console.log('R:'+event.data);	// debug
+				if(resp.code != "FocusFrameInfo")
+					console.log('R:'+event.data);	// debug
 				type = 'json';
 				if(resp.hasOwnProperty('current') && resp.current.hasOwnProperty('text')) {
 					resp.current.value = resp.current.text;
@@ -83,16 +95,45 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			}
 
 			checkResp(type, resp);
+
+			if(type == 'json' && resp.hasOwnProperty('code') && isStreaming()) {
+				// for frame info
+				const info = resp.info;
+				switch(resp.code) {
+				case "FaceFrameInfo":
+				case "TrackingFrameInfo":
+			//	case "Magnifier_Position":
+				case "FocusFrameInfo":
+					ctx.clearRect(0, 0, canvas.width, canvas.height);
+					ctx.strokeStyle = "lime";
+
+					for(let i = 0; i < info.length; i++) {
+						let x = info[i][6]*1;
+						let y = info[i][7]*1;
+						let w = info[i][2]*1;
+						let h = info[i][3]*1;
+						x = x - w/2;
+						y = y - h/2;
+						x = (x/640)*canvas.width;
+						w = (w/640)*canvas.width;
+						y = (y/480)*canvas.height;
+						h = (h/480)*canvas.height;
+						ctx.strokeRect(x,y,w,h);
+					}
+					break;
+				}
+			}
 		}
 
 		ws2 = new WebSocket(wsUrl2);
 
 		ws2.onopen = function(event) {
 			console.log('connected(2)');
-			outputLabel.innerHTML = 'connected';
+			labelOutput.innerHTML = 'connected';
 		}
 
 		ws2.onerror = function(error) {
+			console.log('ws2 error');
 			ws2.close();
 			ws2 = null;
 		}
@@ -110,40 +151,42 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	const buttonStream = document.getElementById('buttonStream');
 	buttonStream.onclick = () => {
-		const streamEnabled = (buttonStream.innerHTML === 'Stop Liveview');
-		if (streamEnabled) {
-			stopStream();
+		if (isStreaming()) {
+			return stopStream();
 		} else {
-			startStream();
+			return startStream();
 		}
 	}
 
 	const startStream = () => {
 		imgStream1.src = `${streamUrl1}/stream`;
 		imgStream2.src = `${streamUrl2}/stream`;
-		show(containerStram);
 		buttonStream.innerHTML = 'Stop Liveview';
 	}
 
 	const stopStream = () => {
 		window.stop();
 		buttonStream.innerHTML = 'Start Liveview';
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		return SendRecv({cmd:'S1',ope:'set',text:'Unlocked'});
+	}
+
+	const isStreaming = () => {
+		return (buttonStream.innerHTML === 'Stop Liveview');
 	}
 
 	// Attach actions to buttons
 	const buttonS1 = document.getElementById('buttonS1');
 	buttonS1.onclick = () => {
 		startStream();
-		if(ws1) ws1.send('{"cmd":"S1","ope":"set","text":"Locked"}');
-		if(ws2) ws2.send('{"cmd":"S1","ope":"set","text":"Locked"}');
+		return SendRecv({cmd:'S1',ope:'set',text:'Locked'});
 	}
 
 	const buttonStill = document.getElementById('buttonStill');
 	buttonStill.onclick = () => {
-		stopStream();
-		show(containerStram);
-		if(ws1) ws1.send('{"cmd":"afShutter"}');
-		if(ws2) ws2.send('{"cmd":"afShutter"}');
+		window.stop();
+		return SendRecv({cmd:'afShutter'})
+		.then(() => stopStream());
 	}
 
 	const buttonUpdate = document.getElementById('buttonUpdate');
@@ -153,13 +196,25 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	const buttonDisconnect = document.getElementById('buttonDisconnect');
 	buttonDisconnect.onclick = () => {
-		stopStream();
-		//hide(containerStram);
-		ws1.close();  ws1 = null;
-		ws2.close();  ws2 = null;
-		outputLabel.innerHTML = 'disconnected';
-		console.log('disconnected');
+		return stopStream()
+		.then(() => {
+			ws1.close();  ws1 = null;
+			ws2.close();  ws2 = null;
+			labelOutput.innerHTML = 'disconnected';
+			console.log('disconnected');
+		});
 	}
+
+	canvas.addEventListener('mousedown', (event) => {
+		if(isStreaming()) {
+			let x= event.clientX - sidebar.clientWidth - canvas.offsetLeft - 8;
+			let y= event.clientY - canvas.offsetTop - 16;
+			console.log(x+','+y);
+			x = (x/canvas.width)*640;
+			y = (y/canvas.height)*480;
+			return SendRecv({cmd:'RemoteTouchOperation',ope:'set',value:(x<<16)|y});
+		}
+	});
 
 	const loadProps = () => {
 		return SendRecv({cmd:'getPropList'})
@@ -262,9 +317,7 @@ console.log(el);
 			sendObj['text'] = value.trim();
 		else
 			sendObj['value'] = Number(value);
-		const json = JSON.stringify(sendObj);
-		if(ws1) ws1.send(json);
-		if(ws2) ws2.send(json);
+		return SendRecv(sendObj);
 	}
 
 	const hide = el => {
@@ -291,10 +344,12 @@ console.log(el);
 		return new Promise(resolve => {
 			wsResolve = resolve;
 			wsWaitObj = waitObj;
-			console.log('W:'+JSON.stringify(sendObj));
-			ws1.send(JSON.stringify(sendObj));
+			const json = JSON.stringify(sendObj);
+			console.log('W:'+json);
+			ws1.send(json);
+		//	if(ws2) ws2.send(json);
 		}).then(result => {
-			console.log(result);
+		//	console.log(result);
 			return result;
 		});
 	}

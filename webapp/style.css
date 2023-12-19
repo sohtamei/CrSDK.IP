@@ -155,10 +155,17 @@ select {
 }
 
 .image-container {
-    display: flex;
+  /*display: flex;*/
     margin: 5px 0
     position: relative;
     min-width: 160px
+}
+
+.canvas {
+  border: 1px solid #000;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .hidden {
