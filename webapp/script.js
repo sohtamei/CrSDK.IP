@@ -9,17 +9,21 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	let wsResolve = null;
 	let wsWaitObj = null;
 
-	const sidebar = document.getElementById('sidebar');
-	const canvas = document.getElementById('canvas');
-	const ctx = canvas.getContext('2d');
+	const imgCanvas = document.getElementById('imgCanvas');
+	const imgContext = imgCanvas.getContext('2d');
+
+	const focusCanvas = document.getElementById('focusCanvas');
+	const focusContext = focusCanvas.getContext('2d');
 
 	const labelOutput = document.getElementById('labelOutput');
 	const imgStream1 = document.getElementById('imgStream1');
 	const imgStream2 = document.getElementById('imgStream2');
 
 	imgStream1.onload = () => {
-		canvas.width = imgStream1.width;
-		canvas.height = imgStream1.height;
+		imgCanvas.width  = imgStream1.width;
+		imgCanvas.height = imgStream1.height;
+		focusCanvas.height = imgStream1.height;
+		//console.log(imgCanvas);
 	};
 
 	/*
@@ -53,14 +57,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	}
 
 	$(document).ready(function () {
-		// webアプリを開いたら常駐アプリに接続
 		ws1 = new WebSocket(wsUrl1);
 
 		ws1.onopen = function(event) {
 			console.log('connected(1)');
 			labelOutput.innerHTML = 'connected';
 
-			return SendRecv({cmd:'LiveView_Image_Quality',ope:'set',text:'High'})
+			return SendRecv1({cmd:'LiveView_Image_Quality',ope:'set',text:'High'})
 			.then(resp => loadProps());
 		}
 
@@ -77,14 +80,15 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			if(type == 'object') {
 				const reader = new FileReader();
 				reader.onload = () => { 
+					stopStream(true);
 					imgStream1.src = reader.result;
-					stopStream();
 				}
 				reader.readAsDataURL(event.data);
 			} else if(type == 'string') {
 				resp = JSON.parse(event.data);
-				if(resp.code != "FocusFrameInfo")
+				if(resp.code != "FocusFrameInfo") {
 					console.log('R:'+event.data);	// debug
+				}
 				type = 'json';
 				if(resp.hasOwnProperty('current') && resp.current.hasOwnProperty('text')) {
 					resp.current.value = resp.current.text;
@@ -100,12 +104,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				// for frame info
 				const info = resp.info;
 				switch(resp.code) {
-				case "FaceFrameInfo":
-				case "TrackingFrameInfo":
-			//	case "Magnifier_Position":
-				case "FocusFrameInfo":
-					ctx.clearRect(0, 0, canvas.width, canvas.height);
-					ctx.strokeStyle = "lime";
+				case 'FaceFrameInfo':
+				case 'TrackingFrameInfo':
+			//	case 'Magnifier_Position':
+				case 'FocusFrameInfo':
+					imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+					imgContext.strokeStyle = 'lime';
 
 					for(let i = 0; i < info.length; i++) {
 						let x = info[i][6]*1;
@@ -114,12 +118,17 @@ document.addEventListener('DOMContentLoaded', function (event) {
 						let h = info[i][3]*1;
 						x = x - w/2;
 						y = y - h/2;
-						x = (x/640)*canvas.width;
-						w = (w/640)*canvas.width;
-						y = (y/480)*canvas.height;
-						h = (h/480)*canvas.height;
-						ctx.strokeRect(x,y,w,h);
+						x = (x/640)*imgCanvas.width;
+						w = (w/640)*imgCanvas.width;
+						y = (y/480)*imgCanvas.height;
+						h = (h/480)*imgCanvas.height;
+						imgContext.strokeRect(x,y,w,h);
 					}
+					break;
+				case 'FollowFocusPositionCurrentValue':
+					focusContext.clearRect(0, 0, focusCanvas.width, focusCanvas.height);
+					focusContext.strokeStyle = 'lime';
+					focusContext.strokeRect(0, (1.0 - resp.current.value/0xFFFF)*focusCanvas.height, focusCanvas.width, 1);
 					break;
 				}
 			}
@@ -129,7 +138,10 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 		ws2.onopen = function(event) {
 			console.log('connected(2)');
-			labelOutput.innerHTML = 'connected';
+
+			const json = JSON.stringify({cmd:'LiveView_Image_Quality',ope:'set',text:'High'});
+			console.log('W:'+json);
+			ws2.send(json);
 		}
 
 		ws2.onerror = function(error) {
@@ -151,42 +163,66 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	const buttonStream = document.getElementById('buttonStream');
 	buttonStream.onclick = () => {
-		if (isStreaming()) {
-			return stopStream();
-		} else {
+		if (!isStreaming()) {
 			return startStream();
+		} else {
+			return stopStream();
 		}
 	}
 
 	const startStream = () => {
-		imgStream1.src = `${streamUrl1}/stream`;
-		imgStream2.src = `${streamUrl2}/stream`;
-		buttonStream.innerHTML = 'Stop Liveview';
+		buttonStream.className = 'buttonOn';
+		imgStream1.src = streamUrl1;
+		imgStream2.src = streamUrl2;
 	}
 
-	const stopStream = () => {
-		window.stop();
-		buttonStream.innerHTML = 'Start Liveview';
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		return SendRecv({cmd:'S1',ope:'set',text:'Unlocked'});
+	const stopStream = (keepSrc = false) => {
+		buttonStream.className = 'button';
+		if(!keepSrc) {
+			imgStream1.src = '';
+			imgStream2.src = '';
+		//	window.stop();
+		}
+		imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+		return SendRecv12({cmd:'S1',ope:'set',text:'Unlocked'});
 	}
 
 	const isStreaming = () => {
-		return (buttonStream.innerHTML === 'Stop Liveview');
+		return (buttonStream.className == 'buttonOn');
 	}
 
-	// Attach actions to buttons
 	const buttonS1 = document.getElementById('buttonS1');
 	buttonS1.onclick = () => {
-		startStream();
-		return SendRecv({cmd:'S1',ope:'set',text:'Locked'});
+		if(buttonS1.className != 'buttonOn') {
+			buttonS1.className = 'buttonOn';
+			startStream();
+			return SendRecv12({cmd:'S1',ope:'set',text:'Locked'});
+		} else {
+			buttonS1.className = 'button';
+			imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+			return SendRecv12({cmd:'S1',ope:'set',text:'Unlocked'});
+		}
 	}
 
-	const buttonStill = document.getElementById('buttonStill');
-	buttonStill.onclick = () => {
-		window.stop();
-		return SendRecv({cmd:'afShutter'})
-		.then(() => stopStream());
+	const buttonShutter = document.getElementById('buttonShutter');
+	buttonShutter.onclick = () => {
+		imgStream1.src = '';
+		imgStream2.src = '';
+	//	window.stop();
+		return SendRecv12({cmd:'afShutter'});
+	}
+
+	const buttonRec = document.getElementById('buttonRec');
+	buttonRec.onclick = () => {
+		if(buttonRec.className != 'buttonOn') {
+			buttonRec.className = 'buttonOn';
+
+			return SendRecv12({cmd:'Rec',ope:'set',text:'Locked'});
+		} else {
+			buttonRec.className = 'button';
+			imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+			return SendRecv12({cmd:'Rec',ope:'set',text:'Unlocked'});
+		}
 	}
 
 	const buttonUpdate = document.getElementById('buttonUpdate');
@@ -205,19 +241,46 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		});
 	}
 
-	canvas.addEventListener('mousedown', (event) => {
+	imgCanvas.addEventListener('mousedown', (event) => {
+	//	console.log(event);
 		if(isStreaming()) {
-			let x= event.clientX - sidebar.clientWidth - canvas.offsetLeft - 8;
-			let y= event.clientY - canvas.offsetTop - 16;
+			let x = event.offsetX;
+			let y = event.offsetY;
 			console.log(x+','+y);
-			x = (x/canvas.width)*640;
-			y = (y/canvas.height)*480;
-			return SendRecv({cmd:'RemoteTouchOperation',ope:'set',value:(x<<16)|y});
+			x = Math.trunc((x/imgCanvas.width)*640);
+			y = Math.trunc((y/imgCanvas.height)*480);
+			return SendRecv1({cmd:'RemoteTouchOperation',ope:'set',value:(x<<16)|y});
 		}
 	});
 
+	const followFocusPos = (value) => {
+		if(!isStreaming()) return;
+		console.log(value);
+		if(value < 0 || value > imgCanvas.height) return;
+		value = Math.trunc((1.0 - value/imgCanvas.height)*0xFFFF);
+		return SendRecv1({cmd:'FollowFocusPositionSetting',ope:'set',value:value});
+	}
+
+	focusCanvas.addEventListener('mousedown', (event) => {
+		const startY = event.clientY;
+		const startValue = event.offsetY;
+
+		const onMouseMove = (event) => {
+			followFocusPos(startValue + (event.clientY - startY));
+		}
+
+		const onMouseUp = event => {
+			document.removeEventListener('mousemove', onMouseMove);
+			document.removeEventListener('mouseup', onMouseUp);
+		}
+		document.addEventListener('mousemove', onMouseMove);
+		document.addEventListener('mouseup', onMouseUp);
+		followFocusPos(startValue);
+	});
+
+
 	const loadProps = () => {
-		return SendRecv({cmd:'getPropList'})
+		return SendRecv1({cmd:'getPropList'})
 		.then(resp => {
 			//console.log(resp);
 			let i = 0;
@@ -227,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				loop();
 				function loop(){
 					const prop = resp.propList[i];
-					return SendRecv({cmd:prop, ope:'info'}, {type:'json', code:prop})
+					return SendRecv1({cmd:prop, ope:'info'}, {type:'json', code:prop})
 					.then(resp2 => {
 						//console.log(resp2);
 						const current = (resp2.current.hasOwnProperty('text')) ? resp2.current.text : resp2.current.value;
@@ -277,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	document.querySelectorAll('.default-action').forEach(el => {
 		el.onchange = () => updateConfig(el);
 	})
-
+/*
 	const updateValue = (el, value, updateRemote) => {
 console.log(el);
 		updateRemote = (updateRemote == null) ? true : updateRemote;
@@ -291,7 +354,7 @@ console.log(el);
 			el.value = value;
 		}
 	}
-
+*/
 	function updateConfig(el) {
 		let value;
 		switch (el.type) {
@@ -317,7 +380,7 @@ console.log(el);
 			sendObj['text'] = value.trim();
 		else
 			sendObj['value'] = Number(value);
-		return SendRecv(sendObj);
+		return SendRecv12(sendObj);
 	}
 
 	const hide = el => {
@@ -338,7 +401,7 @@ console.log(el);
 		el.disabled = false;
 	}
 
-	function SendRecv(sendObj, waitObj=null) {
+	function SendRecv1(sendObj, waitObj=null) {
 		if(!ws1) return 'error';
 
 		return new Promise(resolve => {
@@ -347,9 +410,22 @@ console.log(el);
 			const json = JSON.stringify(sendObj);
 			console.log('W:'+json);
 			ws1.send(json);
-		//	if(ws2) ws2.send(json);
 		}).then(result => {
-		//	console.log(result);
+			return result;
+		});
+	}
+
+	function SendRecv12(sendObj, waitObj=null) {
+		if(!ws1) return 'error';
+
+		return new Promise(resolve => {
+			wsResolve = resolve;
+			wsWaitObj = waitObj;
+			const json = JSON.stringify(sendObj);
+			console.log('W:'+json);
+			ws1.send(json);
+			if(ws2) ws2.send(json);
+		}).then(result => {
 			return result;
 		});
 	}

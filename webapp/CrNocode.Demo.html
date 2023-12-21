@@ -11,42 +11,41 @@
 
     <body>
     <section class="main">
-    <div id="content">
-        <div id="sidebar">
-            <p></p>
-            <nav id="menu">
-                <div class="input-group">
-                    <label id="labelOutput">disconnected</label>
-                </div>
+    <div class="content">
+        <div class="sidebar">
+            <div class="input-group">
+                <label id="labelOutput">disconnected</label>
+            </div>
 
-                <section id="buttons">
-                    <button id="buttonStream">Start Liveview</button>
-                    <button id="buttonS1">S1</button>
-                    <button id="buttonStill">Af Shutter</button>
-                </section>
+            <section class="buttons">
+                <button id="buttonStream"  class="button">Liveview</button>
+                <button id="buttonS1"      class="button">S1</button>
+                <button id="buttonShutter" class="button">Shutter</button>
+                <button id="buttonRec"     class="button">Shutter</button>
+            </section>
 
-                <section id="buttons">
-                    <button id="buttonUpdate">Update</button>
-                    <button id="buttonDisconnect">Disconnect</button>
-                </section>
+            <section class="buttons">
+                <button id="buttonUpdate" class="button">Update</button>
+                <button id="buttonDisconnect" class="button">Disconnect</button>
+            </section>
 <!--
-                <div class="input-group">
-                    <label for="buttonTest">IP address</label>
-                    <div class="text">
-                        <input id="test" type="text" minlength="1" maxlength="14" size="14" value="0">
-                    </div>
-                    <button id="buttonTest" class="inline-button">Set</button>
+            <div class="input-group">
+                <label for="buttonTest">IP address</label>
+                <div class="text">
+                    <input id="test" type="text" minlength="1" maxlength="14" size="14" value="0">
                 </div>
+                <button id="buttonTest" class="inline-button">Set</button>
+            </div>
 -->
-                <div id='prop'>not connected</div>
-            </nav>
+            <div id='prop'>not connected</div>
         </div>
 
         <figure>
             <div class="image-container">
-                <canvas id="canvas" class="canvas" width="500" height="500"></canvas>
-                <img id="imgStream1" src="" crossorigin>&nbsp;
-                <img id="imgStream2" src="" crossorigin>
+                <canvas id="imgCanvas" class="imgCanvas"></canvas>
+                <img id="imgStream1" class="imgStream" src="" crossorigin>&nbsp;
+                <canvas id="focusCanvas" class="focusCanvas" width="50" height="10"></canvas>
+                <img id="imgStream2" class="imgStream" src="" crossorigin>
             </div>
         </figure>
     </div>
