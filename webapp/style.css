@@ -33,7 +33,6 @@ div.content {
     max-height: calc(100vh - 40px);
     background: #363636;
     padding: 8px;
-    border-radius: 4px;
     margin-top: 8px;
     margin-right: 8px;
 }
@@ -57,7 +56,6 @@ input[type=text] {
     height: 20px;
     margin: 1px;
     outline: 0;
-    border-radius: 5px;
 }
 
 .buttons {

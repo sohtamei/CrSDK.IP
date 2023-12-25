@@ -142,8 +142,8 @@ public:
 
 	void GetAvailablePropList(std::vector<std::string>& propList);
 
-	std::int32_t SendCommand(SCRSDK::CrCommandId cmd) const;
-	std::int32_t SendCommand(std::string _text) const;
+	std::int32_t SendCommand(SCRSDK::CrCommandId cmd, std::string ope) const;
+	std::int32_t SendCommand(std::string _text, std::string ope) const;
 
 private:
 	void parse_prop(SCRSDK::CrDeviceProperty& devProp, SCRSDK::CrDevicePropertyCode id);

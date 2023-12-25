@@ -21,6 +21,7 @@ namespace SCRSDK
 		CrError_Adaptor								= 0x8700,
 		CrError_Device								= 0x8800,
 		CrError_Contents							= 0x8C00,
+		CrError_Monitoring							= 0x9100,
 
 		CrError_Application							= 0xc000, /* Do not use. Will be removed in the next release. */
 
@@ -153,6 +154,11 @@ namespace SCRSDK
 		CrError_Contents_Transfer_Cancel,
 		CrError_Contents_RejectRequest,
 
+		// Monitoring
+		CrError_Monitoring_Unknown					= CrError_Monitoring,
+		CrError_Monitoring_InvalidCalled_AlreadyStart,
+		CrError_Monitoring_InvalidCalled_AlreadyStop,
+
 		CrWarning_Unknown							= 0x00020000,
 		CrWarning_Connect_Reconnected,
 		CrWarning_Connect_Reconnecting,
@@ -268,10 +274,28 @@ namespace SCRSDK
 		CrWarning_DisplayListChanged_FTP_ServerNameDisplayList,
 		CrWarning_DisplayListChanged_FTP_UpLoadDirectoryDisplayList,
 		CrWarning_DisplayListChanged_FTP_JobStatusDisplayList,
-		//CrWarning_Reserved2,
-		//CrWarning_Reserved3,
-		//CrWarning_Reserved4,
-		//CrWarning_Reserved5,
+		CrWarning_Reserved2,
+		CrWarning_Reserved3,
+		CrWarning_Reserved4,
+		CrWarning_Reserved5,
+		CrWarning_Reserved6,
+		CrWarning_Reserved7,
+		CrWarning_DisplayListChanged_SubjectRecognitionAFDisplayList,
+		CrWarning_Reserved9,
+		CrWarning_MediaProfileChanged_Slot3,
+		CrWarning_ControlMonitoring_Result_Start_Failed,
+		CrWarning_ControlMonitoring_Result_Stop_Failed,
+		CrWarning_ControlMonitoring_Result_Invalid,
+		CrWarning_ControlMonitoring_Result_SystemError,
+		CrWarning_ControlMonitoring_Result_MaximumNumberSimultaneousDeliveries,
+		CrWarning_ControlMonitoring_Result_ExclusiveError,
+		CrWarning_ControlMonitoring_Result_AlreadyStartedInDifferentType,
+		CrWarning_ControlMonitoring_Result_MonitoringStopped,
+		CrWarning_ControlMonitoring_Result_InvalidParameter,
+		CrWarning_ControlMonitoring_Result_Reserved1,
+		CrWarning_ControlMonitoring_Result_Reserved2,
+		CrWarning_ControlMonitoring_StatusChanged,
+		CrWarning_ControlMonitoring_LostReceiving,
 
 		CrWarningExt_Unknown = 0x00060000,
 		CrWarningExt_AFStatus,

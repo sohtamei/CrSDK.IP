@@ -26,7 +26,7 @@
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.20348.0</WindowsTargetPlatformVersion>
     <Platform>x64</Platform>
-    <ProjectName>CrNocodeSDK</ProjectName>
+    <ProjectName>CrSDK.IP</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -61,10 +61,10 @@
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.\Debug\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">.\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CrNocodeSDK.dir\Debug\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">CrNocodeSDK.dir\Debug\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CrNocodeSDK</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">CrNocodeSDK.82</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CrSDK.IP.dir\Debug\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">CrSDK.IP.dir\Debug.82\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CrSDK.IP</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">CrSDK.IP.82</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
@@ -73,10 +73,10 @@
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug82|x64'">true</GenerateManifest>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release82|x64'">.\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CrNocodeSDK.dir\Release\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release82|x64'">CrNocodeSDK.dir\Release\</IntDir>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CrNocodeSDK</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release82|x64'">CrNocodeSDK.82</TargetName>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CrSDK.IP.dir\Release\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release82|x64'">CrSDK.IP.dir\Release.82\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CrSDK.IP</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release82|x64'">CrSDK.IP.82</TargetName>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
     <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release82|x64'">.exe</TargetExt>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
@@ -135,7 +135,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>./Debug/RemoteCli.lib</ImportLibrary>
-      <ProgramDataBaseFile>./Debug/CrNocodeSDK.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>./Debug/CrSDK.IP.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -193,7 +193,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>./Debug/RemoteCli.lib</ImportLibrary>
-      <ProgramDataBaseFile>./Debug/CrNocodeSDK.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>./Debug/CrSDK.IP.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -251,7 +251,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>./Release/RemoteCli.lib</ImportLibrary>
-      <ProgramDataBaseFile>./Release/CrNocodeSDK.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>./Release/CrSDK.IP.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>
@@ -309,7 +309,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ImportLibrary>./Release/RemoteCli.lib</ImportLibrary>
-      <ProgramDataBaseFile>./Release/CrNocodeSDK.pdb</ProgramDataBaseFile>
+      <ProgramDataBaseFile>./Release/CrSDK.IP.pdb</ProgramDataBaseFile>
       <SubSystem>Console</SubSystem>
     </Link>
     <ProjectReference>

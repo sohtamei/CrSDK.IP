@@ -108,6 +108,8 @@ namespace SCRSDK
 		CrCameraDeviceModel_ILCE_6700,
 		CrCameraDeviceModel_ILCE_7CM2,
 		CrCameraDeviceModel_ILCE_7CR,
+		CrCameraDeviceModel_ILX_LR1,
+		CrCameraDeviceModel_MPC_2610,
 	};
 
 	enum CrReconnectingSet : CrInt32u
@@ -120,6 +122,7 @@ namespace SCRSDK
 	{
 		CrMediaProfile_Slot1 = 0x00000001,
 		CrMediaProfile_Slot2,
+		CrMediaProfile_Slot3,
 	};
 
 	enum CrSSHsupportValue : CrInt32u
@@ -155,6 +158,11 @@ namespace SCRSDK
 		CrSdkApi_SendCommand,
 	};
 
+	enum CrMonitoringOpertation : CrInt8u
+	{
+		CrMonitoringOpertation_Stop = 0x00,
+		CrMonitoringOpertation_Start,
+	};
 }
 
 #endif //CRDEFINES_H

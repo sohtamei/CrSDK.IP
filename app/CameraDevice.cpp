@@ -89,9 +89,6 @@ namespace cli
 
 using PCode = SDK::CrDevicePropertyCode;
 
-//(.*)\t(.*)\t(.*)
-//	{ PCode::CrDeviceProperty_\1,	{ -1, "\1", &map_\2, format_\3, } },
-
 #include "CrDeviceProperty.cpp"		// map_xx実装
 
 //	{ SDK::CrCommandId::CrCommandId_\1, "\1" },
@@ -121,6 +118,9 @@ std::map<SDK::CrCommandId, std::string> Cmds {
 
 std::map<PCode, struct PropertyValue> Prop {
 
+//(.*)\t(.*)\t(.*)
+//	{ PCode::CrDeviceProperty_\1,	{ -1, "\1", &map_\2, format_\3, } },
+
 	{ PCode::CrDeviceProperty_AEL,	{ -1, "AEL", &map_CrLockIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AF_Area_Position,	{ -1, "AF_Area_Position", 0, 0, } },
 	{ PCode::CrDeviceProperty_AFAssist,	{ -1, "AFAssist", &map_CrAFAssist, 0, } },
@@ -131,6 +131,8 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting,	{ -1, "APS_C_or_Full_SwitchingSetting", &map_CrAPS_C_or_Full_SwitchingSetting, 0, } },
 	{ PCode::CrDeviceProperty_AspectRatio,	{ -1, "AspectRatio", &map_CrAspectRatioIndex, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton1,	{ -1, "AssignableButton1", &map_CrAssignableButton, 0, } },
+	{ PCode::CrDeviceProperty_AssignableButton10,	{ -1, "AssignableButton10", &map_CrAssignableButton, 0, } },
+	{ PCode::CrDeviceProperty_AssignableButton11,	{ -1, "AssignableButton11", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton2,	{ -1, "AssignableButton2", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton3,	{ -1, "AssignableButton3", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton4,	{ -1, "AssignableButton4", &map_CrAssignableButton, 0, } },
@@ -140,6 +142,8 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_AssignableButton8,	{ -1, "AssignableButton8", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton9,	{ -1, "AssignableButton9", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButtonIndicator1,	{ -1, "AssignableButtonIndicator1", &map_CrAssignableButtonIndicator, 0, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator10,	{ -1, "AssignableButtonIndicator10", &map_CrAssignableButtonIndicator, 0, } },
+	{ PCode::CrDeviceProperty_AssignableButtonIndicator11,	{ -1, "AssignableButtonIndicator11", &map_CrAssignableButtonIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButtonIndicator2,	{ -1, "AssignableButtonIndicator2", &map_CrAssignableButtonIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButtonIndicator3,	{ -1, "AssignableButtonIndicator3", &map_CrAssignableButtonIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButtonIndicator4,	{ -1, "AssignableButtonIndicator4", &map_CrAssignableButtonIndicator, 0, } },
@@ -169,6 +173,8 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_BulbExposureTimeSetting,	{ -1, "BulbExposureTimeSetting", 0, 0, } },
 	{ PCode::CrDeviceProperty_BulbTimerSetting,	{ -1, "BulbTimerSetting", &map_CrBulbTimerSetting, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable1,	{ -1, "ButtonAssignmentAssignable1", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable10,	{ -1, "ButtonAssignmentAssignable10", 0, 0, } },
+	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable11,	{ -1, "ButtonAssignmentAssignable11", 0, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable2,	{ -1, "ButtonAssignmentAssignable2", 0, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable3,	{ -1, "ButtonAssignmentAssignable3", 0, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable4,	{ -1, "ButtonAssignmentAssignable4", 0, 0, } },
@@ -179,6 +185,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable9,	{ -1, "ButtonAssignmentAssignable9", 0, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentLensAssignable1,	{ -1, "ButtonAssignmentLensAssignable1", 0, 0, } },
 	{ PCode::CrDeviceProperty_CameraEframing,	{ -1, "CameraEframing", &map_CrCameraEframing, 0, } },
+	{ PCode::CrDeviceProperty_CameraOperatingMode,	{ -1, "CameraOperatingMode", &map_CrCameraOperatingMode, 0, } },
 	{ PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus,	{ -1, "CameraSetting_ReadOperationEnableStatus", &map_CrCameraSettingReadOperation, 0, } },
 	{ PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus,	{ -1, "CameraSetting_SaveOperationEnableStatus", &map_CrCameraSettingSaveOperation, 0, } },
 	{ PCode::CrDeviceProperty_CameraSetting_SaveRead_State,	{ -1, "CameraSetting_SaveRead_State", &map_CrCameraSettingSaveReadState, 0, } },
@@ -211,8 +218,8 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_CustomWB_Capture,	{ -1, "CustomWB_Capture", 0, 0, } },
 	{ PCode::CrDeviceProperty_CustomWB_Capture_Frame_Size,	{ -1, "CustomWB_Capture_Frame_Size", 0, 0, } },
 	{ PCode::CrDeviceProperty_CustomWB_Capture_Operation,	{ -1, "CustomWB_Capture_Operation", &map_CrPropertyCustomWBOperation, 0, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, "CustomWB_Capture_Standby", &map_CrPropertyCustomWBOperation, 0, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, "CustomWB_Capture_Standby_Cancel", &map_CrPropertyCustomWBOperation, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, "CustomWB_Capture_Standby", &map_CrPropertyCustomWBCaptureButton, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, "CustomWB_Capture_Standby_Cancel", &map_CrPropertyCustomWBCaptureButton, 0, } },
 	{ PCode::CrDeviceProperty_CustomWB_Execution_State,	{ -1, "CustomWB_Execution_State", &map_CrPropertyCustomWBExecutionState, 0, } },
 	{ PCode::CrDeviceProperty_DateTime_Settings,	{ -1, "DateTime_Settings", 0, 0, } },
 	{ PCode::CrDeviceProperty_DCVoltage,	{ -1, "DCVoltage", 0, 0, } },
@@ -298,6 +305,8 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_ImageID_Num_Setting,	{ -1, "ImageID_Num_Setting", &map_CrImageIDNumSetting, 0, } },
 	{ PCode::CrDeviceProperty_ImageSize,	{ -1, "ImageSize", &map_CrImageSize, 0, } },
 	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShot,	{ -1, "ImageStabilizationSteadyShot", &map_CrImageStabilizationSteadyShot, 0, } },
+	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShotAdjust,	{ -1, "ImageStabilizationSteadyShotAdjust", &map_CrImageStabilizationSteadyShotAdjust, 0, } },
+	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShotFocalLength,	{ -1, "ImageStabilizationSteadyShotFocalLength", 0, 0, } },
 	{ PCode::CrDeviceProperty_Interval_Rec_Mode,	{ -1, "Interval_Rec_Mode", &map_CrIntervalRecMode, 0, } },
 	{ PCode::CrDeviceProperty_Interval_Rec_Status,	{ -1, "Interval_Rec_Status", &map_CrIntervalRecStatus, 0, } },
 	{ PCode::CrDeviceProperty_IntervalRec_AETrackingSensitivity,	{ -1, "IntervalRec_AETrackingSensitivity", &map_CrIntervalRecAETrackingSensitivity, 0, } },
@@ -306,6 +315,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_IntervalRec_ShootingStartTime,	{ -1, "IntervalRec_ShootingStartTime", 0, 0, } },
 	{ PCode::CrDeviceProperty_IntervalRec_ShootIntervalPriority,	{ -1, "IntervalRec_ShootIntervalPriority", &map_CrIntervalRecShootIntervalPriority, 0, } },
 	{ PCode::CrDeviceProperty_IntervalRec_ShutterType,	{ -1, "IntervalRec_ShutterType", &map_CrIntervalRecShutterType, 0, } },
+	{ PCode::CrDeviceProperty_IrisDisplayUnit,	{ -1, "IrisDisplayUnit", &map_CrIrisDisplayUnit, 0, } },
 	{ PCode::CrDeviceProperty_IrisModeSetting,	{ -1, "IrisModeSetting", &map_CrIrisModeSetting, 0, } },
 	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedManual,	{ -1, "IsoAutoMinShutterSpeedManual", 0, 0, } },
 	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedMode,	{ -1, "IsoAutoMinShutterSpeedMode", &map_CrIsoAutoMinShutterSpeedMode, 0, } },
@@ -344,8 +354,15 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_MediaSLOT2_Status,	{ -1, "MediaSLOT2_Status", &map_CrSlotStatus, 0, } },
 	{ PCode::CrDeviceProperty_MediaSLOT2_WritingState,	{ -1, "MediaSLOT2_WritingState", &map_CrMediaSlotWritingState, 0, } },
 	{ PCode::CrDeviceProperty_MediaSLOT2Player,	{ -1, "MediaSLOT2Player", &map_CrMediaPlayer, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT3_RecordingAvailableType,	{ -1, "MediaSLOT3_RecordingAvailableType", &map_CrMediaSlotRecordingAvailableType, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT3_RemainingTime,	{ -1, "MediaSLOT3_RemainingTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_MediaSLOT3_Status,	{ -1, "MediaSLOT3_Status", &map_CrSlotStatus, 0, } },
 	{ PCode::CrDeviceProperty_MeteringMode,	{ -1, "MeteringMode", &map_CrMeteringMode, 0, } },
+	{ PCode::CrDeviceProperty_MonitoringDeliveringStatus,	{ -1, "MonitoringDeliveringStatus", &map_CrMonitoringDeliveringStatus, 0, } },
+	{ PCode::CrDeviceProperty_MonitoringDeliveryTypeSupportInfo,	{ -1, "MonitoringDeliveryTypeSupportInfo", &map_CrMonitoringDeliveryType, 0, } },
+	{ PCode::CrDeviceProperty_MonitoringIsDelivering,	{ -1, "MonitoringIsDelivering", &map_CrMonitoringIsDelivering, 0, } },
 	{ PCode::CrDeviceProperty_MonitoringOutputDisplayHDMI,	{ -1, "MonitoringOutputDisplayHDMI", &map_CrMonitoringOutputDisplayHDMI, 0, } },
+	{ PCode::CrDeviceProperty_MonitoringSettingVersion,	{ -1, "MonitoringSettingVersion", 0, 0, } },
 	{ PCode::CrDeviceProperty_MonitorLUTSetting,	{ -1, "MonitorLUTSetting", &map_CrMonitorLUTSetting, 0, } },
 	{ PCode::CrDeviceProperty_Movie_File_Format,	{ -1, "Movie_File_Format", &map_CrFileFormatMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_FTP_AutoTransferTarget,	{ -1, "Movie_FTP_AutoTransferTarget", &map_CrFTPAutoTransferTargetMovie, 0, } },
@@ -358,6 +375,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputRecMedia,	{ -1, "Movie_HDMIOutputRecMedia", &map_CrHDMIOutputRecMediaMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputResolution,	{ -1, "Movie_HDMIOutputResolution", &map_CrHDMIResolution, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputTimeCode,	{ -1, "Movie_HDMIOutputTimeCode", &map_CrHDMIOutputTimeCodeMovie, 0, } },
+	{ PCode::CrDeviceProperty_Movie_ImageStabilizationLevel,	{ -1, "Movie_ImageStabilizationLevel", &map_CrImageStabilizationLevelMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_ImageStabilizationSteadyShot,	{ -1, "Movie_ImageStabilizationSteadyShot", &map_CrImageStabilizationSteadyShotMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_IntervalRec_CountDownIntervalTime,	{ -1, "Movie_IntervalRec_CountDownIntervalTime", 0, 0, } },
 	{ PCode::CrDeviceProperty_Movie_IntervalRec_FrameRateSetting,	{ -1, "Movie_IntervalRec_FrameRateSetting", &map_CrRecordingFrameRateSettingMovie, 0, } },
@@ -387,7 +405,9 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_NDFilter,	{ -1, "NDFilter", &map_CrNDFilter, 0, } },
 	{ PCode::CrDeviceProperty_NDFilterMode,	{ -1, "NDFilterMode", &map_CrNDFilterMode, 0, } },
 	{ PCode::CrDeviceProperty_NDFilterModeSetting,	{ -1, "NDFilterModeSetting", &map_CrNDFilterModeSetting, 0, } },
+	{ PCode::CrDeviceProperty_NDFilterOpticalDensityValue,	{ -1, "NDFilterOpticalDensityValue", 0, 0, } },
 	{ PCode::CrDeviceProperty_NDFilterSwitchingSetting,	{ -1, "NDFilterSwitchingSetting", &map_CrNDFilterSwitchingSetting, 0, } },
+	{ PCode::CrDeviceProperty_NDFilterUnitSetting,	{ -1, "NDFilterUnitSetting", &map_CrNDFilterUnitSetting, 0, } },
 	{ PCode::CrDeviceProperty_NDFilterValue,	{ -1, "NDFilterValue", 0, 0, } },
 	{ PCode::CrDeviceProperty_NearFar,	{ -1, "NearFar", 0/*&map_CrNearFarEnableStatus*/, 0, } },
 	{ PCode::CrDeviceProperty_PictureEffect,	{ -1, "PictureEffect", &map_CrPictureEffect, 0, } },
@@ -421,6 +441,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_PictureProfileResetEnableStatus,	{ -1, "PictureProfileResetEnableStatus", &map_CrPictureProfileResetEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_PixelMappingEnableStatus,	{ -1, "PixelMappingEnableStatus", &map_CrPixelMappingEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_PlaybackMedia,	{ -1, "PlaybackMedia", &map_CrPlaybackMedia, 0, } },
+	{ PCode::CrDeviceProperty_PlaybackViewMode,	{ -1, "PlaybackViewMode", &map_CrPlaybackViewMode, 0, } },
 	{ PCode::CrDeviceProperty_PlaybackVolumeSettings,	{ -1, "PlaybackVolumeSettings", 0, 0, } },
 	{ PCode::CrDeviceProperty_PowerSource,	{ -1, "PowerSource", &map_CrPowerSource, 0, } },
 	{ PCode::CrDeviceProperty_PriorityKeySettings,	{ -1, "PriorityKeySettings", &map_CrPriorityKeySettings, 0, } },
@@ -491,6 +512,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_TimeCodePreset,	{ -1, "TimeCodePreset", 0, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodePresetResetEnableStatus,	{ -1, "TimeCodePresetResetEnableStatus", &map_CrTimeCodePresetResetEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodeRun,	{ -1, "TimeCodeRun", &map_CrTimeCodeRun, 0, } },
+	{ PCode::CrDeviceProperty_TNumber,	{ -1, "TNumber", 0, 0, } },
 	{ PCode::CrDeviceProperty_TouchOperation,	{ -1, "TouchOperation", &map_CrTouchOperation, 0, } },
 	{ PCode::CrDeviceProperty_UpdateBodyStatus,	{ -1, "UpdateBodyStatus", &map_CrUpdateStatus, 0, } },
 	{ PCode::CrDeviceProperty_USBPowerSupply,	{ -1, "USBPowerSupply", &map_CrUSBPowerSupply, 0, } },
@@ -1711,7 +1733,7 @@ void CameraDevice::getThumbnail(SDK::CrContentHandle content)
     delete image_data; // Release
 }
 #endif
-//////////////// for Nocode SDK
+//////////////// for CrSDK.IP
 
 void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 {
@@ -2205,19 +2227,27 @@ void CameraDevice::GetAvailablePropList(std::vector<std::string>& propList)
 	}
 }
 
-std::int32_t CameraDevice::SendCommand(SDK::CrCommandId cmd) const
+std::int32_t CameraDevice::SendCommand(SDK::CrCommandId cmd, std::string ope) const
 {
-	SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Down);
-	std::this_thread::sleep_for(35ms);
-	SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Up);
+	if(ope == "DownUp") {
+		SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Down);
+		std::this_thread::sleep_for(35ms);
+		SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Up);
+
+	} else if(ope == "Up") {
+		SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Up);
+
+	} else if(ope == "Down") {
+		SDK::SendCommand(m_device_handle, cmd, SDK::CrCommandParam::CrCommandParam_Down);
+	}
 	return 0;
 }
 
-std::int32_t CameraDevice::SendCommand(std::string _text) const
+std::int32_t CameraDevice::SendCommand(std::string _text, std::string ope) const
 {
 	for(const auto& iter : Cmds) {
 		if(iter.second == _text) {
-			return SendCommand(iter.first);
+			return SendCommand(iter.first, ope);
 		}
 	}
 	return -1;

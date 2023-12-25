@@ -279,5 +279,21 @@ extern "C"
 SCRSDK_API
 CrError ReleaseCRSDKOperationResultsSupported(/*in*/ CrDeviceHandle deviceHandle, CrOperationResultSupportedInfo* opeResSupportInfo);
 
+extern "C"
+SCRSDK_API
+CrError SetMonitoringDeliverySetting(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrMonitoringDeliverySetting* deliverySetting, /*in*/CrInt32u numOfSetting);
+
+extern "C"
+SCRSDK_API
+CrError GetMonitoringDeliverySetting(/*in*/ CrDeviceHandle deviceHandle, /*out*/ CrMonitoringDeliverySetting** deliverySetting, /*out*/ CrInt32u* numOfSetting);
+
+extern "C"
+SCRSDK_API
+CrError ReleaseMonitoringDeliverySetting(/*in*/ CrDeviceHandle deviceHandle, CrMonitoringDeliverySetting* deliverySetting);
+
+extern "C"
+SCRSDK_API
+CrError ControlMonitoring(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrMonitoringOpertation operationMode);
+
 }
 #endif //CAMERAREMOTE_SDK_H

@@ -54,6 +54,8 @@ public:
 	CrInt32u GetImageSize();
 	CrInt8u* GetImageData();
 
+	CrInt32u GetTimeCode();
+
 private:
 	CrInt32u frameNo;
 	//Buffer size (byte) of pData.
@@ -62,7 +64,8 @@ private:
 	CrInt8u* pData;
 	//Size (byte) of image body.
 	CrInt32u imageSize;
-
+	//SMPTE 12M time-code from Monitoring library.
+	CrInt32u timeCode;
 };
 
 }

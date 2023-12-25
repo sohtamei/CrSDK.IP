@@ -334,6 +334,26 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_Movie_FTP_TransferTarget,
 	CrDeviceProperty_FTP_PowerSave,
 
+	CrDeviceProperty_ButtonAssignmentAssignable10,
+	CrDeviceProperty_ButtonAssignmentAssignable11,
+	CrDeviceProperty_reserved14,
+	CrDeviceProperty_reserved15,
+	CrDeviceProperty_reserved16,
+	CrDeviceProperty_reserved17,
+	CrDeviceProperty_AssignableButton10,
+	CrDeviceProperty_AssignableButton11,
+	CrDeviceProperty_reserved37,
+	CrDeviceProperty_reserved38,
+	CrDeviceProperty_reserved39,
+	CrDeviceProperty_reserved40,
+	CrDeviceProperty_NDFilterUnitSetting,
+	CrDeviceProperty_NDFilterOpticalDensityValue,
+	CrDeviceProperty_TNumber,
+	CrDeviceProperty_IrisDisplayUnit,
+	CrDeviceProperty_Movie_ImageStabilizationLevel,
+	CrDeviceProperty_ImageStabilizationSteadyShotAdjust,
+	CrDeviceProperty_ImageStabilizationSteadyShotFocalLength,
+
 	CrDeviceProperty_S2 = 0x0500,
 	CrDeviceProperty_reserved10,
 	CrDeviceProperty_reserved11,
@@ -473,7 +493,25 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_reserved36,
 	CrDeviceProperty_MediaSLOT1_RecordingAvailableType,
 	CrDeviceProperty_MediaSLOT2_RecordingAvailableType,
-	CrDeviceProperty_reserved37,
+	
+	CrDeviceProperty_MediaSLOT3_RecordingAvailableType,
+	CrDeviceProperty_CameraOperatingMode,
+	CrDeviceProperty_PlaybackViewMode,
+	CrDeviceProperty_AssignableButtonIndicator10,
+	CrDeviceProperty_AssignableButtonIndicator11,
+	CrDeviceProperty_reserved41,
+	CrDeviceProperty_reserved42,
+	CrDeviceProperty_reserved43,
+	CrDeviceProperty_reserved44,
+	CrDeviceProperty_MediaSLOT3_Status,
+	CrDeviceProperty_reserved45,
+	CrDeviceProperty_MediaSLOT3_RemainingTime,
+	CrDeviceProperty_reserved46,
+	CrDeviceProperty_reserved47,
+	CrDeviceProperty_MonitoringDeliveringStatus,
+	CrDeviceProperty_MonitoringIsDelivering,
+	CrDeviceProperty_MonitoringSettingVersion,
+	CrDeviceProperty_MonitoringDeliveryTypeSupportInfo,
 
 	CrDeviceProperty_MaxVal	= 0x1000,
 };
@@ -1296,6 +1334,12 @@ enum CrFileFormatMovie : CrInt8u
 	CrFileFormatMovie_XAVC_L,
 	CrFileFormatMovie_XAVC_HS_HD,
 	CrFileFormatMovie_XAVC_S_I_DCI_4K,
+	CrFileFormatMovie_XAVC_H_I_HQ,
+	CrFileFormatMovie_XAVC_H_I_SQ,
+	CrFileFormatMovie_XAVC_H_L,
+	CrFileFormatMovie_X_OCN_XT,
+	CrFileFormatMovie_X_OCN_ST,
+	CrFileFormatMovie_X_OCN_LT,
 };
 
 // Recording Setting(Movie), S&Q Recording Setting, Interval REC(Movie) Record Setting
@@ -1638,7 +1682,7 @@ enum CrDisplayStringType : CrInt32u
 	CrDisplayStringType_Reserved7 = 0x00000012,
 	CrDisplayStringType_CreativeLook_Name_Display = 0x00000013,
 	CrDisplayStringType_Reserved9 = 0x00000014,
-	CrDisplayStringType_Reserved10 = 0x00000015,
+	CrDisplayStringType_SubjectRecognitionAF_Display = 0x00000015,
 	CrDisplayStringType_Reserved11 = 0x00000016,
 };
 
@@ -1745,6 +1789,8 @@ enum CrNDFilterMode : CrInt8u
 	CrNDFilterMode_PresetClear,
 	CrNDFilterMode_Variable,
 	CrNDFilterMode_VariableClear,
+	CrNDFilterMode_Step,
+	CrNDFilterMode_StepClear,
 };
 
 // Media SLOT Player
@@ -2007,6 +2053,7 @@ enum CrNDFilterSwitchingSetting : CrInt8u
 {
 	CrNDFilterSwitchingSetting_Preset = 0x01,
 	CrNDFilterSwitchingSetting_Variable,
+	CrNDFilterSwitchingSetting_Step,
 };
 
 // Lens Information of Type 
@@ -3033,7 +3080,7 @@ enum CrMediaSlotWritingState : CrInt8u
 	CrMediaSlotWritingState_ContentsWriting
 };
 
-// Media SLOT Recording Avaialble Type
+// Media SLOT Recording Available Type
 enum CrMediaSlotRecordingAvailableType : CrInt8u
 {
 	CrMediaSlotRecordingAvailableType_None = 0x00,
@@ -3109,6 +3156,7 @@ enum CrFTPJobSlotId : CrInt32
 	CrFTPJobSlotId_Invalid    = 0x00000000,
 	CrFTPJobSlotId_Slot1,
 	CrFTPJobSlotId_Slot2,
+	CrFTPJobSlotId_Slot3,
 };
 
 // FTP Job Status
@@ -3166,6 +3214,90 @@ enum CrFTPJobDeleteAction : CrInt8
 	CrFTPJobDeleteAction_NoAction,
 	CrFTPJobDeleteAction_DeleteFile,
 };
+
+// Camera Operating Mode
+enum CrCameraOperatingMode : CrInt8u
+{
+	CrCameraOperatingMode_Record    = 0x01,
+	CrCameraOperatingMode_Playback  = 0x02,
+};
+
+// Playback View Mode
+enum CrPlaybackViewMode : CrInt8u
+{
+	CrPlaybackViewMode_Playback    = 0x01,
+	CrPlaybackViewMode_Index       =  0x02,
+};
+
+// Monitoring Delivering Status
+enum CrMonitoringDeliveringStatus : CrInt16u
+{
+	CrMonitoringDeliveringStatus_RTSP           = 0x0001,
+	CrMonitoringDeliveringStatus_VenderProtocol = 0x0002,
+	CrMonitoringDeliveringStatus_None           = 0xFFFF,
+};
+
+enum CrMonitoringIsDelivering: CrInt8u
+{
+	CrMonitoringIsDelivering_False = 0x00,
+	CrMonitoringIsDelivering_True
+};
+
+//Monitoring Delivery Type
+enum CrMonitoringDeliveryType : CrInt8u
+{
+	CrMonitoringDeliveryType_None = 0x00,
+	CrMonitoringDeliveryType_Jpeg
+};
+
+// ND Filter Unit Setting
+enum CrNDFilterUnitSetting : CrInt8u
+{
+	CrNDFilterUnitSetting_OpticalDensity = 0x01,
+	CrNDFilterUnitSetting_Transmittance,
+};
+
+// ND Filter Optical Density Value
+enum CrNDFilterOpticalDensityValue : CrInt16u
+{
+	CrNDFilterOpticalDensityValue_Nothing = 0xFFFF, // Nothing to display
+};
+
+// T-Number
+// type: CrDataType_UInt16
+// value = T number * 100
+enum CrTnumber : CrInt16u
+{
+	CrTnumber_Unknown = 0xFFFE, // Display "--"
+	CrTnumber_Nothing = 0xFFFF, // Nothing to display
+};
+
+// Iris Display Unit
+enum CrIrisDisplayUnit : CrInt8u
+{
+	CrIrisDisplayUnit_Auto = 0x01,
+	CrIrisDisplayUnit_FLock,
+	CrIrisDisplayUnit_TLock,
+};
+
+// Image Stabilization Level (Movie)
+enum CrImageStabilizationLevelMovie : CrInt8u
+{
+	CrImageStabilizationLevelMovie_OFF = 0x01,
+	CrImageStabilizationLevelMovie_Low,
+	CrImageStabilizationLevelMovie_High,
+};
+
+// Image Stabilization Steady Shot Adjust
+enum CrImageStabilizationSteadyShotAdjust : CrInt8u
+{
+	CrImageStabilizationSteadyShotAdjust_Automatic = 0x01,
+	CrImageStabilizationSteadyShotAdjust_Manual,
+};
+
+// Image Stabilization Steady Shot Focal Length
+// CrDataType_UInt16
+// Unit : mm
 
 class SCRSDK_API CrDeviceProperty
 {
@@ -3279,12 +3411,15 @@ public:
 
 	CrInt8u* GetValue();
 
+	CrInt32u GetTimeCode();
+
 private:
         CrInt32u code;
 		CrPropertyEnableFlag enableFlag;
         CrFrameInfoType valueType;
 		CrInt32u valueSize;
 		CrInt8u* value;
+		CrInt32u timeCode; // SMPTE 12M time-code from monitoring meta.
 };
 
 class SCRSDK_API CrMtpFolderInfo
@@ -3607,6 +3742,22 @@ public:
 	CrFTPJobDeleteAction                   deleteJobAction;
 };
 #pragma pack()
+
+class SCRSDK_API CrMonitoringDeliverySetting
+{
+public:
+	CrMonitoringDeliverySetting();
+	~CrMonitoringDeliverySetting();
+	CrMonitoringDeliverySetting(const CrMonitoringDeliverySetting& ref);
+
+public:
+	CrInt16u                 reserved1;
+	CrMonitoringDeliveryType type;
+	CrInt8u                  reserved2;
+	CrInt8u*                 ipAddress;
+	CrInt32u                 downTime;
+	CrInt32u                 videoPort;
+};
 
 }
 

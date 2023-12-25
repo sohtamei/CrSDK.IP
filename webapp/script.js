@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	const stopStream = (keepSrc = false) => {
 		buttonStream.className = 'button';
+		buttonS1.className = 'button';
 		if(!keepSrc) {
 			imgStream1.src = '';
 			imgStream2.src = '';
@@ -217,11 +218,11 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		if(buttonRec.className != 'buttonOn') {
 			buttonRec.className = 'buttonOn';
 
-			return SendRecv12({cmd:'Rec',ope:'set',text:'Locked'});
+			return SendRecv12({cmd:'MovieRecord',ope:'Down'});
 		} else {
 			buttonRec.className = 'button';
 			imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
-			return SendRecv12({cmd:'Rec',ope:'set',text:'Unlocked'});
+			return SendRecv12({cmd:'MovieRecord',ope:'Up'});
 		}
 	}
 

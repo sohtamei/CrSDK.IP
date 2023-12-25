@@ -46,6 +46,16 @@ const std::map<std::uint64_t, std::string> map_CrISOMode
 	{ SDK::CrISOMode::CrISO_AUTO,	"AUTO" },
 };
 
+const std::map<std::uint64_t, std::string> map_CrMoviePlayingSpeed
+{
+	{ SDK::CrMoviePlayingSpeed::CrMoviePlayingSpeed_Nothing,	"Nothing" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrNDFilterValue
+{
+	{ SDK::CrNDFilterValue::CrNDFilterValue_Nothing,	"Nothing" },
+};
+
 const std::map<std::uint64_t, std::string> map_CrExposureProgram
 {
 	{ SDK::CrExposureProgram::CrExposure_M_Manual,	"M_Manual" },
@@ -118,6 +128,15 @@ const std::map<std::uint64_t, std::string> map_CrFileType
 	{ SDK::CrFileType::CrFileType_RawJpeg,	"RawJpeg" },
 	{ SDK::CrFileType::CrFileType_RawHeif,	"RawHeif" },
 	{ SDK::CrFileType::CrFileType_Heif,	"Heif" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrJpegQuality
+{
+	{ SDK::CrJpegQuality::CrJpegQuality_Unknown,	"Unknown" },
+	{ SDK::CrJpegQuality::CrJpegQuality_Light,	"Light" },
+	{ SDK::CrJpegQuality::CrJpegQuality_Standard,	"Standard" },
+	{ SDK::CrJpegQuality::CrJpegQuality_Fine,	"Fine" },
+	{ SDK::CrJpegQuality::CrJpegQuality_ExFine,	"ExFine" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrImageQuality
@@ -646,6 +665,7 @@ const std::map<std::uint64_t, std::string> map_CrPropertyStillImageTransSize
 {
 	{ SDK::CrPropertyStillImageTransSize::CrPropertyStillImageTransSize_Original,	"Original" },
 	{ SDK::CrPropertyStillImageTransSize::CrPropertyStillImageTransSize_SmallSize,	"SmallSize" },
+	{ SDK::CrPropertyStillImageTransSize::CrPropertyStillImageTransSize_SmallSizeJPEG,	"SmallSizeJPEG" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrPropertyRAWJPCSaveImage
@@ -699,6 +719,12 @@ const std::map<std::uint64_t, std::string> map_CrFileFormatMovie
 	{ SDK::CrFileFormatMovie::CrFileFormatMovie_XAVC_L,	"XAVC_L" },
 	{ SDK::CrFileFormatMovie::CrFileFormatMovie_XAVC_HS_HD,	"XAVC_HS_HD" },
 	{ SDK::CrFileFormatMovie::CrFileFormatMovie_XAVC_S_I_DCI_4K,	"XAVC_S_I_DCI_4K" },
+	{ SDK::CrFileFormatMovie::CrFileFormatMovie_XAVC_H_I_HQ,	"XAVC_H_I_HQ" },
+	{ SDK::CrFileFormatMovie::CrFileFormatMovie_XAVC_H_I_SQ,	"XAVC_H_I_SQ" },
+	{ SDK::CrFileFormatMovie::CrFileFormatMovie_XAVC_H_L,	"XAVC_H_L" },
+	{ SDK::CrFileFormatMovie::CrFileFormatMovie_X_OCN_XT,	"X_OCN_XT" },
+	{ SDK::CrFileFormatMovie::CrFileFormatMovie_X_OCN_ST,	"X_OCN_ST" },
+	{ SDK::CrFileFormatMovie::CrFileFormatMovie_X_OCN_LT,	"X_OCN_LT" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrRecordingSettingMovie
@@ -1009,7 +1035,7 @@ const std::map<std::uint64_t, std::string> map_CrDisplayStringType
 	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved7,	"Reserved7" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_CreativeLook_Name_Display,	"CreativeLook_Name_Display" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved9,	"Reserved9" },
-	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved10,	"Reserved10" },
+	{ SDK::CrDisplayStringType::CrDisplayStringType_SubjectRecognitionAF_Display,	"SubjectRecognitionAF_Display" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved11,	"Reserved11" },
 };
 
@@ -1102,6 +1128,8 @@ const std::map<std::uint64_t, std::string> map_CrNDFilterMode
 	{ SDK::CrNDFilterMode::CrNDFilterMode_PresetClear,	"PresetClear" },
 	{ SDK::CrNDFilterMode::CrNDFilterMode_Variable,	"Variable" },
 	{ SDK::CrNDFilterMode::CrNDFilterMode_VariableClear,	"VariableClear" },
+	{ SDK::CrNDFilterMode::CrNDFilterMode_Step,	"Step" },
+	{ SDK::CrNDFilterMode::CrNDFilterMode_StepClear,	"StepClear" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrMediaPlayer
@@ -1327,6 +1355,7 @@ const std::map<std::uint64_t, std::string> map_CrNDFilterSwitchingSetting
 {
 	{ SDK::CrNDFilterSwitchingSetting::CrNDFilterSwitchingSetting_Preset,	"Preset" },
 	{ SDK::CrNDFilterSwitchingSetting::CrNDFilterSwitchingSetting_Variable,	"Variable" },
+	{ SDK::CrNDFilterSwitchingSetting::CrNDFilterSwitchingSetting_Step,	"Step" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrLensInformationType
@@ -2247,6 +2276,7 @@ const std::map<std::uint64_t, std::string> map_CrFTPJobSlotId
 	{ SDK::CrFTPJobSlotId::CrFTPJobSlotId_Invalid,	"Invalid" },
 	{ SDK::CrFTPJobSlotId::CrFTPJobSlotId_Slot1,	"Slot1" },
 	{ SDK::CrFTPJobSlotId::CrFTPJobSlotId_Slot2,	"Slot2" },
+	{ SDK::CrFTPJobSlotId::CrFTPJobSlotId_Slot3,	"Slot3" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrFTPJobStatus
@@ -2298,5 +2328,73 @@ const std::map<std::uint64_t, std::string> map_CrFTPJobDeleteAction
 	{ SDK::CrFTPJobDeleteAction::CrFTPJobDeleteAction_Invalid,	"Invalid" },
 	{ SDK::CrFTPJobDeleteAction::CrFTPJobDeleteAction_NoAction,	"NoAction" },
 	{ SDK::CrFTPJobDeleteAction::CrFTPJobDeleteAction_DeleteFile,	"DeleteFile" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCameraOperatingMode
+{
+	{ SDK::CrCameraOperatingMode::CrCameraOperatingMode_Record,	"Record" },
+	{ SDK::CrCameraOperatingMode::CrCameraOperatingMode_Playback,	"Playback" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrPlaybackViewMode
+{
+	{ SDK::CrPlaybackViewMode::CrPlaybackViewMode_Playback,	"Playback" },
+	{ SDK::CrPlaybackViewMode::CrPlaybackViewMode_Index,	"Index" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrMonitoringDeliveringStatus
+{
+	{ SDK::CrMonitoringDeliveringStatus::CrMonitoringDeliveringStatus_RTSP,	"RTSP" },
+	{ SDK::CrMonitoringDeliveringStatus::CrMonitoringDeliveringStatus_VenderProtocol,	"VenderProtocol" },
+	{ SDK::CrMonitoringDeliveringStatus::CrMonitoringDeliveringStatus_None,	"None" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrMonitoringIsDelivering
+{
+	{ SDK::CrMonitoringIsDelivering::CrMonitoringIsDelivering_False,	"False" },
+	{ SDK::CrMonitoringIsDelivering::CrMonitoringIsDelivering_True,	"True" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrMonitoringDeliveryType
+{
+	{ SDK::CrMonitoringDeliveryType::CrMonitoringDeliveryType_None,	"None" },
+	{ SDK::CrMonitoringDeliveryType::CrMonitoringDeliveryType_Jpeg,	"Jpeg" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrNDFilterUnitSetting
+{
+	{ SDK::CrNDFilterUnitSetting::CrNDFilterUnitSetting_OpticalDensity,	"OpticalDensity" },
+	{ SDK::CrNDFilterUnitSetting::CrNDFilterUnitSetting_Transmittance,	"Transmittance" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrNDFilterOpticalDensityValue
+{
+	{ SDK::CrNDFilterOpticalDensityValue::CrNDFilterOpticalDensityValue_Nothing,	"Nothing" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrTnumber
+{
+	{ SDK::CrTnumber::CrTnumber_Unknown,	"Unknown" },
+	{ SDK::CrTnumber::CrTnumber_Nothing,	"Nothing" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrIrisDisplayUnit
+{
+	{ SDK::CrIrisDisplayUnit::CrIrisDisplayUnit_Auto,	"Auto" },
+	{ SDK::CrIrisDisplayUnit::CrIrisDisplayUnit_FLock,	"FLock" },
+	{ SDK::CrIrisDisplayUnit::CrIrisDisplayUnit_TLock,	"TLock" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrImageStabilizationLevelMovie
+{
+	{ SDK::CrImageStabilizationLevelMovie::CrImageStabilizationLevelMovie_OFF,	"OFF" },
+	{ SDK::CrImageStabilizationLevelMovie::CrImageStabilizationLevelMovie_Low,	"Low" },
+	{ SDK::CrImageStabilizationLevelMovie::CrImageStabilizationLevelMovie_High,	"High" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrImageStabilizationSteadyShotAdjust
+{
+	{ SDK::CrImageStabilizationSteadyShotAdjust::CrImageStabilizationSteadyShotAdjust_Automatic,	"Automatic" },
+	{ SDK::CrImageStabilizationSteadyShotAdjust::CrImageStabilizationSteadyShotAdjust_Manual,	"Manual" },
 };
 

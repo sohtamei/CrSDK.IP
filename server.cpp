@@ -345,10 +345,17 @@ void do_thread_ws(void)
 									incProp(ws, id, false/*inc_dec*/);
 								}
 								continue;
-							} else if(!camera->SendCommand(cmd)){
-
 							} else {
-								std::clog << "unknown command" << std::endl;
+								std::string ope = "DownUp";
+								if(cmd_tree.get_child_optional("ope")) {
+									ope = cmd_tree.get<std::string>("ope");
+								}
+
+								if(!camera->SendCommand(cmd, ope)){
+									;
+								} else {
+									std::clog << "unknown command" << std::endl;
+								}
 							}
 						}
 					}
@@ -410,6 +417,8 @@ void uploadFile(const wchar_t* filename)
 
 //------------------------------------------------------------------------------
 
+static int frameIndex = 0;
+
 void
 fail(beast::error_code err, char const* what)
 {
@@ -459,6 +468,7 @@ void do_thread_http(void)
 				}
 				if(imageSize > 0) {
 				//	std::cout << ".";
+					frameIndex++;
 
 					beast::error_code err;
 					std::vector<uint8_t> v_buffer(imageBuf, imageBuf+imageSize);
@@ -507,13 +517,37 @@ void add_array(pt::ptree& pt_, std::string key, std::vector<std::string> array)
 */
 }
 
+//------------------------------------------------------------------------------
+
+asio::io_context ioc;
+boost::posix_time::seconds interval(2);
+asio::deadline_timer timer(ioc, interval);
+int last_frameIndex = 0;
+
+void tick(const boost::system::error_code& /*e*/)
+{
+	int cur = frameIndex;
+	std::cout << std::dec << (cur - last_frameIndex)/2 << std::endl;
+	last_frameIndex = cur;
+	timer.expires_at(timer.expires_at() + interval);
+	timer.async_wait(tick);
+}
+
+void do_thread_timer(void)
+{
+	timer.async_wait(tick);
+	ioc.run();
+}
+
+//------------------------------------------------------------------------------
+
 int main(int argc, char* argv[])
 {
 	std::locale utf8_locale = std::locale(std::locale(), new std::codecvt_utf8<wchar_t>);
 #ifndef PORT82
-	std::cout << "Cr\"Nocode\"SDK running...\n";
+	std::cout << "CrSDK.IP running...\n";
 #else
-	std::cout << "Cr\"Nocode\"SDK running...(port 8082, 82)\n";
+	std::cout << "CrSDK.IP running...(port 8082, 82)\n";
 #endif
 
 	int ret = remoteCli_init();
@@ -521,6 +555,7 @@ int main(int argc, char* argv[])
 
 	std::thread serverThread1(do_thread_ws);
 	std::thread serverThread2(do_thread_http);
+	std::thread serverThread3(do_thread_timer);
 
 	while(1) {
 		std::cout << "To exit, please enter 'q'.\n";
@@ -532,8 +567,10 @@ int main(int argc, char* argv[])
 				camera->disconnect();
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			timer.cancel();
 			serverThread1.detach();
 			serverThread2.detach();
+			serverThread3.detach();
 			return 0;
 		}
 	}
