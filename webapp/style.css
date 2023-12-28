@@ -50,6 +50,10 @@ div.content {
     min-width: 47%;
 }
 
+.focusIndication {
+    color: lime;
+}
+
 input[type=text] {
     border: 1px solid #363636;
     font-size: 14px;
@@ -124,12 +128,12 @@ input[type=text] {
 .buttonOn:active {
     background: #3f48cc;
 }
-/*
+
 .button.disabled {
     cursor: default;
     background: #a0a0a0;
 }
-*/
+
 /* stream */
 
 figure {

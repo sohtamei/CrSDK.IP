@@ -277,10 +277,7 @@ void do_thread_ws(void)
 							write_json(ws, resp_tree);
 							continue;
 						} else if(cmd == "afShutter") {
-							uint32_t delay_ms = 500;
-							if(cmd_tree.get_child_optional("delay"))
-								delay_ms = cmd_tree.get<std::uint32_t>("delay");
-							camera->af_shutter(delay_ms);
+							camera->af_shutter();
 
 						} else if(cmd == "afHalfShutter") {
 							camera->s1_shooting();
@@ -299,18 +296,6 @@ void do_thread_ws(void)
 						} else if(cmd == "setSaveInfo") {
 							std::string prefix = cmd_tree.get<std::string>("prefix");
 							camera->set_save_info(wstring_convert.from_bytes(prefix));
-
-						} else if(cmd == "setAperture") {
-							std::uint16_t value = cmd_tree.get<std::uint16_t>("value");
-							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_FNumber, value);
-
-						} else if(cmd == "setShutterSpeed") {
-							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
-							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_ShutterSpeed, value);
-
-						} else if(cmd == "setIso") {
-							std::uint32_t value = cmd_tree.get<std::uint32_t>("value");
-							camera->SetProp(SCRSDK::CrDevicePropertyCode::CrDeviceProperty_IsoSensitivity, value);
 
 						} else if(cmd == "test") {
 							auto id = SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality;
@@ -483,7 +468,7 @@ void do_thread_http(void)
 					res.content_length(imageSize);
 					res.keep_alive(req.keep_alive());
 					http::write(socket2, res, err);
-					std::this_thread::sleep_for(std::chrono::milliseconds(30));
+					std::this_thread::sleep_for(std::chrono::milliseconds(20));		// TBD
 					if(err) {
 						fail(err, "write");
 						break;
@@ -518,27 +503,37 @@ void add_array(pt::ptree& pt_, std::string key, std::vector<std::string> array)
 }
 
 //------------------------------------------------------------------------------
-
-asio::io_context ioc;
-boost::posix_time::seconds interval(2);
-asio::deadline_timer timer(ioc, interval);
+#if 1
+asio::io_context ioc3;
+boost::posix_time::seconds interval(4);
+asio::deadline_timer timer(ioc3, interval);
 int last_frameIndex = 0;
 
 void tick(const boost::system::error_code& /*e*/)
 {
 	int cur = frameIndex;
-	std::cout << std::dec << (cur - last_frameIndex)/2 << std::endl;
+	double frameRate = (cur - last_frameIndex)/4.0;
 	last_frameIndex = cur;
+//	std::cout << std::dec << frameRate << std::endl;
+	if(p_ws && frameRate != 0) {
+		std::ostringstream oss;
+		oss << std::fixed << std::setprecision(1) << frameRate;
+
+		pt::ptree resp_tree;
+		resp_tree.put("code", "frameRate");
+		resp_tree.put("value", oss.str());
+		write_json(*p_ws, resp_tree);
+	}
 	timer.expires_at(timer.expires_at() + interval);
 	timer.async_wait(tick);
 }
 
 void do_thread_timer(void)
 {
-	timer.async_wait(tick);
-	ioc.run();
+	timer.async_wait(tick);		// TODO:exe終了でexception
+	ioc3.run();
 }
-
+#endif
 //------------------------------------------------------------------------------
 
 int main(int argc, char* argv[])
@@ -566,8 +561,8 @@ int main(int argc, char* argv[])
 			if (camera->is_connected()) {
 				camera->disconnect();
 			}
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			timer.cancel();
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			serverThread1.detach();
 			serverThread2.detach();
 			serverThread3.detach();

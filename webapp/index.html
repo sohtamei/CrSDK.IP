@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>Cr"Nocode"SDK demo</title>
+        <title>CrSDK.IP sample app</title>
         <link rel="stylesheet" href="style.css" type="text/css" />
         <script src='https://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.12.4.min.js'></script>
         <script src="script.js"></script>
@@ -15,29 +15,26 @@
         <div class="sidebar">
             <div class="input-group">
                 <label id="labelOutput">disconnected</label>
+                <label id="labelFPS"> </label>
             </div>
 
             <section class="buttons">
                 <button id="buttonStream"  class="button">Liveview</button>
                 <button id="buttonS1"      class="button">S1</button>
+                <label id="labelFocusIndication" class="focusIndication">　</label>
                 <button id="buttonShutter" class="button">Still</button>
                 <button id="buttonRec"     class="button">REC</button>
             </section>
 
             <section class="buttons">
                 <button id="buttonUpdate" class="button">Update</button>
+                <button id="buttonCancelTouch" class="button disabled">CancelTouch</button>
                 <button id="buttonDisconnect" class="button">Disconnect</button>
             </section>
-<!--
-            <div class="input-group">
-                <label for="buttonTest">IP address</label>
-                <div class="text">
-                    <input id="test" type="text" minlength="1" maxlength="14" size="14" value="0">
-                </div>
-                <button id="buttonTest" class="inline-button">Set</button>
-            </div>
--->
             <div id='prop'>not connected</div>
+            <div>
+            <p><a href="http://sohta02.sakura.ne.jp/crsdk/list.html">top page</a></p>
+            </div>
         </div>
 
         <figure>

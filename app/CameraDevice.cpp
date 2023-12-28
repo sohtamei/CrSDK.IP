@@ -763,15 +763,18 @@ void CameraDevice::s1_shooting()
 	setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
 }
 
-void CameraDevice::af_shutter(std::uint32_t delay_ms)
+void CameraDevice::af_shutter()
 {
 	std::cout << "S1 shooting...\n";
 	if(GetProp(PCode::CrDeviceProperty_S1)->current != SDK::CrLockIndicator::CrLockIndicator_Locked) {
-		setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
-		int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
-		if(ret) {
-			setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
-			return;
+		auto focusMode = GetProp(PCode::CrDeviceProperty_FocusMode)->current;
+		if(focusMode != SDK::CrFocus_MF) {
+			setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
+			int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
+			if(ret) {
+				setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Unlocked);
+				return;
+			}
 		}
 	}
 
@@ -783,106 +786,6 @@ void CameraDevice::af_shutter(std::uint32_t delay_ms)
 	std::cout << "Shutter down&up\n";
 }
 
-////////////////
-#if 0
-void CameraDevice::set_af_area_position()
-{
-    std::int32_t err;
-    if(1 == Prop.at(PCode::CrDeviceProperty_PriorityKeySettings).writable) {
-        err = setProp(PCode::CrDeviceProperty_PriorityKeySettings, SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote);
-        if(CR_FAILED(err)) {
-            std::cout << "FAILED(" << __LINE__ << ")\n";
-            return;
-        }
-        std::this_thread::sleep_for(500ms);
-        load_properties();
-    }
-
-    err = setProp(PCode::CrDeviceProperty_ExposureProgramMode, SDK::CrExposureProgram::CrExposure_P_Auto);
-    if(CR_FAILED(err)) {
-        std::cout << "FAILED(" << __LINE__ << ")\n";
-        return;
-    }
-    std::this_thread::sleep_for(1000ms);
-    load_properties();
-    if(Prop.at(PCode::CrDeviceProperty_ExposureProgramMode).current == SDK::CrExposureProgram::CrExposure_P_Auto) {
-        std::cout << "FAILED(" << __LINE__ << ")\n";
-        return;
-    }
-
-    err = setProp(PCode::CrDeviceProperty_FocusArea, SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S);
-    if(CR_FAILED(err)) {
-        std::cout << "FAILED(" << __LINE__ << ")\n";
-        return;
-    }
-    std::this_thread::sleep_for(1000ms);
-    load_properties();
-    if(Prop.at(PCode::CrDeviceProperty_FocusArea).current == SDK::CrFocusArea::CrFocusArea_Flexible_Spot_S) {
-        std::cout << "FAILED(" << __LINE__ << ")\n";
-        return;
-    }
-
-    execute_pos_xy(PCode::CrDeviceProperty_AF_Area_Position);
-}
-
-void CameraDevice::execute_pos_xy(CrInt16u code)
-{
-    load_properties();
-
-    text input;
-    tout << std::endl << "Change position ? (y/n): ";
-    std::getline(tin, input);
-    if (input != TEXT("y")) {
-        tout << "Skip.\n";
-        return;
-    }
-
-    tout << std::endl << "Set the value of X (decimal)" << std::endl;
-    tout << "Regarding details of usage, please check API doc." << std::endl;
-
-    tout << std::endl << "input X> ";
-    std::getline(tin, input);
-    text_stringstream ss1(input);
-    CrInt32u x = 0;
-    ss1 >> x;
-
-    if (x < 0 || x > 639) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    tout << "input X = " << x << '\n';
-
-    std::this_thread::sleep_for(1000ms);
-
-    tout << std::endl << "Set the value of Y (decimal)" << std::endl;
-
-    tout << std::endl << "input Y> ";
-    std::getline(tin, input);
-    text_stringstream ss2(input);
-    CrInt32u y = 0;
-    ss2 >> y;
-
-    if (y < 0 || y > 479 ) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    tout << "input Y = "<< y << '\n';
-
-    std::this_thread::sleep_for(1000ms);
-
-    int x_y = x << 16 | y;
-
-    tout << std::endl << "input X_Y = 0x" << std::hex << x_y << std::dec << '\n';
-
-    SDK::CrDeviceProperty prop;
-    prop.SetCode(code);
-    prop.SetCurrentValue((CrInt64u)x_y);
-    prop.SetValueType(SDK::CrDataType::CrDataType_UInt32);
-    SDK::SetDeviceProperty(m_device_handle, &prop);
-}
-#endif
 ////////////////
 #if 0
 bool CameraDevice::get_camera_setting_saveread_state()
@@ -1776,10 +1679,14 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 			}
 		} else {
 			switch(id) {
-			case PCode::CrDeviceProperty_FocusIndication:
 			case PCode::CrDeviceProperty_FNumber:
 			case PCode::CrDeviceProperty_ShutterSpeed:
 			case PCode::CrDeviceProperty_IsoSensitivity:
+
+			case PCode::CrDeviceProperty_S1:
+			case PCode::CrDeviceProperty_CancelRemoteTouchOperationEnableStatus:
+			case PCode::CrDeviceProperty_RecordingState:
+			case PCode::CrDeviceProperty_FocusIndication:
 			case PCode::CrDeviceProperty_FollowFocusPositionCurrentValue:	// FX3
 				SendProp(id);
 				break;
@@ -2013,12 +1920,12 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 		case SDK::CrFrameInfoType::CrFrameInfoType_TrackingFrameInfo: {
 			int count = prop.GetValueSize() / sizeof(SDK::CrTrackingFrameInfo);
 			SDK::CrTrackingFrameInfo* pFrameInfo = (SDK::CrTrackingFrameInfo*)prop.GetValue();
+			std::vector<std::vector<uint32_t>> info(count);
 			if(0 == count || nullptr == pFrameInfo) {
 			#ifdef _DEBUG
 				std::cout << "  TrackingFrameInfo nothing\n";
 			#endif
 			} else {
-				std::vector<std::vector<uint32_t>> info(count);
 				for(int i = 0; i < count; i++) {
 					auto& lvprop = pFrameInfo[i];
 					info.at(i) = { lvprop.type, lvprop.state,
@@ -2026,8 +1933,8 @@ void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* co
 									lvprop.xDenominator, lvprop.yDenominator,
 									lvprop.xNumerator, lvprop.yNumerator};
 				}
-				Send2DArray("TrackingFrameInfo", info);
 			}
+			Send2DArray("TrackingFrameInfo", info);
 			break;
 		  }
 		} //switch(type)

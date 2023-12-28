@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	let ws2 = null;
 	let wsResolve = null;
 	let wsWaitObj = null;
+	let trackFrameInfo = null;
+	let props = null;
 
 	const imgCanvas = document.getElementById('imgCanvas');
 	const imgContext = imgCanvas.getContext('2d');
@@ -16,22 +18,23 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	const focusContext = focusCanvas.getContext('2d');
 
 	const labelOutput = document.getElementById('labelOutput');
+	const labelFPS   = document.getElementById('labelFPS');
 	const imgStream1 = document.getElementById('imgStream1');
 	const imgStream2 = document.getElementById('imgStream2');
+
+	const buttonS1 = document.getElementById('buttonS1');
+	const buttonCancelTouch = document.getElementById('buttonCancelTouch');
+	const buttonRec = document.getElementById('buttonRec');
+	const labelFocusIndication = document.getElementById('labelFocusIndication');
 
 	imgStream1.onload = () => {
 		imgCanvas.width  = imgStream1.width;
 		imgCanvas.height = imgStream1.height;
 		focusCanvas.height = imgStream1.height;
 		//console.log(imgCanvas);
+		if(trackFrameInfo && isStreaming()) drawFrameInfo(trackFrameInfo);
 	};
 
-	/*
-	const prop = { FNumber: document.getElementById('FNumber'),
-				 ShutterSpeed: document.getElementById('ShutterSpeed'),
-				 IsoSensitivity: document.getElementById('IsoSensitivity'),
-				 };
-*/
 	checkResp = function(type, resp) {
 		if(wsResolve) {
 		//	console.log(wsWaitObj);
@@ -56,6 +59,24 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		}
 	}
 
+	drawFrameInfo = (info) => {
+		imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+		imgContext.strokeStyle = 'lime';
+		for(let i = 0; i < info.length; i++) {
+			let x = info[i][6]*1;
+			let y = info[i][7]*1;
+			let w = info[i][2]*1;
+			let h = info[i][3]*1;
+			x = x - w/2;
+			y = y - h/2;
+			x = (x/640)*imgCanvas.width;
+			w = (w/640)*imgCanvas.width;
+			y = (y/480)*imgCanvas.height;
+			h = (h/480)*imgCanvas.height;
+			imgContext.strokeRect(x,y,w,h);
+		}
+	}
+
 	$(document).ready(function () {
 		ws1 = new WebSocket(wsUrl1);
 
@@ -64,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
 			labelOutput.innerHTML = 'connected';
 
 			return SendRecv1({cmd:'LiveView_Image_Quality',ope:'set',text:'High'})
-			.then(resp => loadProps());
+			.then(resp => loadProps())
+			.then(() => startStream());
 		}
 
 		ws1.onerror = function(error) {
@@ -93,37 +115,46 @@ document.addEventListener('DOMContentLoaded', function (event) {
 				if(resp.hasOwnProperty('current') && resp.current.hasOwnProperty('text')) {
 					resp.current.value = resp.current.text;
 				}
-				//if(prop.hasOwnProperty(resp.code)) {
-				//  updateValue(prop[resp.code], resp.current.text, false);
-				//}
+				if(props && props.hasOwnProperty(resp.code) && props[resp.code]) {
+				 	props[resp.code].value = resp.current.text;
+				}
 			}
 
 			checkResp(type, resp);
 
-			if(type == 'json' && resp.hasOwnProperty('code') && isStreaming()) {
-				// for frame info
-				const info = resp.info;
+			if(type == 'json' && resp.hasOwnProperty('code')) {
+				// && isStreaming()
+				let info;
+				if(resp.hasOwnProperty('info')) info = resp.info;
+
 				switch(resp.code) {
-				case 'FaceFrameInfo':
+				case 'S1':
+					buttonS1.className = (resp.current.text == 'Locked') ? 'buttonOn': 'button';
+					break;
+				case 'CancelRemoteTouchOperationEnableStatus':
+					if(resp.current.text == 'Enable')
+						enable(buttonCancelTouch);
+					else
+						disable(buttonCancelTouch);
+					break;
+				case 'RecordingState':
+					buttonRec.className = (resp.current.text == 'Recording') ? 'buttonOn': 'button';
+					break;
 				case 'TrackingFrameInfo':
+					trackFrameInfo = structuredClone(info);
+					drawFrameInfo(info);
+					break;
+				case 'FaceFrameInfo':
 			//	case 'Magnifier_Position':
 				case 'FocusFrameInfo':
-					imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
-					imgContext.strokeStyle = 'lime';
-
-					for(let i = 0; i < info.length; i++) {
-						let x = info[i][6]*1;
-						let y = info[i][7]*1;
-						let w = info[i][2]*1;
-						let h = info[i][3]*1;
-						x = x - w/2;
-						y = y - h/2;
-						x = (x/640)*imgCanvas.width;
-						w = (w/640)*imgCanvas.width;
-						y = (y/480)*imgCanvas.height;
-						h = (h/480)*imgCanvas.height;
-						imgContext.strokeRect(x,y,w,h);
-					}
+					trackFrameInfo = null;
+					drawFrameInfo(info);
+					break;
+				case 'frameRate':
+					labelFPS.innerHTML = resp.value + ' FPS';
+					break;
+				case 'FocusIndication':
+					labelFocusIndication.innerHTML = (resp.current.text == 'Unlocked') ? '　': '●';
 					break;
 				case 'FollowFocusPositionCurrentValue':
 					focusContext.clearRect(0, 0, focusCanvas.width, focusCanvas.height);
@@ -178,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	const stopStream = (keepSrc = false) => {
 		buttonStream.className = 'button';
-		buttonS1.className = 'button';
+		labelFPS.innerHTML = ' ';
 		if(!keepSrc) {
 			imgStream1.src = '';
 			imgStream2.src = '';
@@ -192,35 +223,31 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		return (buttonStream.className == 'buttonOn');
 	}
 
-	const buttonS1 = document.getElementById('buttonS1');
 	buttonS1.onclick = () => {
 		if(buttonS1.className != 'buttonOn') {
-			buttonS1.className = 'buttonOn';
 			startStream();
 			return SendRecv12({cmd:'S1',ope:'set',text:'Locked'});
 		} else {
-			buttonS1.className = 'button';
-			imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
-			return SendRecv12({cmd:'S1',ope:'set',text:'Unlocked'});
+			return SendRecv12({cmd:'S1',ope:'set',text:'Unlocked'})
+			.then(() => {
+				imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
+			});
 		}
 	}
 
 	const buttonShutter = document.getElementById('buttonShutter');
 	buttonShutter.onclick = () => {
-		imgStream1.src = '';
-		imgStream2.src = '';
+	//	imgStream1.src = '';
+	//	imgStream2.src = '';
 	//	window.stop();
 		return SendRecv12({cmd:'afShutter'});
 	}
 
-	const buttonRec = document.getElementById('buttonRec');
 	buttonRec.onclick = () => {
 		if(buttonRec.className != 'buttonOn') {
-			buttonRec.className = 'buttonOn';
-
+			startStream();
 			return SendRecv12({cmd:'MovieRecord',ope:'Down'});
 		} else {
-			buttonRec.className = 'button';
 			imgContext.clearRect(0, 0, imgCanvas.width, imgCanvas.height);
 			return SendRecv12({cmd:'MovieRecord',ope:'Up'});
 		}
@@ -228,7 +255,12 @@ document.addEventListener('DOMContentLoaded', function (event) {
 
 	const buttonUpdate = document.getElementById('buttonUpdate');
 	buttonUpdate.onclick = () => {
+		if(isStreaming()) imgStream1.onload();
 		return loadProps();
+	}
+
+	buttonCancelTouch.onclick = () => {
+		return SendRecv1({cmd:'CancelRemoteTouchOperation',ope:'DownUp'})
 	}
 
 	const buttonDisconnect = document.getElementById('buttonDisconnect');
@@ -279,7 +311,6 @@ document.addEventListener('DOMContentLoaded', function (event) {
 		followFocusPos(startValue);
 	});
 
-
 	const loadProps = () => {
 		return SendRecv1({cmd:'getPropList'})
 		.then(resp => {
@@ -295,8 +326,9 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					.then(resp2 => {
 						//console.log(resp2);
 						const current = (resp2.current.hasOwnProperty('text')) ? resp2.current.text : resp2.current.value;
+						_html += '<div class="input-group"><label>' + prop + '</label>';
 						if(resp2.hasOwnProperty('list')) {
-							_html += '<div class="input-group"><label>' + prop + '</label><select id="' + prop + '" class="default-action">\n';
+							_html += '<select id="' + prop + '" class="default-action">\n';
 							for(let j = 0; j < resp2.list.length; j++) {
 								const value = (resp2.list[j].hasOwnProperty('text')) ? resp2.list[j].text : resp2.list[j].value;
 								if(value == current) {
@@ -305,15 +337,20 @@ document.addEventListener('DOMContentLoaded', function (event) {
 									_html += '<option value="' + value + '">' + value + '</option>\n'
 								}
 							}
-							_html += '</select></div>';
-						} else {
-							_html += '<div class="input-group"><label>' + prop + '</label>';
+							_html += '</select>';
+						} else if(resp2.hasOwnProperty('range')) {
+							_html += '<div class="text"><input id="text' + prop + '" type="text" minlength="1" maxlength="20" size="20" value="' + current 
+							       + '" title="min=' + resp2.range.min + ', max=' + resp2.range.max + ', step=' + resp2.range.step + '"></div>';
+							_html += '<button id="' + prop + '" class="inline-button">Set</button>';
+
+						} else if(resp2.incrementable != 'none') {
 							_html += '<div class="text"><input id="text' + prop + '" type="text" minlength="1" maxlength="20" size="20" value="' + current + '"></div>';
-							if(resp2.incrementable != 'none') {
-								_html += '<button id="' + prop + '" class="inline-button">Set</button>';
-							}
-							_html += '</div>';
+							_html += '<button id="' + prop + '" class="inline-button">Set</button>';
+
+						} else {
+							_html += '<div class="text"><input id="text' + prop + '" type="text" minlength="1" maxlength="20" size="20" value="' + current + '"></div>';
 						}
+						_html += '</div>';
 						i++;
 						if(i >= resp.propList.length) {
 							//console.log(_html);
@@ -332,6 +369,16 @@ document.addEventListener('DOMContentLoaded', function (event) {
 					});
 				}  // loop()
 			}).then(() => {
+				const getElement = (prop) => {
+					let el = document.getElementById('text'+prop);			// input+button
+					if(el == null) el = document.getElementById(prop);		// select
+					return el
+				}
+
+				props = { FNumber:        getElement('FNumber'),
+						  ShutterSpeed:   getElement('ShutterSpeed'),
+						  IsoSensitivity: getElement('IsoSensitivity'),
+						 };
 				console.log('OK');
 			});
 		});
@@ -341,21 +388,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 	document.querySelectorAll('.default-action').forEach(el => {
 		el.onchange = () => updateConfig(el);
 	})
-/*
-	const updateValue = (el, value, updateRemote) => {
-console.log(el);
-		updateRemote = (updateRemote == null) ? true : updateRemote;
-		let initialValue;
-		if (el.type === 'checkbox') {
-			initialValue = el.checked;
-			value = !!value;
-			el.checked = value;
-		} else {
-			initialValue = el.value;
-			el.value = value;
-		}
-	}
-*/
+
 	function updateConfig(el) {
 		let value;
 		switch (el.type) {

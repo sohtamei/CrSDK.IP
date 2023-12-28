@@ -66,7 +66,7 @@ public:
     /*** Shooting operations ***/
 
     void s1_shooting();
-    void af_shutter(std::uint32_t delay_ms);
+    void af_shutter();
 /*
     void do_download_camera_setting_file();
     void do_upload_camera_setting_file();
