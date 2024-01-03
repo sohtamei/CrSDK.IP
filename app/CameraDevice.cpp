@@ -1977,7 +1977,7 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			#endif
 			} else {
 			#ifdef _DEBUG
-				std::cout << "unknown(" << std::hex << id << ")\n";
+				std::cout << "unknown(" << std::hex << id << ")=" << devProp.GetCurrentStr() << "\n";
 			#endif
 			}
 		} else {
@@ -1992,7 +1992,7 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 					m_modeSDK = (SDK::CrSdkControlMode)Prop.at(id).current;
 			} else {
 			#ifdef _DEBUG
-				std::cout << "unknown(" << std::hex << id << ")\n";
+				std::cout << "unknown(" << std::hex << id << ")=" << devProp.GetCurrentValue() << "\n";
 			#endif
 			}
 		}
