@@ -68,9 +68,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include=".\CMakeLists.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <Filter Include="CRSDK">
       <UniqueIdentifier>{032C81B2-17D0-3C67-AC38-EB53F597FC0C}</UniqueIdentifier>
     </Filter>
