@@ -134,9 +134,10 @@ public:
 
 	SCRSDK::CrDevicePropertyCode Prop_tag2id(std::string tag) const;
 
-	struct PropertyValue* GetProp(SCRSDK::CrDevicePropertyCode id);
+	// GetPropとSetPropがnamespace=cli外のRemoteCli.cppでエラーになる
+	struct PropertyValue* GetProp_(SCRSDK::CrDevicePropertyCode id);
 	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value);
-	std::int32_t SetProp(SCRSDK::CrDevicePropertyCode id, std::string _text);
+	std::int32_t SetProp_(SCRSDK::CrDevicePropertyCode id, std::string _text);
 	std::int32_t setProp(SCRSDK::CrDevicePropertyCode id, std::uint64_t value);
 	std::int32_t waitProp(SCRSDK::CrDevicePropertyCode id, std::int32_t timeoutMs);
 

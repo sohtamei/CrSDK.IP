@@ -86,7 +86,7 @@ void sendProp(websocket::stream<tcp::socket>& ws,
 	SCRSDK::CrDevicePropertyCode id,
 	bool sendInfo)
 {
-	struct cli::PropertyValue* prop = camera->GetProp(id);
+	struct cli::PropertyValue* prop = camera->GetProp_(id);
 
 	pt::ptree resp_tree;
 	pt::ptree item_tree;
@@ -147,7 +147,7 @@ void incProp(websocket::stream<tcp::socket>& ws,
 	SCRSDK::CrDevicePropertyCode id,
 	bool inc_dec)
 {
-	struct cli::PropertyValue* prop = camera->GetProp(id);
+	struct cli::PropertyValue* prop = camera->GetProp_(id);
 
 	if(prop->writable == 1) {
 		for(int i = 0; i < prop->possible.size(); i++) {
@@ -172,7 +172,7 @@ void errorProp(websocket::stream<tcp::socket>& ws,
 	SCRSDK::CrDevicePropertyCode id,
 	std::string message)
 {
-	struct cli::PropertyValue* prop = camera->GetProp(id);
+	struct cli::PropertyValue* prop = camera->GetProp_(id);
 
 	pt::ptree resp_tree;
 	resp_tree.put("code", prop->tag);
@@ -299,7 +299,7 @@ void do_thread_ws(void)
 
 						} else if(cmd == "test") {
 							auto id = SCRSDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality;
-							auto prop = camera->GetProp(id);
+							auto prop = camera->GetProp_(id);
 							auto value = SCRSDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low;
 							if(prop->current == SCRSDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low)
 								value = SCRSDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_High;
@@ -316,7 +316,7 @@ void do_thread_ws(void)
 										camera->SetProp(id, value);
 									} else if(cmd_tree.get_child_optional("text")) {
 										std::string _text = cmd_tree.get<std::string>("text");
-										camera->SetProp(id, _text);
+										camera->SetProp_(id, _text);
 									}
 								//	std::this_thread::sleep_for(std::chrono::milliseconds(300));	// ADHOC
 								//	sendProp(ws, id, false/*sendInfo*/);

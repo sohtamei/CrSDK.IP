@@ -103,15 +103,17 @@ int remoteCli_init(void)
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
 	camera->load_properties();
-	int ret = camera->setProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality,
-							SDK::CrPropertyLiveViewImageQuality::CrPropertyLiveViewImageQuality_Low);
+	auto id = SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality;
+	int ret = camera->SetProp_(id, "Low");
 	if(ret) {
 		if (camera->is_connected()) {
 			camera->disconnect();
 		}
 		std::cout << "ERROR: Please reboot this command(" << __LINE__ << ").\n";
+		SDK::Release();
+		return -1;
 	}
-	camera->waitProp(SDK::CrDevicePropertyCode::CrDeviceProperty_LiveView_Image_Quality, 1000);
+	camera->waitProp(id, 1000);
 
 	return 0;
 

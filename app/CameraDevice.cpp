@@ -766,8 +766,8 @@ void CameraDevice::s1_shooting()
 void CameraDevice::af_shutter()
 {
 	std::cout << "S1 shooting...\n";
-	if(GetProp(PCode::CrDeviceProperty_S1)->current != SDK::CrLockIndicator::CrLockIndicator_Locked) {
-		auto focusMode = GetProp(PCode::CrDeviceProperty_FocusMode)->current;
+	if(GetProp_(PCode::CrDeviceProperty_S1)->current != SDK::CrLockIndicator::CrLockIndicator_Locked) {
+		auto focusMode = GetProp_(PCode::CrDeviceProperty_FocusMode)->current;
 		if(focusMode != SDK::CrFocus_MF) {
 			setProp(PCode::CrDeviceProperty_S1, (uint32_t)SDK::CrLockIndicator::CrLockIndicator_Locked);
 			int ret = waitProp(PCode::CrDeviceProperty_FocusIndication, 1000);
@@ -2010,7 +2010,7 @@ PCode CameraDevice::Prop_tag2id(std::string tag) const
 	return (PCode)0;
 }
 
-struct PropertyValue* CameraDevice::GetProp(PCode id)
+struct PropertyValue* CameraDevice::GetProp_(PCode id)
 {
 	auto prop = &Prop.at(id);
 	if(prop->old) {
@@ -2064,7 +2064,7 @@ std::int32_t CameraDevice::waitProp(PCode id, std::int32_t timeoutMs)
 
 std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 {
-	auto prop = GetProp(id);
+	auto prop = GetProp_(id);
 	if(prop->readable && id != PCode::CrDeviceProperty_NearFar && prop->current == value) {
 		std::cout << "skipped\n";
 		SendProp(id);
@@ -2084,10 +2084,10 @@ std::int32_t CameraDevice::SetProp(PCode id, std::uint64_t value)
 	m_cb_respProp = SendProp;
 	m_eventPromise = NULL;
 	m_respPropId = id;
-	return id;
+	return 0;
 };
 
-std::int32_t CameraDevice::SetProp(PCode id, std::string _text)
+std::int32_t CameraDevice::SetProp_(PCode id, std::string _text)
 {
 	PropertyValue& prop = Prop.at(id);
 	if(prop.mapEnum) {
