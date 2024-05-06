@@ -40,6 +40,7 @@ int remoteCli_init(void);
 std::string address = "0.0.0.0";
 #ifndef PORT82
 unsigned short portWS = 8080;
+unsigned short portWS2 = 8081;
 unsigned short portHttp = 81;
 #else
 unsigned short portWS = 8082;
@@ -214,10 +215,10 @@ void Send2DArray(std::string tag, std::vector<std::vector<uint32_t>>& info)
 	write_json(*p_ws, resp_tree);
 }
 
-void do_thread_ws(void)
+void do_thread_ws(int id)
 {
 	asio::io_context ioc;
-	tcp::endpoint endpoint(asio::ip::make_address(address), portWS);
+	tcp::endpoint endpoint(asio::ip::make_address(address), (id==0 ? portWS: portWS2));
 	tcp::acceptor acceptor(ioc, endpoint);
 
 	beast::error_code err;
@@ -239,7 +240,7 @@ void do_thread_ws(void)
 				}));
 			ws.accept();
 
-			std::clog << "ws Connected." << std::endl;
+			std::clog << id << ":ws Connected." << std::endl;
 
 			while(true) {
 				beast::flat_buffer buffer;
@@ -366,7 +367,7 @@ void do_thread_ws(void)
 
 	//	ws.close(websocket::close_code::normal);
 		p_ws = NULL;
-		std::clog << "ws Disconnected." << std::endl;
+		std::clog << id << ":ws Disconnected." << std::endl;
 	}
 }
 
@@ -548,9 +549,10 @@ int main(int argc, char* argv[])
 	int ret = remoteCli_init();
 	if(ret) return -1;
 
-	std::thread serverThread1(do_thread_ws);
+	std::thread serverThread1(do_thread_ws, 0);
 	std::thread serverThread2(do_thread_http);
 	std::thread serverThread3(do_thread_timer);
+	std::thread serverThread4(do_thread_ws, 1);
 
 	while(1) {
 		std::cout << "To exit, please enter 'q'.\n";
@@ -566,6 +568,7 @@ int main(int argc, char* argv[])
 			serverThread1.detach();
 			serverThread2.detach();
 			serverThread3.detach();
+			serverThread4.detach();
 			return 0;
 		}
 	}
