@@ -1,4 +1,4 @@
-﻿#ifndef PROPERTYVALUETABLE_H
+#ifndef PROPERTYVALUETABLE_H
 #define PROPERTYVALUETABLE_H
 
 #include <cstdint>

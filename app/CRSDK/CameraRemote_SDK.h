@@ -293,7 +293,22 @@ CrError ReleaseMonitoringDeliverySetting(/*in*/ CrDeviceHandle deviceHandle, CrM
 
 extern "C"
 SCRSDK_API
-CrError ControlMonitoring(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrMonitoringOpertation operationMode);
+CrError ControlMonitoring(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrMonitoringOperation operationMode);
 
+extern "C"
+SCRSDK_API
+CrError RequestZoomAndFocusPreset(/*in*/ CrDeviceHandle deviceHandle);
+
+extern "C"
+SCRSDK_API
+CrError GetZoomAndFocusPreset(/*in*/ CrDeviceHandle deviceHandle, /*out*/ CrZoomAndFocusPresetInfo** list, /*out*/ CrInt32u* numOfList);
+
+extern "C"
+SCRSDK_API
+CrError ReleaseZoomAndFocusPreset(/*in*/ CrDeviceHandle deviceHandle, CrZoomAndFocusPresetInfo* list);
+
+extern "C"
+SCRSDK_API
+CrError RequestFTPTransferResult(/*in*/ CrDeviceHandle deviceHandle, /*in*/ CrSlotNumber slotNumber);
 }
 #endif //CAMERAREMOTE_SDK_H

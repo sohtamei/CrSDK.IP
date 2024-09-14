@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 if(APPLE)
-set(CMAKE_OSX_DEPLOYMENT_TARGET "11.1" CACHE STRING "Minimum OS X deployment version")
+set(CMAKE_OSX_DEPLOYMENT_TARGET "12.1" CACHE STRING "Minimum OS X deployment version")
 endif(APPLE)
 project(RemoteCli LANGUAGES CXX)
 
@@ -41,6 +41,8 @@ endif(NOT APPLE)
 
 ## Specify char is signed-char to fix mismatch with Raspbian
 target_compile_options(${remotecli}
+    PUBLIC
+        -fstack-protector-all
     PRIVATE
         -fsigned-char
 )
@@ -66,6 +68,13 @@ if(WIN32)
     ## Build with unicode on Windows
     target_compile_definitions(${remotecli} PRIVATE UNICODE _UNICODE)
 endif(WIN32)
+
+if(MSVC)
+    target_compile_options(${remotecli}
+        PUBLIC
+            -guard:cf
+    )
+endif(MSVC)
 
 ### Linux specific configuration ###
 if(UNIX AND NOT APPLE)

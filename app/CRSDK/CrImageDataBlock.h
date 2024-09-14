@@ -1,4 +1,4 @@
-﻿#ifndef CRIMAGEDATABLOCK_H
+#ifndef CRIMAGEDATABLOCK_H
 #define CRIMAGEDATABLOCK_H
 
 #include "CrDefines.h"

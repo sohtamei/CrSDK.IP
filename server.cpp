@@ -88,6 +88,7 @@ void sendProp(websocket::stream<tcp::socket>& ws,
 	bool sendInfo)
 {
 	struct cli::PropertyValue* prop = camera->GetProp_(id);
+	if(!prop) return;
 
 	pt::ptree resp_tree;
 	pt::ptree item_tree;

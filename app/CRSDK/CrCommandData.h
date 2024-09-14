@@ -28,6 +28,9 @@ enum CrCommandId
 	CrCommandId_PowerOff,
 	CrCommandId_CancelFocusPosition,
 	CrCommandId_FlickerScan,
+	CrCommandId_ContinuousShootingSpotBoost,
+	CrCommandId_ForcedFileNumberReset,
+	CrCommandId_TrackingOnAndAFOn,
 };
 
 enum CrCommandParam : CrInt16u

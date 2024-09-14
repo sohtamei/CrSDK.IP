@@ -110,6 +110,7 @@ namespace SCRSDK
 		CrCameraDeviceModel_ILCE_7CR,
 		CrCameraDeviceModel_ILX_LR1,
 		CrCameraDeviceModel_MPC_2610,
+		CrCameraDeviceModel_ILCE_9M3,
 	};
 
 	enum CrReconnectingSet : CrInt32u
@@ -158,10 +159,13 @@ namespace SCRSDK
 		CrSdkApi_SendCommand,
 	};
 
-	enum CrMonitoringOpertation : CrInt8u
+	/* Replaced with the following enum.
+	enum CrMonitoringOpertation : CrInt8u */
+
+	enum CrMonitoringOperation : CrInt8u
 	{
-		CrMonitoringOpertation_Stop = 0x00,
-		CrMonitoringOpertation_Start,
+		CrMonitoringOperation_Stop = 0x00,
+		CrMonitoringOperation_Start,
 	};
 }
 

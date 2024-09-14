@@ -279,7 +279,7 @@ namespace SCRSDK
 		CrWarning_Reserved4,
 		CrWarning_Reserved5,
 		CrWarning_Reserved6,
-		CrWarning_Reserved7,
+		CrWarning_DisplayListChanged_IPTCMetadataDisplayList,
 		CrWarning_DisplayListChanged_SubjectRecognitionAFDisplayList,
 		CrWarning_Reserved9,
 		CrWarning_MediaProfileChanged_Slot3,
@@ -296,10 +296,27 @@ namespace SCRSDK
 		CrWarning_ControlMonitoring_Result_Reserved2,
 		CrWarning_ControlMonitoring_StatusChanged,
 		CrWarning_ControlMonitoring_LostReceiving,
+		CrWarning_RequestZoomAndFocusPreset_Result_Success,
+		CrWarning_RequestZoomAndFocusPreset_Result_DeviceBusy,
+		CrWarning_RequestZoomAndFocusPreset_Result_Error,
+		CrWarning_ZoomAndFocusPresetChanged,
+		CrWarning_CautionDisplay,
+		CrNotify_FTPTransferResult_Success,
+		CrNotify_FTPTransferResult_Failure,
 
 		CrWarningExt_Unknown = 0x00060000,
 		CrWarningExt_AFStatus,
 		CrWarningExt_OperationResults,
+	};
+
+	enum CrWarningExt_AFStatusParam : CrInt32
+	{
+		CrWarningExt_AFStatusParam_Unlocked             = 0x00000001,
+		CrWarningExt_AFStatusParam_Focused_AF_S         = 0x00000002,
+		CrWarningExt_AFStatusParam_NotFocused_AF_S      = 0x00000003,
+		CrWarningExt_AFStatusParam_TrackingSubject_AF_C = 0x00000005,
+		CrWarningExt_AFStatusParam_Focused_AF_C         = 0x00000006,
+		CrWarningExt_AFStatusParam_NotFocused_AF_C      = 0x00000007,
 	};
 
 	enum CrWarningExt_OperationResultsParam : CrInt32
@@ -307,6 +324,9 @@ namespace SCRSDK
 		CrWarningExt_OperationResultsParam_Invalid = 0x00000000,
 		CrWarningExt_OperationResultsParam_OK,
 		CrWarningExt_OperationResultsParam_NG,
+		CrWarningExt_OperationResultsParam_InvalidParameterError,
+		CrWarningExt_OperationResultsParam_CameraStatusError,
+		CrWarningExt_OperationResultsParam_CharacterSizeError = 0x00000011,
 	};
 
 	#define CR_SUCCEEDED(e)	(SCRSDK::CrError_None == (e))

@@ -1,4 +1,4 @@
-﻿#if defined (_WIN32) || defined(_WIN64)
+#if defined (_WIN32) || defined(_WIN64)
 
 #include <SDKDDKVer.h>
 
@@ -7,7 +7,6 @@
 #include <windows.h>
 #include <memory>
 #include <map>
-#include <iostream>
 
 // TODO: reference additional headers your program requires here
 #pragma warning (push)
@@ -15,6 +14,7 @@
 #pragma warning (pop)
 #endif
 
+#include <iostream>
 #include "CameraDevice.h"
 #include <chrono>
 #if defined(__GNUC__) && __GNUC__ < 8
@@ -38,6 +38,9 @@ namespace fs = std::filesystem;
 #include <sys/stat.h>
 #include <vector>
 #include <dirent.h>
+#if !defined(NDEBUG)
+  #define _DEBUG
+#endif
 #endif
 
 
@@ -82,7 +85,12 @@ int getch_for_Nix(void)
 
 namespace SDK = SCRSDK;
 using namespace std::chrono_literals;
+
+#if defined (_WIN32) || defined(_WIN64)
 static std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wstring_convert;
+#else
+static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> wstring_convert;
+#endif
 
 namespace cli
 {
@@ -120,15 +128,25 @@ std::map<PCode, struct PropertyValue> Prop {
 
 //(.*)\t(.*)\t(.*)
 //	{ PCode::CrDeviceProperty_\1,	{ -1, "\1", &map_\2, format_\3, } },
+//(format_,|\&map_,)
+//0,
 
 	{ PCode::CrDeviceProperty_AEL,	{ -1, "AEL", &map_CrLockIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AF_Area_Position,	{ -1, "AF_Area_Position", 0, 0, } },
 	{ PCode::CrDeviceProperty_AFAssist,	{ -1, "AFAssist", &map_CrAFAssist, 0, } },
+	{ PCode::CrDeviceProperty_AFFreeSizeAndPositionSetting,	{ -1, "AFFreeSizeAndPositionSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_AFIlluminator,	{ -1, "AFIlluminator", &map_CrAFIlluminator, 0, } },
+	{ PCode::CrDeviceProperty_AFInFocusMagnifier,	{ -1, "AFInFocusMagnifier", &map_CrAFInFocusMagnifier, 0, } },
 	{ PCode::CrDeviceProperty_AFSubjShiftSens,	{ -1, "AFSubjShiftSens", 0, 0, } },
+	{ PCode::CrDeviceProperty_AFTrackForSpeedChange,	{ -1, "AFTrackForSpeedChange", &map_CrAFTrackForSpeedChange, 0, } },
 	{ PCode::CrDeviceProperty_AFTrackingSensitivity,	{ -1, "AFTrackingSensitivity", &map_CrAFTrackingSensitivity, 0, } },
 	{ PCode::CrDeviceProperty_AFTransitionSpeed,	{ -1, "AFTransitionSpeed", 0, 0, } },
+	{ PCode::CrDeviceProperty_AFWithShutter,	{ -1, "AFWithShutter", &map_CrAFWithShutter, 0, } },
+	{ PCode::CrDeviceProperty_AntidustShutterWhenPowerOff,	{ -1, "AntidustShutterWhenPowerOff", &map_CrAntidustShutterWhenPowerOff, 0, } },
+	{ PCode::CrDeviceProperty_ApertureDriveInAF,	{ -1, "ApertureDriveInAF", &map_CrApertureDriveInAF, 0, } },
 	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingEnableStatus,	{ -1, "APS_C_or_Full_SwitchingEnableStatus", &map_CrAPS_C_or_Full_SwitchingEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_APS_C_or_Full_SwitchingSetting,	{ -1, "APS_C_or_Full_SwitchingSetting", &map_CrAPS_C_or_Full_SwitchingSetting, 0, } },
+	{ PCode::CrDeviceProperty_APS_C_S35,	{ -1, "APS_C_S35", &map_CrAPS_C_S35, 0, } },
 	{ PCode::CrDeviceProperty_AspectRatio,	{ -1, "AspectRatio", &map_CrAspectRatioIndex, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton1,	{ -1, "AssignableButton1", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButton10,	{ -1, "AssignableButton10", &map_CrAssignableButton, 0, } },
@@ -153,11 +171,15 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_AssignableButtonIndicator8,	{ -1, "AssignableButtonIndicator8", &map_CrAssignableButtonIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AssignableButtonIndicator9,	{ -1, "AssignableButtonIndicator9", &map_CrAssignableButtonIndicator, 0, } },
 	{ PCode::CrDeviceProperty_AudioInputMasterLevel,	{ -1, "AudioInputMasterLevel", 0, 0, } },
+	{ PCode::CrDeviceProperty_AudioLevelDisplay,	{ -1, "AudioLevelDisplay", &map_CrAudioLevelDisplay, 0, } },
 	{ PCode::CrDeviceProperty_AudioRecording,	{ -1, "AudioRecording", &map_CrAudioRecording, 0, } },
 	{ PCode::CrDeviceProperty_AudioSignals,	{ -1, "AudioSignals", &map_CrAudioSignals, 0, } },
+	{ PCode::CrDeviceProperty_AudioSignalsStartEnd,	{ -1, "AudioSignalsStartEnd", &map_CrAudioSignalsStartEnd, 0, } },
+	{ PCode::CrDeviceProperty_AudioSignalsVolume,	{ -1, "AudioSignalsVolume", 0, 0, } },
 	{ PCode::CrDeviceProperty_AutoPowerOffTemperature,	{ -1, "AutoPowerOffTemperature", &map_CrAutoPowerOffTemperature, 0, } },
 	{ PCode::CrDeviceProperty_AutoReview,	{ -1, "AutoReview", 0, 0, } },
 	{ PCode::CrDeviceProperty_AutoSlowShutter,	{ -1, "AutoSlowShutter", &map_CrAutoSlowShutter, 0, } },
+	{ PCode::CrDeviceProperty_AutoSwitchMedia,	{ -1, "AutoSwitchMedia", &map_CrAutoSwitchMedia, 0, } },
 	{ PCode::CrDeviceProperty_AWB,	{ -1, "AWB", &map_CrAWB, 0, } },
 	{ PCode::CrDeviceProperty_AWBL,	{ -1, "AWBL", &map_CrLockIndicator, 0, } },
 	{ PCode::CrDeviceProperty_BaseISOSwitchEI,	{ -1, "BaseISOSwitchEI", 0, 0, } },
@@ -184,7 +206,12 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable8,	{ -1, "ButtonAssignmentAssignable8", 0, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentAssignable9,	{ -1, "ButtonAssignmentAssignable9", 0, 0, } },
 	{ PCode::CrDeviceProperty_ButtonAssignmentLensAssignable1,	{ -1, "ButtonAssignmentLensAssignable1", 0, 0, } },
+	{ PCode::CrDeviceProperty_CameraButtonFunction,	{ -1, "CameraButtonFunction", &map_CrCameraButtonFunction, 0/*TBD*/, } },
+	{ PCode::CrDeviceProperty_CameraButtonFunctionMulti,	{ -1, "CameraButtonFunctionMulti", &map_CrCameraButtonFunction, 0, } },
+	{ PCode::CrDeviceProperty_CameraButtonFunctionStatus,	{ -1, "CameraButtonFunctionStatus", &map_CrCameraButtonFunctionStatus, 0, } },
+	{ PCode::CrDeviceProperty_CameraDialFunction,	{ -1, "CameraDialFunction", &map_CrCameraDialFunction, 0, } },
 	{ PCode::CrDeviceProperty_CameraEframing,	{ -1, "CameraEframing", &map_CrCameraEframing, 0, } },
+	{ PCode::CrDeviceProperty_CameraErrorCautionStatus,	{ -1, "CameraErrorCautionStatus", &map_CrCameraErrorCautionStatus, 0, } },
 	{ PCode::CrDeviceProperty_CameraOperatingMode,	{ -1, "CameraOperatingMode", &map_CrCameraOperatingMode, 0, } },
 	{ PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus,	{ -1, "CameraSetting_ReadOperationEnableStatus", &map_CrCameraSettingReadOperation, 0, } },
 	{ PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus,	{ -1, "CameraSetting_SaveOperationEnableStatus", &map_CrCameraSettingSaveOperation, 0, } },
@@ -202,6 +229,15 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_ContentsTransferCancelEnableStatus,	{ -1, "ContentsTransferCancelEnableStatus", &map_CrCancelContentsTransferEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_ContentsTransferProgress,	{ -1, "ContentsTransferProgress", 0, 0, } },
 	{ PCode::CrDeviceProperty_ContentsTransferStatus,	{ -1, "ContentsTransferStatus", &map_CrContentsTransferStatus, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpeedInElectricShutterHi,	{ -1, "ContinuousShootingSpeedInElectricShutterHi", 0, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpeedInElectricShutterHiPlus,	{ -1, "ContinuousShootingSpeedInElectricShutterHiPlus", 0, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpeedInElectricShutterLo,	{ -1, "ContinuousShootingSpeedInElectricShutterLo", 0, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpeedInElectricShutterMid,	{ -1, "ContinuousShootingSpeedInElectricShutterMid", 0, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpotBoostEnableStatus,	{ -1, "ContinuousShootingSpotBoostEnableStatus", &map_CrContinuousShootingSpotBoostEnableStatus, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpotBoostFrameSpeed,	{ -1, "ContinuousShootingSpotBoostFrameSpeed", 0, 0, } },
+	{ PCode::CrDeviceProperty_ContinuousShootingSpotBoostStatus,	{ -1, "ContinuousShootingSpotBoostStatus", &map_CrContinuousShootingSpotBoostStatus, 0, } },
+	{ PCode::CrDeviceProperty_ControlForHDMI,	{ -1, "ControlForHDMI", &map_CrControlForHDMI, 0, } },
+	{ PCode::CrDeviceProperty_CreateNewFolderEnableStatus,	{ -1, "CreateNewFolderEnableStatus", &map_CrCreateNewFolderEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_CreativeLook,	{ -1, "CreativeLook", &map_CrCreativeLook, 0, } },
 	{ PCode::CrDeviceProperty_CreativeLook_Clarity,	{ -1, "CreativeLook_Clarity", 0, 0, } },
 	{ PCode::CrDeviceProperty_CreativeLook_Contrast,	{ -1, "CreativeLook_Contrast", 0, 0, } },
@@ -218,16 +254,19 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_CustomWB_Capture,	{ -1, "CustomWB_Capture", 0, 0, } },
 	{ PCode::CrDeviceProperty_CustomWB_Capture_Frame_Size,	{ -1, "CustomWB_Capture_Frame_Size", 0, 0, } },
 	{ PCode::CrDeviceProperty_CustomWB_Capture_Operation,	{ -1, "CustomWB_Capture_Operation", &map_CrPropertyCustomWBOperation, 0, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, "CustomWB_Capture_Standby", &map_CrPropertyCustomWBCaptureButton, 0, } },
-	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, "CustomWB_Capture_Standby_Cancel", &map_CrPropertyCustomWBCaptureButton, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby,	{ -1, "CustomWB_Capture_Standby", &map_CrPropertyCustomWBOperation, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Capture_Standby_Cancel,	{ -1, "CustomWB_Capture_Standby_Cancel", &map_CrPropertyCustomWBOperation, 0, } },
 	{ PCode::CrDeviceProperty_CustomWB_Execution_State,	{ -1, "CustomWB_Execution_State", &map_CrPropertyCustomWBExecutionState, 0, } },
+	{ PCode::CrDeviceProperty_CustomWB_Size_Setting,	{ -1, "CustomWB_Size_Setting", &map_CrCustomWBSizeSetting, 0, } },
 	{ PCode::CrDeviceProperty_DateTime_Settings,	{ -1, "DateTime_Settings", 0, 0, } },
 	{ PCode::CrDeviceProperty_DCVoltage,	{ -1, "DCVoltage", 0, 0, } },
+	{ PCode::CrDeviceProperty_DefaultAFFreeSizeAndPositionSetting,	{ -1, "DefaultAFFreeSizeAndPositionSetting", 0, 0, } },
 	{ PCode::CrDeviceProperty_DeleteUserBaseLook,	{ -1, "DeleteUserBaseLook", 0, 0, } },
 	{ PCode::CrDeviceProperty_DepthOfFieldAdjustmentInterlockingMode,	{ -1, "DepthOfFieldAdjustmentInterlockingMode", &map_CrDepthOfFieldAdjustmentInterlockingMode, 0, } },
 	{ PCode::CrDeviceProperty_DepthOfFieldAdjustmentMode,	{ -1, "DepthOfFieldAdjustmentMode", &map_CrDepthOfFieldAdjustmentMode, 0, } },
 	{ PCode::CrDeviceProperty_DeviceOverheatingState,	{ -1, "DeviceOverheatingState", &map_CrDeviceOverheatingState, 0, } },
 	{ PCode::CrDeviceProperty_DigitalZoomScale,	{ -1, "DigitalZoomScale", 0, 0, } },
+	{ PCode::CrDeviceProperty_DisplayQualityFinder,	{ -1, "DisplayQualityFinder", &map_CrDisplayQualityFinder, 0, } },
 	{ PCode::CrDeviceProperty_DispMode,	{ -1, "DispMode", &map_CrDispMode, 0, } },
 	{ PCode::CrDeviceProperty_DispModeCandidate,	{ -1, "DispModeCandidate", 0, 0, } },
 	{ PCode::CrDeviceProperty_DispModeSetting,	{ -1, "DispModeSetting", 0, 0, } },
@@ -238,16 +277,22 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_EframingRecordingImageCrop,	{ -1, "EframingRecordingImageCrop", &map_CrEframingRecordingImageCrop, 0, } },
 	{ PCode::CrDeviceProperty_EframingScaleAuto,	{ -1, "EframingScaleAuto", &map_CrEframingScaleAuto, 0, } },
 	{ PCode::CrDeviceProperty_EframingSpeedAuto,	{ -1, "EframingSpeedAuto", 0, 0, } },
+	{ PCode::CrDeviceProperty_ElectricFrontCurtainShutter,	{ -1, "ElectricFrontCurtainShutter", &map_CrElectricFrontCurtainShutter, 0, } },
+	{ PCode::CrDeviceProperty_EmbedLUTFile,	{ -1, "EmbedLUTFile", &map_CrEmbedLUTFile, 0, } },
 	{ PCode::CrDeviceProperty_ExposureBiasCompensation,	{ -1, "ExposureBiasCompensation", 0, 0, } },
 	{ PCode::CrDeviceProperty_ExposureCtrlType,	{ -1, "ExposureCtrlType", &map_CrExposureCtrlType, 0, } },
 	{ PCode::CrDeviceProperty_ExposureIndex,	{ -1, "ExposureIndex", 0, 0, } },
 	{ PCode::CrDeviceProperty_ExposureProgramMode,	{ -1, "ExposureProgramMode", &map_CrExposureProgram, 0, } },
 	{ PCode::CrDeviceProperty_ExtendedInterfaceMode,	{ -1, "ExtendedInterfaceMode", &map_CrExtendedInterfaceMode, 0, } },
+	{ PCode::CrDeviceProperty_ExtendedShutterSpeed,	{ -1, "ExtendedShutterSpeed", 0, format_shutter_speed, } },
+	{ PCode::CrDeviceProperty_FaceEyeFrameDisplay,	{ -1, "FaceEyeFrameDisplay", &map_CrFaceEyeFrameDisplay, 0, } },
+	{ PCode::CrDeviceProperty_FacePriorityInMultiMetering,	{ -1, "FacePriorityInMultiMetering", &map_CrFacePriorityInMultiMetering, 0, } },
 	{ PCode::CrDeviceProperty_FEL,	{ -1, "FEL", &map_CrLockIndicator, 0, } },
 	{ PCode::CrDeviceProperty_FileType,	{ -1, "FileType", &map_CrFileType, 0, } },
 	{ PCode::CrDeviceProperty_FlashCompensation,	{ -1, "FlashCompensation", 0, 0, } },
 	{ PCode::CrDeviceProperty_FlashMode,	{ -1, "FlashMode", &map_CrFlashMode, 0, } },
 	{ PCode::CrDeviceProperty_FlickerLessShooting,	{ -1, "FlickerLessShooting", &map_CrFlickerLessShooting, 0, } },
+	{ PCode::CrDeviceProperty_FlickerLessShootingStatus,	{ -1, "FlickerLessShootingStatus", &map_CrFlickerLessShootingStatus, 0, } },
 	{ PCode::CrDeviceProperty_FlickerScanEnableStatus,	{ -1, "FlickerScanEnableStatus", &map_CrFlickerScanEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_FlickerScanStatus,	{ -1, "FlickerScanStatus", &map_CrFlickerScanStatus, 0, } },
 	{ PCode::CrDeviceProperty_FNumber,	{ -1, "FNumber", 0, format_f_number, } },
@@ -262,11 +307,13 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_FocusBracketFocusRange,	{ -1, "FocusBracketFocusRange", 0, 0, } },
 	{ PCode::CrDeviceProperty_FocusBracketIntervalUntilNextShot,	{ -1, "FocusBracketIntervalUntilNextShot", 0, 0, } },
 	{ PCode::CrDeviceProperty_FocusBracketOrder,	{ -1, "FocusBracketOrder", &map_CrFocusBracketOrder, 0, } },
+	{ PCode::CrDeviceProperty_FocusBracketRecordingFolder,	{ -1, "FocusBracketRecordingFolder", &map_CrFocusBracketRecordingFolder, 0, } },
 	{ PCode::CrDeviceProperty_FocusBracketShootingStatus,	{ -1, "FocusBracketShootingStatus", &map_CrFocusBracketShootingStatus, 0, } },
 	{ PCode::CrDeviceProperty_FocusBracketShotNumber,	{ -1, "FocusBracketShotNumber", 0, 0, } },
 	{ PCode::CrDeviceProperty_FocusDrivingStatus,	{ -1, "FocusDrivingStatus", &map_CrFocusDrivingStatus, 0, } },
 	{ PCode::CrDeviceProperty_FocusIndication,	{ -1, "FocusIndication", &map_CrFocusIndicator, 0, } },
 	{ PCode::CrDeviceProperty_FocusMagnificationTime,	{ -1, "FocusMagnificationTime", 0, 0, } },
+	{ PCode::CrDeviceProperty_FocusMap,	{ -1, "FocusMap", &map_CrFocusMap, 0, } },
 	{ PCode::CrDeviceProperty_FocusMode,	{ -1, "FocusMode", &map_CrFocusMode, 0, } },
 	{ PCode::CrDeviceProperty_FocusModeSetting,	{ -1, "FocusModeSetting", &map_CrFocusModeSetting, 0, } },
 	{ PCode::CrDeviceProperty_FocusPositionCurrentValue,	{ -1, "FocusPositionCurrentValue", 0, format_focus_position_value, } },
@@ -275,12 +322,15 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_FocusTrackingStatus,	{ -1, "FocusTrackingStatus", &map_CrFocusTrackingStatus, 0, } },
 	{ PCode::CrDeviceProperty_FollowFocusPositionCurrentValue,	{ -1, "FollowFocusPositionCurrentValue", 0, 0, } },
 	{ PCode::CrDeviceProperty_FollowFocusPositionSetting,	{ -1, "FollowFocusPositionSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_ForcedFileNumberResetEnableStatus,	{ -1, "ForcedFileNumberResetEnableStatus", &map_CrForcedFileNumberReset, 0, } },
 	{ PCode::CrDeviceProperty_FTP_AutoTransfer,	{ -1, "FTP_AutoTransfer", &map_CrFTPAutoTransfer, 0, } },
 	{ PCode::CrDeviceProperty_FTP_AutoTransferTarget,	{ -1, "FTP_AutoTransferTarget", &map_CrFTPAutoTransferTarget, 0, } },
+	{ PCode::CrDeviceProperty_FTP_AutoTransferTarget_StillImage,	{ -1, "FTP_AutoTransferTarget_StillImage", &map_CrFTPAutoTransferTargetStill, 0, } },
 	{ PCode::CrDeviceProperty_FTP_ConnectionErrorInfo,	{ -1, "FTP_ConnectionErrorInfo", &map_CrFTPConnectionErrorInfo, 0, } },
 	{ PCode::CrDeviceProperty_FTP_ConnectionStatus,	{ -1, "FTP_ConnectionStatus", &map_CrFTPConnectionStatus, 0, } },
 	{ PCode::CrDeviceProperty_FTP_Function,	{ -1, "FTP_Function", &map_CrFTPFunction, 0, } },
 	{ PCode::CrDeviceProperty_FTP_PowerSave,	{ -1, "FTP_PowerSave", &map_CrFTPPowerSave, 0, } },
+	{ PCode::CrDeviceProperty_FTP_TransferStillImageQualitySize,	{ -1, "FTP_TransferStillImageQualitySize", &map_CrFTPTransferStillImageQualitySize, 0, } },
 	{ PCode::CrDeviceProperty_FTP_TransferTarget,	{ -1, "FTP_TransferTarget", &map_CrFTPTransferTargetStill, 0, } },
 	{ PCode::CrDeviceProperty_FTPJobListDataVersion,	{ -1, "FTPJobListDataVersion", 0, 0, } },
 	{ PCode::CrDeviceProperty_FTPServerSettingOperationEnableStatus,	{ -1, "FTPServerSettingOperationEnableStatus", &map_CrFTPServerSettingOperationEnableStatus, 0, } },
@@ -288,6 +338,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_FTPTransferSetting_ReadOperationEnableStatus,	{ -1, "FTPTransferSetting_ReadOperationEnableStatus", &map_CrFTPTransferSettingReadOperationEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_FTPTransferSetting_SaveOperationEnableStatus,	{ -1, "FTPTransferSetting_SaveOperationEnableStatus", &map_CrFTPTransferSettingSaveOperationEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_FTPTransferSetting_SaveRead_State,	{ -1, "FTPTransferSetting_SaveRead_State", &map_CrFTPTransferSettingSaveReadState, 0, } },
+	{ PCode::CrDeviceProperty_FullTimeDMF,	{ -1, "FullTimeDMF", &map_CrFullTimeDMF, 0, } },
 	{ PCode::CrDeviceProperty_FunctionOfRemoteTouchOperation,	{ -1, "FunctionOfRemoteTouchOperation", &map_CrFunctionOfRemoteTouchOperation, 0, } },
 	{ PCode::CrDeviceProperty_FunctionOfTouchOperation,	{ -1, "FunctionOfTouchOperation", &map_CrFunctionOfTouchOperation, 0, } },
 	{ PCode::CrDeviceProperty_GainBaseIsoSensitivity,	{ -1, "GainBaseIsoSensitivity", &map_CrGainBaseIsoSensitivity, 0, } },
@@ -296,6 +347,9 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_GaindBCurrentValue,	{ -1, "GaindBCurrentValue", 0, 0, } },
 	{ PCode::CrDeviceProperty_GaindBValue,	{ -1, "GaindBValue", 0, 0, } },
 	{ PCode::CrDeviceProperty_GainUnitSetting,	{ -1, "GainUnitSetting", &map_CrGainUnitSetting, 0, } },
+	{ PCode::CrDeviceProperty_GammaDisplayAssist,	{ -1, "GammaDisplayAssist", &map_CrGammaDisplayAssist, 0, } },
+	{ PCode::CrDeviceProperty_GammaDisplayAssistType,	{ -1, "GammaDisplayAssistType", &map_CrGammaDisplayAssistType, 0, } },
+	{ PCode::CrDeviceProperty_GridLineDisplay,	{ -1, "GridLineDisplay", &map_CrGridLineDisplay, 0, } },
 	{ PCode::CrDeviceProperty_HDMIResolutionStillPlay,	{ -1, "HDMIResolutionStillPlay", &map_CrHDMIResolution, 0, } },
 	{ PCode::CrDeviceProperty_HighIsoNR,	{ -1, "HighIsoNR", &map_CrHighIsoNR, 0, } },
 	{ PCode::CrDeviceProperty_HighResolutionShutterSpeed,	{ -1, "HighResolutionShutterSpeed", 0, 0, } },
@@ -307,6 +361,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShot,	{ -1, "ImageStabilizationSteadyShot", &map_CrImageStabilizationSteadyShot, 0, } },
 	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShotAdjust,	{ -1, "ImageStabilizationSteadyShotAdjust", &map_CrImageStabilizationSteadyShotAdjust, 0, } },
 	{ PCode::CrDeviceProperty_ImageStabilizationSteadyShotFocalLength,	{ -1, "ImageStabilizationSteadyShotFocalLength", 0, 0, } },
+	{ PCode::CrDeviceProperty_InitialFocusMagnifier,	{ -1, "InitialFocusMagnifier", 0, 0, } },
 	{ PCode::CrDeviceProperty_Interval_Rec_Mode,	{ -1, "Interval_Rec_Mode", &map_CrIntervalRecMode, 0, } },
 	{ PCode::CrDeviceProperty_Interval_Rec_Status,	{ -1, "Interval_Rec_Status", &map_CrIntervalRecStatus, 0, } },
 	{ PCode::CrDeviceProperty_IntervalRec_AETrackingSensitivity,	{ -1, "IntervalRec_AETrackingSensitivity", &map_CrIntervalRecAETrackingSensitivity, 0, } },
@@ -320,10 +375,16 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedManual,	{ -1, "IsoAutoMinShutterSpeedManual", 0, 0, } },
 	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedMode,	{ -1, "IsoAutoMinShutterSpeedMode", &map_CrIsoAutoMinShutterSpeedMode, 0, } },
 	{ PCode::CrDeviceProperty_IsoAutoMinShutterSpeedPreset,	{ -1, "IsoAutoMinShutterSpeedPreset", &map_CrIsoAutoMinShutterSpeedPreset, 0, } },
+	{ PCode::CrDeviceProperty_IsoAutoRangeLimitMax,	{ -1, "IsoAutoRangeLimitMax", 0, format_iso_sensitivity, } },
+	{ PCode::CrDeviceProperty_IsoAutoRangeLimitMin,	{ -1, "IsoAutoRangeLimitMin", 0, format_iso_sensitivity, } },
 	{ PCode::CrDeviceProperty_IsoCurrentSensitivity,	{ -1, "IsoCurrentSensitivity", 0, format_iso_sensitivity, } },
 	{ PCode::CrDeviceProperty_IsoSensitivity,	{ -1, "IsoSensitivity", 0, format_iso_sensitivity, } },
 	{ PCode::CrDeviceProperty_LensAssignableButton1,	{ -1, "LensAssignableButton1", &map_CrAssignableButton, 0, } },
 	{ PCode::CrDeviceProperty_LensAssignableButtonIndicator1,	{ -1, "LensAssignableButtonIndicator1", &map_CrAssignableButtonIndicator, 0, } },
+	{ PCode::CrDeviceProperty_LensCompensationBreathing,	{ -1, "LensCompensationBreathing", &map_CrLensCompensationBreathing, 0, } },
+	{ PCode::CrDeviceProperty_LensCompensationChromaticAberration,	{ -1, "LensCompensationChromaticAberration", &map_CrLensCompensationChromaticAberration, 0, } },
+	{ PCode::CrDeviceProperty_LensCompensationDistortion,	{ -1, "LensCompensationDistortion", &map_CrLensCompensationDistortion, 0, } },
+	{ PCode::CrDeviceProperty_LensCompensationShading,	{ -1, "LensCompensationShading", &map_CrLensCompensationShading, 0, } },
 	{ PCode::CrDeviceProperty_LensInformationEnableStatus,	{ -1, "LensInformationEnableStatus", &map_CrLensInformationEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_LiveView_Image_Quality,	{ -1, "LiveView_Image_Quality", &map_CrPropertyLiveViewImageQuality, 0, } },
 	{ PCode::CrDeviceProperty_LiveViewDisplayEffect,	{ -1, "LiveViewDisplayEffect", &map_CrLiveViewDisplayEffect, 0, } },
@@ -357,7 +418,10 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_MediaSLOT3_RecordingAvailableType,	{ -1, "MediaSLOT3_RecordingAvailableType", &map_CrMediaSlotRecordingAvailableType, 0, } },
 	{ PCode::CrDeviceProperty_MediaSLOT3_RemainingTime,	{ -1, "MediaSLOT3_RemainingTime", 0, 0, } },
 	{ PCode::CrDeviceProperty_MediaSLOT3_Status,	{ -1, "MediaSLOT3_Status", &map_CrSlotStatus, 0, } },
+	{ PCode::CrDeviceProperty_MeteredManualLevel,	{ -1, "MeteredManualLevel", 0, 0, } },
 	{ PCode::CrDeviceProperty_MeteringMode,	{ -1, "MeteringMode", &map_CrMeteringMode, 0, } },
+	{ PCode::CrDeviceProperty_MonitorBrightnessManual,	{ -1, "MonitorBrightnessManual", 0, 0, } },
+	{ PCode::CrDeviceProperty_MonitorBrightnessType,	{ -1, "MonitorBrightnessType", &map_CrMonitorBrightnessType, 0, } },
 	{ PCode::CrDeviceProperty_MonitoringDeliveringStatus,	{ -1, "MonitoringDeliveringStatus", &map_CrMonitoringDeliveringStatus, 0, } },
 	{ PCode::CrDeviceProperty_MonitoringDeliveryTypeSupportInfo,	{ -1, "MonitoringDeliveryTypeSupportInfo", &map_CrMonitoringDeliveryType, 0, } },
 	{ PCode::CrDeviceProperty_MonitoringIsDelivering,	{ -1, "MonitoringIsDelivering", &map_CrMonitoringIsDelivering, 0, } },
@@ -369,6 +433,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_Movie_FTP_TransferTarget,	{ -1, "Movie_FTP_TransferTarget", &map_CrFTPTransferTargetMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutput4KSetting,	{ -1, "Movie_HDMIOutput4KSetting", &map_CrHDMIOutput4KSettingMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputAudioCH,	{ -1, "Movie_HDMIOutputAudioCH", &map_CrHDMIOutputAudioCH, 0, } },
+	{ PCode::CrDeviceProperty_Movie_HDMIOutputColorGamutForRAWOut,	{ -1, "Movie_HDMIOutputColorGamutForRAWOut", &map_CrHDMIOutputColorGamutForRAWOutMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputRAW,	{ -1, "Movie_HDMIOutputRAW", &map_CrHDMIOutputRAWMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputRawSetting,	{ -1, "Movie_HDMIOutputRawSetting", &map_CrHDMIOutputRawSettingMovie, 0, } },
 	{ PCode::CrDeviceProperty_Movie_HDMIOutputRecControl,	{ -1, "Movie_HDMIOutputRecControl", &map_CrHDMIOutputRecControlMovie, 0, } },
@@ -388,6 +453,8 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_Movie_Recording_ResolutionForMain,	{ -1, "Movie_Recording_ResolutionForMain", 0, 0, } },
 	{ PCode::CrDeviceProperty_Movie_Recording_ResolutionForProxy,	{ -1, "Movie_Recording_ResolutionForProxy", 0, 0, } },
 	{ PCode::CrDeviceProperty_Movie_Recording_Setting,	{ -1, "Movie_Recording_Setting", &map_CrRecordingSettingMovie, 0, } },
+	{ PCode::CrDeviceProperty_Movie_RecordingFileNumber,	{ -1, "Movie_RecordingFileNumber", &map_CrRecordingFileNumber, 0, } },
+	{ PCode::CrDeviceProperty_Movie_RecordingMedia,	{ -1, "Movie_RecordingMedia", &map_CrRecordingMediaMovie, 0, } },
 	{ PCode::CrDeviceProperty_MovieForwardButton,	{ -1, "MovieForwardButton", &map_CrMovieXButton, 0, } },
 	{ PCode::CrDeviceProperty_MovieNextButton,	{ -1, "MovieNextButton", &map_CrMovieXButton, 0, } },
 	{ PCode::CrDeviceProperty_MoviePlayButton,	{ -1, "MoviePlayButton", &map_CrMovieXButton, 0, } },
@@ -443,10 +510,15 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_PlaybackMedia,	{ -1, "PlaybackMedia", &map_CrPlaybackMedia, 0, } },
 	{ PCode::CrDeviceProperty_PlaybackViewMode,	{ -1, "PlaybackViewMode", &map_CrPlaybackViewMode, 0, } },
 	{ PCode::CrDeviceProperty_PlaybackVolumeSettings,	{ -1, "PlaybackVolumeSettings", 0, 0, } },
+	{ PCode::CrDeviceProperty_PlaySetOfMultiMedia,	{ -1, "PlaySetOfMultiMedia", &map_CrPlaySetOfMultiMedia, 0, } },
 	{ PCode::CrDeviceProperty_PowerSource,	{ -1, "PowerSource", &map_CrPowerSource, 0, } },
+	{ PCode::CrDeviceProperty_PreAF,	{ -1, "PreAF", &map_CrPreAF, 0, } },
 	{ PCode::CrDeviceProperty_PriorityKeySettings,	{ -1, "PriorityKeySettings", &map_CrPriorityKeySettings, 0, } },
 	{ PCode::CrDeviceProperty_PrioritySetInAF_C,	{ -1, "PrioritySetInAF_C", &map_CrPrioritySetInAF, 0, } },
 	{ PCode::CrDeviceProperty_PrioritySetInAF_S,	{ -1, "PrioritySetInAF_S", &map_CrPrioritySetInAF, 0, } },
+	{ PCode::CrDeviceProperty_PrioritySetInAWB,	{ -1, "PrioritySetInAWB", &map_CrPrioritySetInAWB, 0, } },
+	{ PCode::CrDeviceProperty_ProgramShiftStatus,	{ -1, "ProgramShiftStatus", &map_CrProgramShiftStatus, 0, } },
+	{ PCode::CrDeviceProperty_ProtectImageInFTPTransfer,	{ -1, "ProtectImageInFTPTransfer", &map_CrProtectImageInFTPTransfer, 0, } },
 	{ PCode::CrDeviceProperty_ProxyRecordingSetting,	{ -1, "ProxyRecordingSetting", &map_CrProxyRecordingSetting, 0, } },
 	{ PCode::CrDeviceProperty_RAW_FileCompressionType,	{ -1, "RAW_FileCompressionType", &map_CrRAWFileCompressionType, 0, } },
 	{ PCode::CrDeviceProperty_RAW_J_PC_Save_Image,	{ -1, "RAW_J_PC_Save_Image", &map_CrPropertyRAWJPCSaveImage, 0, } },
@@ -459,25 +531,35 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_RecorderSaveDestination,	{ -1, "RecorderSaveDestination", &map_CrRecorderSaveDestination, 0, } },
 	{ PCode::CrDeviceProperty_RecorderStartMain,	{ -1, "RecorderStartMain", &map_CrRecorderStart, 0, } },
 	{ PCode::CrDeviceProperty_RecorderStartProxy,	{ -1, "RecorderStartProxy", &map_CrRecorderStart, 0, } },
+	{ PCode::CrDeviceProperty_RecordingFileNumber,	{ -1, "RecordingFileNumber", &map_CrRecordingFileNumber, 0, } },
+	{ PCode::CrDeviceProperty_RecordingFolderFormat,	{ -1, "RecordingFolderFormat", &map_CrRecordingFolderFormat, 0, } },
+	{ PCode::CrDeviceProperty_RecordingMedia,	{ -1, "RecordingMedia", &map_CrRecordingMedia, 0, } },
 	{ PCode::CrDeviceProperty_RecordingSelfTimer,	{ -1, "RecordingSelfTimer", &map_CrMovieRecordingSelfTimer, 0, } },
 	{ PCode::CrDeviceProperty_RecordingSelfTimerContinuous,	{ -1, "RecordingSelfTimerContinuous", &map_CrMovieRecordingSelfTimerContinuous, 0, } },
 	{ PCode::CrDeviceProperty_RecordingSelfTimerCountTime,	{ -1, "RecordingSelfTimerCountTime", 0, 0, } },
 	{ PCode::CrDeviceProperty_RecordingSelfTimerStatus,	{ -1, "RecordingSelfTimerStatus", &map_CrMovieRecordingSelfTimerStatus, 0, } },
 	{ PCode::CrDeviceProperty_RecordingState,	{ -1, "RecordingState", &map_CrMovie_Recording_State, 0, } },
 	{ PCode::CrDeviceProperty_RedEyeReduction,	{ -1, "RedEyeReduction", &map_CrRedEyeReduction, 0, } },
+	{ PCode::CrDeviceProperty_ReleaseWithoutCard,	{ -1, "ReleaseWithoutCard", &map_CrReleaseWithoutCard, 0, } },
+	{ PCode::CrDeviceProperty_ReleaseWithoutLens,	{ -1, "ReleaseWithoutLens", &map_CrReleaseWithoutLens, 0, } },
 	{ PCode::CrDeviceProperty_Remocon_Zoom_Speed_Type,	{ -1, "Remocon_Zoom_Speed_Type", &map_CrRemoconZoomSpeedType, 0, } },
+	{ PCode::CrDeviceProperty_RemoteSaveImageSize,	{ -1, "RemoteSaveImageSize", &map_CrRemoteSaveImageSize, 0, } },
 	{ PCode::CrDeviceProperty_RemoteTouchOperation,	{ -1, "RemoteTouchOperation", 0, 0, } },
 	{ PCode::CrDeviceProperty_RemoteTouchOperationEnableStatus,	{ -1, "RemoteTouchOperationEnableStatus", &map_CrRemoteTouchOperationEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_RightLeftEyeSelect,	{ -1, "RightLeftEyeSelect", &map_CrRightLeftEyeSelect, 0, } },
 	{ PCode::CrDeviceProperty_S1,	{ -1, "S1", &map_CrLockIndicator, 0, } },
+	{ PCode::CrDeviceProperty_S2,	{ -1, "S2", &map_CrLockIndicator, 0, } },
 	{ PCode::CrDeviceProperty_SceneFileIndex,	{ -1, "SceneFileIndex", 0, 0, } },
 	{ PCode::CrDeviceProperty_SdkControlMode,	{ -1, "SdkControlMode", &map_CrSdkControlMode, 0, } },
+	{ PCode::CrDeviceProperty_SecondBatteryLevel,	{ -1, "SecondBatteryLevel", &map_CrBatteryLevel, 0, } },
+	{ PCode::CrDeviceProperty_SecondBatteryRemain,	{ -1, "SecondBatteryRemain", 0, 0, } },
 	{ PCode::CrDeviceProperty_SelectFinder,	{ -1, "SelectFinder", &map_CrSelectFinder, 0, } },
 	{ PCode::CrDeviceProperty_SelectFTPServer,	{ -1, "SelectFTPServer", 0, 0, } },
 	{ PCode::CrDeviceProperty_SelectFTPServerID,	{ -1, "SelectFTPServerID", 0, 0, } },
 	{ PCode::CrDeviceProperty_SelectUserBaseLookToEdit,	{ -1, "SelectUserBaseLookToEdit", 0, 0, } },
 	{ PCode::CrDeviceProperty_SelectUserBaseLookToSetInPPLUT,	{ -1, "SelectUserBaseLookToSetInPPLUT", 0, 0, } },
 	{ PCode::CrDeviceProperty_SensorCleaningEnableStatus,	{ -1, "SensorCleaningEnableStatus", &map_CrSensorCleaningEnableStatus, 0, } },
+	{ PCode::CrDeviceProperty_ShootingSelfTimerStatus,	{ -1, "ShootingSelfTimerStatus", &map_CrShootingSelfTimerStatus, 0, } },
 	{ PCode::CrDeviceProperty_ShutterAngle,	{ -1, "ShutterAngle", 0, 0, } },
 	{ PCode::CrDeviceProperty_ShutterECSFrequency,	{ -1, "ShutterECSFrequency", 0, 0, } },
 	{ PCode::CrDeviceProperty_ShutterECSNumber,	{ -1, "ShutterECSNumber", 0, 0, } },
@@ -486,6 +568,7 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_ShutterMode,	{ -1, "ShutterMode", &map_CrShutterModeSetting, 0, } },
 	{ PCode::CrDeviceProperty_ShutterModeSetting,	{ -1, "ShutterModeSetting", &map_CrShutterModeSetting, 0, } },
 	{ PCode::CrDeviceProperty_ShutterModeStatus,	{ -1, "ShutterModeStatus", &map_CrShutterModeStatus, 0, } },
+	{ PCode::CrDeviceProperty_ShutterReleaseTimeLagControl,	{ -1, "ShutterReleaseTimeLagControl", &map_CrShutterReleaseTimeLagControl, 0, } },
 	{ PCode::CrDeviceProperty_ShutterSetting,	{ -1, "ShutterSetting", &map_CrShutterSetting, 0, } },
 	{ PCode::CrDeviceProperty_ShutterSlow,	{ -1, "ShutterSlow", &map_CrShutterSlow, 0, } },
 	{ PCode::CrDeviceProperty_ShutterSlowFrames,	{ -1, "ShutterSlowFrames", 0, 0, } },
@@ -506,14 +589,45 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_StillImageQuality,	{ -1, "StillImageQuality", &map_CrImageQuality, 0, } },
 	{ PCode::CrDeviceProperty_StillImageStoreDestination,	{ -1, "StillImageStoreDestination", &map_CrStillImageStoreDestination, 0, } },
 	{ PCode::CrDeviceProperty_SubjectRecognitionAF,	{ -1, "SubjectRecognitionAF", &map_CrSubjectRecognitionAF, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAnimalBirdDetectionParts,	{ -1, "SubjectRecognitionAnimalBirdDetectionParts", &map_CrSubjectRecognitionAnimalBirdDetectionParts, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAnimalBirdPriority,	{ -1, "SubjectRecognitionAnimalBirdPriority", &map_CrSubjectRecognitionAnimalBirdPriority, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAnimalDetectionParts,	{ -1, "SubjectRecognitionAnimalDetectionParts", &map_CrSubjectRecognitionAnimalBirdDetectionParts, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAnimalDetectionSensitivity,	{ -1, "SubjectRecognitionAnimalDetectionSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAnimalTrackingSensitivity,	{ -1, "SubjectRecognitionAnimalTrackingSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionAnimalTrackingSubjectShiftRange,	{ -1, "SubjectRecognitionAnimalTrackingSubjectShiftRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionBirdDetectionParts,	{ -1, "SubjectRecognitionBirdDetectionParts", &map_CrSubjectRecognitionAnimalBirdDetectionParts, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionBirdDetectionSensitivity,	{ -1, "SubjectRecognitionBirdDetectionSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionBirdTrackingSensitivity,	{ -1, "SubjectRecognitionBirdTrackingSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionBirdTrackingSubjectShiftRange,	{ -1, "SubjectRecognitionBirdTrackingSubjectShiftRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionCarTrainDetectionSensitivity,	{ -1, "SubjectRecognitionCarTrainDetectionSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionCarTrainTrackingSensitivity,	{ -1, "SubjectRecognitionCarTrainTrackingSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionCarTrainTrackingSubjectShiftRange,	{ -1, "SubjectRecognitionCarTrainTrackingSubjectShiftRange", 0, 0, } },
 	{ PCode::CrDeviceProperty_SubjectRecognitionInAF,	{ -1, "SubjectRecognitionInAF", &map_CrSubjectRecognitionInAF, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionInsectDetectionSensitivity,	{ -1, "SubjectRecognitionInsectDetectionSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionInsectTrackingSensitivity,	{ -1, "SubjectRecognitionInsectTrackingSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionInsectTrackingSubjectShiftRange,	{ -1, "SubjectRecognitionInsectTrackingSubjectShiftRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionPersonTrackingSubjectShiftRange,	{ -1, "SubjectRecognitionPersonTrackingSubjectShiftRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionPlaneDetectionSensitivity,	{ -1, "SubjectRecognitionPlaneDetectionSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionPlaneTrackingSensitivity,	{ -1, "SubjectRecognitionPlaneTrackingSensitivity", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionPlaneTrackingSubjectShiftRange,	{ -1, "SubjectRecognitionPlaneTrackingSubjectShiftRange", 0, 0, } },
+	{ PCode::CrDeviceProperty_SubjectRecognitionPriorityOnRegisteredFace,	{ -1, "SubjectRecognitionPriorityOnRegisteredFace", &map_CrSubjectRecognitionPriorityOnRegisteredFace, 0, } },
+	{ PCode::CrDeviceProperty_SynchroterminalForcedOutput,	{ -1, "SynchroterminalForcedOutput", &map_CrSynchroterminalForcedOutput, 0, } },
+	{ PCode::CrDeviceProperty_SystemErrorCautionStatus,	{ -1, "SystemErrorCautionStatus", &map_CrSystemErrorCautionStatus, 0, } },
+	{ PCode::CrDeviceProperty_TCUBDisplaySetting,	{ -1, "TCUBDisplaySetting", &map_CrTCUBDisplaySetting, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodeFormat,	{ -1, "TimeCodeFormat", &map_CrTimeCodeFormat, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodeMake,	{ -1, "TimeCodeMake", &map_CrTimeCodeMake, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodePreset,	{ -1, "TimeCodePreset", 0, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodePresetResetEnableStatus,	{ -1, "TimeCodePresetResetEnableStatus", &map_CrTimeCodePresetResetEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_TimeCodeRun,	{ -1, "TimeCodeRun", &map_CrTimeCodeRun, 0, } },
+	{ PCode::CrDeviceProperty_TimeShiftPreShootingTimeSetting,	{ -1, "TimeShiftPreShootingTimeSetting", 0, 0, } },
+	{ PCode::CrDeviceProperty_TimeShiftShooting,	{ -1, "TimeShiftShooting", &map_CrTimeShiftShooting, 0, } },
+	{ PCode::CrDeviceProperty_TimeShiftShootingStatus,	{ -1, "TimeShiftShootingStatus", &map_CrTimeShiftShootingStatus, 0, } },
+	{ PCode::CrDeviceProperty_TimeShiftTriggerSetting,	{ -1, "TimeShiftTriggerSetting", &map_CrTimeShiftTriggerSetting, 0, } },
 	{ PCode::CrDeviceProperty_TNumber,	{ -1, "TNumber", 0, 0, } },
+	{ PCode::CrDeviceProperty_TotalBatteryLevel,	{ -1, "TotalBatteryLevel", &map_CrBatteryLevel, 0, } },
+	{ PCode::CrDeviceProperty_TotalBatteryRemain,	{ -1, "TotalBatteryRemain", 0, 0, } },
 	{ PCode::CrDeviceProperty_TouchOperation,	{ -1, "TouchOperation", &map_CrTouchOperation, 0, } },
+	{ PCode::CrDeviceProperty_TrackingOnAndAFOnEnableStatus,	{ -1, "TrackingOnAndAFOnEnableStatus", &map_CrTrackingOnAndAFOnEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_UpdateBodyStatus,	{ -1, "UpdateBodyStatus", &map_CrUpdateStatus, 0, } },
 	{ PCode::CrDeviceProperty_USBPowerSupply,	{ -1, "USBPowerSupply", &map_CrUSBPowerSupply, 0, } },
 	{ PCode::CrDeviceProperty_UserBaseLookAELevelOffset,	{ -1, "UserBaseLookAELevelOffset", 0, 0, } },
@@ -521,12 +635,14 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_UserBitPreset,	{ -1, "UserBitPreset", 0, 0, } },
 	{ PCode::CrDeviceProperty_UserBitPresetResetEnableStatus,	{ -1, "UserBitPresetResetEnableStatus", &map_CrUserBitPresetResetEnableStatus, 0, } },
 	{ PCode::CrDeviceProperty_UserBitTimeRec,	{ -1, "UserBitTimeRec", &map_CrUserBitTimeRec, 0, } },
+	{ PCode::CrDeviceProperty_WakeOnLAN,	{ -1, "WakeOnLAN", &map_CrWakeOnLAN, 0, } },
 	{ PCode::CrDeviceProperty_WhiteBalance,	{ -1, "WhiteBalance", &map_CrWhiteBalanceSetting, 0, } },
 	{ PCode::CrDeviceProperty_WhiteBalanceModeSetting,	{ -1, "WhiteBalanceModeSetting", &map_CrWhiteBalanceModeSetting, 0, } },
 	{ PCode::CrDeviceProperty_WhiteBalanceTint,	{ -1, "WhiteBalanceTint", 0, 0, } },
 	{ PCode::CrDeviceProperty_WhiteBalanceTintStep,	{ -1, "WhiteBalanceTintStep", 0, 0, } },
 	{ PCode::CrDeviceProperty_WindNoiseReduct,	{ -1, "WindNoiseReduct", &map_CrWindNoiseReduction, 0, } },
 	{ PCode::CrDeviceProperty_WirelessFlash,	{ -1, "WirelessFlash", &map_CrWirelessFlash, 0, } },
+	{ PCode::CrDeviceProperty_WriteCopyrightInfo,	{ -1, "WriteCopyrightInfo", &map_CrWriteCopyrightInfo, 0, } },
 	{ PCode::CrDeviceProperty_Zoom_Bar_Information,	{ -1, "Zoom_Bar_Information", 0, 0, } },
 	{ PCode::CrDeviceProperty_Zoom_Operation,	{ -1, "Zoom_Operation", 0, 0, } },
 	{ PCode::CrDeviceProperty_Zoom_Operation_Status,	{ -1, "Zoom_Operation_Status", &map_CrZoomOperationEnableStatus, 0, } },
@@ -536,8 +652,11 @@ std::map<PCode, struct PropertyValue> Prop {
 	{ PCode::CrDeviceProperty_Zoom_Type_Status,	{ -1, "Zoom_Type_Status", &map_CrZoomTypeStatus, 0, } },
 	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Load,	{ -1, "ZoomAndFocusPosition_Load", 0, 0, } },
 	{ PCode::CrDeviceProperty_ZoomAndFocusPosition_Save,	{ -1, "ZoomAndFocusPosition_Save", 0, 0, } },
+	{ PCode::CrDeviceProperty_ZoomAndFocusPresetDataVersion,	{ -1, "ZoomAndFocusPresetDataVersion", 0, 0, } },
+	{ PCode::CrDeviceProperty_ZoomAndFocusPresetZoomOnly_Set,	{ -1, "ZoomAndFocusPresetZoomOnly_Set", &map_CrZoomAndFocusPresetZoomOnlyValue, 0, } },
 	{ PCode::CrDeviceProperty_ZoomDistance,	{ -1, "ZoomDistance", 0, 0, } },
 	{ PCode::CrDeviceProperty_ZoomDistanceUnitSetting,	{ -1, "ZoomDistanceUnitSetting", &map_CrZoomDistanceUnitSetting, 0, } },
+	{ PCode::CrDeviceProperty_ZoomDrivingStatus,	{ -1, "ZoomDrivingStatus", &map_CrZoomDrivingStatus, 0, } },
 };
 
 //	{ PCode::CrDeviceProperty_\1,	{ -1, "\1", } },
@@ -787,229 +906,6 @@ void CameraDevice::af_shutter()
 }
 
 ////////////////
-#if 0
-bool CameraDevice::get_camera_setting_saveread_state()
-{
-    load_properties();
-    if (Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveRead_State).current == SDK::CrCameraSettingSaveReadState::CrCameraSettingSaveReadState_Reading) {
-        tout << "Unable to download/upload Camera-Setting file. \n";
-        return false;
-    }
-    std::cout << "Camera-Setting Save/Read State: " << PropCurrentText(PCode::CrDeviceProperty_CameraSetting_SaveRead_State) << '\n';
-    return true;
-}
-
-void CameraDevice::do_download_camera_setting_file()
-{
-    if (false == get_camera_setting_saveread_state())
-        return;
-
-    if (Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus).current == SDK::CrCameraSettingSaveOperation::CrCameraSettingSaveOperation_Enable) {
-        tout << "Camera-Setting Save Operation: Enable\n";
-    } else {
-        tout << "Camera-Setting Save Operation: Disable\n";
-    }
-
-    // File Name
-    tout << "\nPlease Enter the name of the file you want to save. \n";
-    tout << "(ex. CUMSET.DAT)\n";
-    tout << "If you do not specify a file name, the file will be saved with the default save name.\n" << std::endl;
-    tout << "[-1] Cancel input\n" << std::endl;
-    tout << "file name > ";
-    text name;
-    std::getline(tin, name);
-    text_stringstream ss(name);
-    int selected_index = 0;
-    ss >> selected_index;
-    if (-1 == selected_index) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-    // Get the latest status
-    load_properties();
-    if (SDK::CrCameraSettingSaveOperation::CrCameraSettingSaveOperation_Enable != Prop.at(PCode::CrDeviceProperty_CameraSetting_SaveOperationEnableStatus).current) {
-        tout << "Unable to download Camera-Setting file. \n";
-        return;
-    }
-    // File Path
-#if defined(__APPLE__)
-    char path[MAC_MAX_PATH]; /*MAX_PATH*/
-    memset(path, 0, sizeof(path));
-    if(NULL == getcwd(path, sizeof(path) - 1)){
-        tout << "Folder path is too long.\n";
-        return;
-    }
-    char* delimit = "/";
-    if(strlen(path) + strlen(delimit) > MAC_MAX_PATH){
-        tout << "Folder path is too long.\n";
-        return;
-    }
-    strncat(path, delimit, strlen(delimit));
-    auto err = SDK::DownloadSettingFile(m_device_handle, SDK::CrDownloadSettingFileType::CrDownloadSettingFileType_Setup,(CrChar*)path, (CrChar*)name.c_str());
-
-if (CR_FAILED(err)) {
-    tout << "Download Camera-Setting file FAILED\n";
-}
-#else
-    auto path = fs::current_path();
-    auto err = SDK::DownloadSettingFile(m_device_handle, SDK::CrDownloadSettingFileType::CrDownloadSettingFileType_Setup,(CrChar*)path.c_str(), (CrChar*)name.c_str());
-
-    if (CR_FAILED(err)) {
-        tout << "Download Camera-Setting file FAILED\n";
-    }
-#endif
-}
-
-void CameraDevice::do_upload_camera_setting_file()
-{
-    if (false == get_camera_setting_saveread_state())
-        return;
-
-    if (Prop.at(PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus).current == SDK::CrCameraSettingReadOperation::CrCameraSettingReadOperation_Enable) {
-        tout << "Camera-Setting Read Operation: Enable\n";
-    } else {
-        tout << "Camera-Setting Read Operation: Disable\n";
-    }
-
-    tout << "Have the camera load the configuration file on the PC.\n";
-
-    //Search for *.DAT in current_path
-    std::vector<text> file_names;
-    getFileNames(file_names);
-
-    if (file_names.size() == 0) {
-        tout << "DAT file not found.\n\n";
-        return;
-    }
-    
-    tout << std::endl << "Choose a number:\n";
-    tout << "[-1] Cancel input" << std::endl;
-    for (size_t i = 0; i < file_names.size(); i++)
-    {
-        tout << "[" << i << "]" << file_names[i] << '\n';
-    }
-    tout << "[-1] Cancel input\n" << std::endl;
-
-    tout << "input>";
-    text input;
-    std::getline(tin, input);
-
-    text_stringstream ss(input);
-    int selected_index = 0;
-    ss >> selected_index;
-    if ((selected_index == 0 && input != TEXT("0")) || selected_index < 0 || selected_index >= file_names.size()) {
-        tout << "Input cancelled.\n";
-        return;
-    }
-
-#if defined(__APPLE__)
-    char filename[MAC_MAX_PATH]; /*MAX_PATH*/
-    memset(filename, 0, sizeof(filename));
-    if(NULL == getcwd(filename, sizeof(filename) - 1)){
-        tout << "Folder path is too long.\n";
-        return;
-    }
-    char* delimit = "/";
-    if(strlen(filename) + strlen(delimit) + file_names[selected_index].length() > MAC_MAX_PATH){
-        tout << "Please shorten the file path. \n";
-        return;
-    }
-    strncat(filename, delimit, strlen(delimit));
-    strncat(filename, file_names[selected_index].c_str(), file_names[selected_index].length());
-#else 
-    auto filepath = fs::current_path();
-    filepath.append(file_names[selected_index]);
-    CrChar* filename = (CrChar*)filepath.c_str();
-#endif
-
-    tout << filename << "\n";
-    // Get the latest status
-    load_properties();
-    if (SDK::CrCameraSettingReadOperation::CrCameraSettingReadOperation_Enable != Prop.at(PCode::CrDeviceProperty_CameraSetting_ReadOperationEnableStatus).current) {
-        tout << "Unable to upload Camera-Setting file. \n";
-        return;
-    }
-
-    auto err = SDK::UploadSettingFile(m_device_handle, SDK::CrUploadSettingFileType::CrUploadSettingFileType_Setup, filename);
-
-    if (CR_FAILED(err)) {
-        tout << "Upload Camera-Setting file FAILED\n";
-    }
-}
-
-void CameraDevice::getFileNames(std::vector<text> &file_names)
-{
-#if defined(__APPLE__)
-    char search_name[MAC_MAX_PATH]; /*MAX_PATH*/
-    memset(search_name, 0, sizeof(search_name));
-    if(NULL == getcwd(search_name, sizeof(search_name) - 1)){
-        tout << "Folder path is too long.\n";
-        return;
-    }
-#else
-    auto search_name = fs::current_path();
-#if defined (WIN32) || defined(WIN64)
-    search_name.append(TEXT("*.DAT"));
-#endif
-#endif
-
-#if defined(__APPLE__) || defined(__linux__)
-    DIR* dp;
-    int i = 0;
-    struct dirent* ep;
-#if defined(__APPLE__)
-    dp = opendir(search_name);
-#else
-    dp = opendir(search_name.c_str());
-#endif
-    if (dp != NULL)
-    {
-        while ((ep = readdir(dp)) != NULL) {
-            if (ep->d_name[0] == '.') {
-            }
-            else {
-                text    str(ep->d_name);
-                if(((ep->d_name[str.length()-4]=='.')
-                	&&(ep->d_name[str.length()-3]=='d')
-                	&&(ep->d_name[str.length()-2]=='a')
-                	&&(ep->d_name[str.length()-1]=='t'))
-                	||((ep->d_name[str.length()-4]=='.')
-                	&&(ep->d_name[str.length()-3]=='D')
-                	&&(ep->d_name[str.length()-2]=='A')
-                	&&(ep->d_name[str.length()-1]=='T'))){
-                file_names.push_back(str);
-                i++;
-                }
-            }
-        }
-        (void)closedir(dp);
-    }
-    // End Mac & Linux implementation
-#else
-
-    WIN32_FIND_DATA win32fd;
-    HANDLE hff = FindFirstFile(search_name.c_str(), &win32fd);
-
-    if (hff != INVALID_HANDLE_VALUE) {
-        do {
-            if (win32fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-            }
-            else {
-                text str(win32fd.cFileName);
-                file_names.push_back(str);
-            }
-        } while (FindNextFile(hff, &win32fd));
-        FindClose(hff);
-    }
-    else {
-        return ;
-    }
-    return ;
-#endif
-}
-#endif
-////////////////
 
 bool CameraDevice::is_connected() const
 {
@@ -1074,45 +970,12 @@ void CameraDevice::OnDisconnected(CrInt32u error)
 
 void CameraDevice::OnCompleteDownload(CrChar* filename, CrInt32u type )
 {
-    text file(filename);
-    switch (type)
-    {
-    case SCRSDK::CrDownloadSettingFileType_None:
-        tout << "Complete download. File: " << file.data() << '\n';
-        uploadFile(filename);
-        break;
-    case SCRSDK::CrDownloadSettingFileType_Setup:
-        tout << "Complete download. Camera Setting File: " << file.data() << '\n';
-        break;
-    default:
-        break;
-    }
+    std::cout << "OnCompleteDownload.\n";
 }
 
 void CameraDevice::OnNotifyContentsTransfer(CrInt32u notify, SDK::CrContentHandle contentHandle, CrChar* filename)
 {
-    // Start
-    if (SDK::CrNotify_ContentsTransfer_Start == notify)
-    {
-        tout << "[START] Contents Handle: 0x " << std::hex << contentHandle << std::dec << std::endl;
-    }
-    // Complete
-    else if (SDK::CrNotify_ContentsTransfer_Complete == notify)
-    {
-        text file(filename);
-        tout << "[COMPLETE] Contents Handle: 0x" << std::hex << contentHandle << std::dec << ", File: " << file.data() << std::endl;
-    }
-    // Other
-    else
-    {
-        text msg = get_message_desc(notify);
-        if (msg.empty()) {
-            tout << "[-] Content transfer failure. 0x" << std::hex << notify << ", handle: 0x" << contentHandle << std::dec << std::endl;
-        } else {
-            tout << "[-] Content transfer failure. handle: 0x" << std::hex << contentHandle  << std::dec << std::endl << "    -> ";
-            tout << msg.data() << std::endl;
-        }
-    }
+    std::cout << "OnNotifyContentsTransfer.\n";
 }
 
 void CameraDevice::OnWarning(CrInt32u warning)
@@ -1207,29 +1070,7 @@ void CameraDevice::OnLvPropertyChanged()
 {
     // std::cout << "LvProperty changed.\n";
 }
-/*
-void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
-{
-    //std::cout << "Property changed.  num = " << std::dec << num;
-    //std::cout << std::hex;
-    //for (std::int32_t i = 0; i < num; ++i)
-    //{
-    //    std::cout << ", 0x" << codes[i];
-    //}
-    //std::cout << std::endl << std::dec;
-}
 
-void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
-{
-    //std::cout << "LvProperty changed.  num = " << std::dec << num;
-    //std::cout << std::hex;
-    //for (std::int32_t i = 0; i < num; ++i)
-    //{
-    //    std::cout << ", 0x" << codes[i];
-    //}
-    //std::cout << std::endl;
-}
-*/
 void CameraDevice::OnError(CrInt32u error)
 {
     text id(this->get_id());
@@ -1263,379 +1104,6 @@ void CameraDevice::OnError(CrInt32u error)
         std::cout << "ERROR: Please reboot this command(" << __LINE__ << ").\n";
     }
 }
-////////////////
-#if 0
-void CameraDevice::getContentsList()
-{
-    // check status
-    std::int32_t nprop = 0;
-    SDK::CrDeviceProperty* prop_list = nullptr;
-    CrInt32u getCode = PCode::CrDeviceProperty_ContentsTransferStatus;
-    SDK::CrError res = SDK::GetSelectDeviceProperties(m_device_handle, 1, &getCode, &prop_list, &nprop);
-    bool bExec = false;
-    if (CR_SUCCEEDED(res) && (1 == nprop)) {
-        if ((getCode == prop_list[0].GetCode()) && (SDK::CrContentsTransfer_ON == prop_list[0].GetCurrentValue()))
-        {
-            bExec = true;
-        }
-        SDK::ReleaseDeviceProperties(m_device_handle, prop_list);
-    }
-    if (false == bExec) {
-        tout << "GetContentsListEnableStatus is Disable. Do it after it becomes Enable.\n";
-        return;
-    }
-
-    for (CRFolderInfos* pF : m_foldList)
-    {
-        delete pF;
-    }
-    m_foldList.clear();
-    for (SCRSDK::CrMtpContentsInfo* pC : m_contentList)
-    {
-        delete pC;
-    }
-    m_contentList.clear();
-
-    CrInt32u f_nums = 0;
-    CrInt32u c_nums = 0;
-    SDK::CrMtpFolderInfo* f_list = nullptr;
-    SDK::CrError err = SDK::GetDateFolderList(m_device_handle, &f_list, &f_nums);
-    if (CR_SUCCEEDED(err) && 0 < f_nums)
-    {
-        if (f_list)
-        {
-            tout << "NumOfFolder [" << f_nums << "]" << std::endl;
-
-            for (int i = 0; i < f_nums; ++i)
-            {
-                auto pFold = new SDK::CrMtpFolderInfo();
-                pFold->handle = f_list[i].handle;
-                pFold->folderNameSize = f_list[i].folderNameSize;
-                CrInt32u lenByOS = sizeof(CrChar) * pFold->folderNameSize;
-                pFold->folderName = new CrChar[lenByOS];
-                MemCpyEx(pFold->folderName, f_list[i].folderName, lenByOS);
-                CRFolderInfos* pCRF = new CRFolderInfos(pFold, 0); // 2nd : fill in later
-                m_foldList.push_back(pCRF);
-            }
-            SDK::ReleaseDateFolderList(m_device_handle, f_list);
-        }
-
-        if (0 == m_foldList.size())
-        {
-            return;
-        }
-
-        MtpFolderList::iterator it = m_foldList.begin();
-        for (int fcnt = 0; it != m_foldList.end(); ++fcnt, ++it)
-        {
-            SDK::CrContentHandle* c_list = nullptr;
-            err = SDK::GetContentsHandleList(m_device_handle, (*it)->pFolder->handle, &c_list, &c_nums);
-            if (CR_SUCCEEDED(err) && 0 < c_nums)
-            {
-                if (c_list)
-                {
-                    tout << "(" << (fcnt + 1) << "/" << f_nums << ") NumOfContents [" << c_nums << "]" << std::endl;
-                    (*it)->numOfContents = c_nums;
-                    for (int i = 0; i < c_nums; i++)
-                    {
-                        SDK::CrMtpContentsInfo* pContents = new SDK::CrMtpContentsInfo();
-                        err = SDK::GetContentsDetailInfo(m_device_handle, c_list[i], pContents);
-                        if (CR_SUCCEEDED(err))
-                        {
-                            m_contentList.push_back(pContents);
-                            // progress
-                            if (0 == ((i + 1) % 100))
-                            {
-                                tout << "  ... " << (i + 1) << "/" << c_nums << std::endl;
-                            }
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    SDK::ReleaseContentsHandleList(m_device_handle, c_list);
-                }
-            }
-            if (CR_FAILED(err))
-            {
-                break;
-            }
-        }
-    }
-    else if (CR_SUCCEEDED(err) && 0 == f_nums)
-    {
-        tout << "No images in memory card." << std::endl;
-        return;
-    }
-    else
-    {
-        // err
-        tout << "Failed SDK::GetContentsList()" << std::endl;
-        return;
-    }
-
-    if (CR_SUCCEEDED(err))
-    {
-        MtpFolderList::iterator itF = m_foldList.begin();
-        for (std::int32_t f_sep = 0; itF != m_foldList.end(); ++f_sep, ++itF)
-        {
-            text fname((*itF)->pFolder->folderName);
- 
-            tout << "===== ";
-            tout.fill(' ');
-            tout.width(3);
-            tout << (f_sep + 1) << ": ";
-            
-            tout << fname;
-
-            tout << " (0x";
-            std::ostringstream f_handle_hex;
-            f_handle_hex << std::hex << std::uppercase << (*itF)->pFolder->handle;
-            tout << std::dec;
-            std::string f_handle_str = f_handle_hex.str();
-            f_handle_str.erase(std::remove(f_handle_str.begin(), f_handle_str.end(), ','), f_handle_str.end());
-            const char* f_handle_char = f_handle_str.c_str();
-            tout.fill('0');
-            tout.width(8);
-            tout << f_handle_char << ") , ";
-            tout << "contents[" << (*itF)->numOfContents << "] ===== \n";
-
-            MtpContentsList::iterator itC = m_contentList.begin();
-            for (std::int32_t i = 0; itC != m_contentList.end(); ++i, ++itC)
-            {
-                if ((*itC)->parentFolderHandle == (*itF)->pFolder->handle)
-                {
-                    text fname((*itC)->fileName);
-
-                    tout << "  ";
-                    tout.fill(' ');
-                    tout.width(3);
-                    tout << (i + 1);
-                    tout << ": (0x";
-                    std::ostringstream c_handle_hex;
-                    c_handle_hex << std::hex << std::uppercase << (*itC)->handle;
-                    tout << std::dec;
-                    std::string c_handle_str = c_handle_hex.str();
-                    c_handle_str.erase(std::remove(c_handle_str.begin(), c_handle_str.end(), ','), c_handle_str.end());
-                    const char* c_handle_char = c_handle_str.c_str();
-                    tout.fill('0');
-                    tout.width(8);
-                    tout << c_handle_char << "), ";
-                 
-                    tout << fname << std::endl;
-                }
-            }
-        }
-
-        while (1)
-        {
-            if (m_connected == false) {
-                break;
-            }
-            text input;
-            tout << std::endl << "Select the number of the contents you want to download:";
-            tout << std::endl << "(Returns to the previous menu for invalid numbers)" << std::endl << std::endl;
-            tout << std::endl << "input> ";
-            std::getline(tin, input);
-            text_stringstream ss(input);
-            int selected_index = 0;
-            ss >> selected_index;
-            if (selected_index < 1 || m_contentList.size() < selected_index)
-            {
-                if (m_connected != false) {
-                    tout << "Input cancelled.\n";
-                }
-                break;
-            }
-            else
-            {
-                while (1)
-                {
-                    if (m_connected == false) {
-                        break;
-                    }
-                    auto targetHandle = m_contentList[selected_index - 1]->handle;
-
-                    tout << "Selected(0x ";
-                    std::ostringstream targetHandle_hex;
-                    targetHandle_hex << std::hex << std::uppercase << targetHandle;
-                    tout << std::dec;
-                    std::string targetHandle_str = targetHandle_hex.str();
-                    targetHandle_str.erase(std::remove(targetHandle_str.begin(), targetHandle_str.end(), ','), targetHandle_str.end());
-                    const char* targetHandle_char = targetHandle_str.c_str();
-                    tout.fill('0');
-                    tout.width(4);
-                    tout << targetHandle_char << ") ... \n";
-
-
-                    text input;
-                    tout << std::endl << "Select the number of the content size you want to download:";
-                    tout << std::endl << "[-1] Cancel input";
-                    tout << std::endl << "[1] Original";
-                    tout << std::endl << "[2] Thumbnail";
-                    text selected_filename(m_contentList[selected_index - 1]->fileName);
-                    text ext = selected_filename.substr(selected_filename.length() - 4, 4);
-                    int checkMax = 2;
-                    if ((0 == ext.compare(TEXT(".JPG"))) || 
-                        (0 == ext.compare(TEXT(".ARW"))) || 
-                        (0 == ext.compare(TEXT(".HIF"))))
-                    {
-                        checkMax = 3;
-                        tout << std::endl << "[3] 2M" << std::endl;
-                    }
-
-                    tout << std::endl << "input> ";
-                    std::getline(tin, input);
-                    text_stringstream ss(input);
-                    int selected_contentSize = 0;
-                    ss >> selected_contentSize;
-                    if (m_connected == false) {
-                        break;
-                    }
-                    if (selected_contentSize < 1 || checkMax < selected_contentSize)
-                    {
-                        if (m_connected != false) {
-                            tout << "Input cancelled.\n";
-                        }
-                        break;
-                    }
-                    switch (selected_contentSize)
-                    {
-                    case 1:
-                        // [async] get contents
-                        pullContents(targetHandle);
-                        break;
-                    case 2:
-                        // [sync] get thumbnail jpeg
-                        getThumbnail(targetHandle);
-                        break;
-                    case 3:
-                        // [async] [only still] get screennail jpeg
-                        getScreennail(targetHandle);
-                        break;
-                    default:
-                        break;
-                    }
-                    std::this_thread::sleep_for(2s);
-                }
-            }
-        }
-    }
-}
-
-void CameraDevice::pullContents(SDK::CrContentHandle content)
-{
-    SDK::CrError err = SDK::PullContentsFile(m_device_handle, content);
-
-    if (SDK::CrError_None != err)
-    {
-        text id(this->get_id());
-        text msg = get_message_desc(err);
-        if (!msg.empty()) {
-            // output is 2 line
-            tout << std::endl << msg.data() << ", handle=" << std::hex << content << std::dec << std::endl;
-            tout << m_info->GetModel() << " (" << id.data() << ")" << std::endl;
-        }
-    }
-}
-
-void CameraDevice::getScreennail(SDK::CrContentHandle content)
-{
-    SDK::CrError err = SDK::PullContentsFile(m_device_handle, content, SDK::CrPropertyStillImageTransSize_SmallSize);
-
-    if (SDK::CrError_None != err)
-    {
-        text id(this->get_id());
-        text msg = get_message_desc(err);
-        if (!msg.empty()) {
-            // output is 2 line
-            tout << std::endl << msg.data() << ", handle=" << std::hex << content << std::dec << std::endl;
-            tout << m_info->GetModel() << " (" << id.data() << ")" << std::endl;
-        }
-    }
-}
-
-void CameraDevice::getThumbnail(SDK::CrContentHandle content)
-{
-    CrInt32u bufSize = 0x28000; // @@@@ temp
-
-    auto* image_data = new SDK::CrImageDataBlock();
-    if (!image_data)
-    {
-        tout << "getThumbnail FAILED (new CrImageDataBlock class)\n";
-        return;
-    }
-    CrInt8u* image_buff = new CrInt8u[bufSize];
-    if (!image_buff)
-    {
-        delete image_data;
-        tout << "getThumbnail FAILED (new Image buffer)\n";
-        return;
-    }
-    image_data->SetSize(bufSize);
-    image_data->SetData(image_buff);
-
-    SDK::CrFileType fileType = SDK::CrFileType_None;
-    SDK::CrError err = SDK::GetContentsThumbnailImage(m_device_handle, content, image_data, &fileType);
-    if (CR_FAILED(err))
-    {
-        text id(this->get_id());
-        text msg = get_message_desc(err);
-        if (!msg.empty()) {
-            // output is 2 line
-            tout << std::endl << msg.data() << ", handle=" << std::hex << content << std::dec << std::endl;
-            tout << m_info->GetModel() << " (" << id.data() << ")" << std::endl;
-        }
-    }
-    else
-    {
-        if (0 < image_data->GetSize() && fileType != SDK::CrFileType_None)
-        {
-            text filename(TEXT("Thumbnail.JPG"));
-            if (fileType == SDK::CrFileType_Heif) {
-                filename= (TEXT("Thumbnail.HIF"));
-            }
-
-#if defined(__APPLE__)
-            char path[MAC_MAX_PATH]; /*MAX_PATH*/
-            memset(path, 0, sizeof(path));
-            if(NULL == getcwd(path, sizeof(path) - 1)){
-                // FAILED
-                delete[] image_buff; // Release
-                delete image_data; // Release
-                tout << "Folder path is too long.\n";
-                return;
-            };
-            char* delimit = "/";
-            if(strlen(path) + strlen(delimit) + filename.length() > MAC_MAX_PATH){
-                // FAILED
-                delete[] image_buff; // Release
-                delete image_data; // Release
-                tout << "Failed to create save path\n";
-                return;
-            }
-            strncat(path, delimit, strlen(delimit));
-            strncat(path, (CrChar*)filename.c_str(), filename.length());
-#else
-            auto path = fs::current_path();
-            path.append(filename);
-#endif
-            tout << path << '\n';
-
-            std::ofstream file(path, std::ios::out | std::ios::binary);
-            if (!file.bad())
-            {
-                std::uint32_t len = image_data->GetImageSize();
-                file.write((char*)image_data->GetImageData(), len);
-                file.close();
-            }
-        }
-    }
-    delete[] image_buff; // Release
-    delete image_data; // Release
-}
-#endif
 //////////////// for CrSDK.IP
 
 void CameraDevice::OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
@@ -1691,6 +1159,7 @@ void CameraDevice::OnPropertyChangedCodes(CrInt32u num, CrInt32u* codes)
 				SendProp(id);
 				break;
 			default:
+				SendProp(id);
 				break;
 			}
 		}
@@ -1829,8 +1298,12 @@ void CameraDevice::parse_propStr(SDK::CrDeviceProperty& devProp, PCode id)
 	uint16_t* dp = devProp.GetCurrentStr();
 	if(!dp) return;
 
-//	int length = dp[0];
+#if defined (_WIN32) || defined(_WIN64)
 	prop.current = wstring_convert.to_bytes((wchar_t*)(dp+1));
+#else
+	int length = dp[0];
+	prop.current = wstring_convert.to_bytes(std::u16string((dp+1), (dp+1)+length));
+#endif
 }
 
 void CameraDevice::load_liveview_properties(std::uint32_t num, std::uint32_t* codes)
@@ -1972,11 +1445,11 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			if(iter != end(PropStr)) {
 				parse_propStr(devProp, id);
 				iter->second.old = false;
-			#ifdef _DEBUG
-				std::cout << iter->second.tag.c_str() << "=" << iter->second.current << "\n";	// debug
+			#if defined(_DEBUG)
+				if(num==0) std::cout << iter->second.tag.c_str() << "=" << iter->second.current << "\n";	// debug
 			#endif
 			} else {
-			#ifdef _DEBUG
+			#if defined(_DEBUG)
 				std::cout << "unknown(" << std::hex << id << ")=" << devProp.GetCurrentStr() << "\n";
 			#endif
 			}
@@ -1985,13 +1458,13 @@ void CameraDevice::load_properties(std::uint32_t num, std::uint32_t* codes)
 			if(iter != end(Prop)) {
 				parse_prop(devProp, id);
 				iter->second.old = false;
-			#ifdef _DEBUG
-				std::cout << iter->second.tag.c_str() << "=" << PropCurrentText(id) << "\n";	// debug
+			#if defined(_DEBUG)
+				if(num==0) std::cout << iter->second.tag.c_str() << "=" << PropCurrentText(id) << "\n";	// debug
 			#endif
 				if(id == PCode::CrDeviceProperty_SdkControlMode)
 					m_modeSDK = (SDK::CrSdkControlMode)Prop.at(id).current;
 			} else {
-			#ifdef _DEBUG
+			#if defined(_DEBUG)
 				std::cout << "unknown(" << std::hex << id << ")=" << devProp.GetCurrentValue() << "\n";
 			#endif
 			}
@@ -2012,12 +1485,16 @@ PCode CameraDevice::Prop_tag2id(std::string tag) const
 
 struct PropertyValue* CameraDevice::GetProp_(PCode id)
 {
-	auto prop = &Prop.at(id);
-	if(prop->old) {
-		CrInt32u code = static_cast<CrInt32u>(id);
-		load_properties(1, &code);
-	}
-	return prop;
+	try {
+		auto prop = &Prop.at(id);
+		if(prop->old) {
+			CrInt32u code = static_cast<CrInt32u>(id);
+			load_properties(1, &code);
+		}
+		return prop;
+	} catch(std::exception const& e) {
+		return nullptr;
+	} 
 }
 
 std::int32_t CameraDevice::setProp(PCode id, std::uint64_t value)
@@ -2132,6 +1609,16 @@ void CameraDevice::GetAvailablePropList(std::vector<std::string>& propList)
 			propList.push_back(iter.second.tag);
 		}
 	}
+}
+
+SDK::CrCommandId CameraDevice::Cmd_tag2id(std::string tag) const
+{
+	for(const auto& iter : Cmds) {
+		if(iter.second == tag) {
+			return iter.first;
+		}
+	}
+	return (SDK::CrCommandId)-1;
 }
 
 std::int32_t CameraDevice::SendCommand(SDK::CrCommandId cmd, std::string ope) const

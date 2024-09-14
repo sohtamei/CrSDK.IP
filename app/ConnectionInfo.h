@@ -1,4 +1,4 @@
-﻿#ifndef DEVICEID_H
+#ifndef DEVICEID_H
 #define DEVICEID_H
 
 #include "Text.h"

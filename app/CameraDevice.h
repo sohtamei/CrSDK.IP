@@ -1,4 +1,4 @@
-﻿#ifndef CAMERADEVICE_H
+#ifndef CAMERADEVICE_H
 #define CAMERADEVICE_H
 
 #if defined(__linux__)
@@ -16,6 +16,7 @@ typedef int errno_t;
 #include <cstdint>
 #include <future>
 #include <mutex>
+#include <cstring>
 #include "CRSDK/CameraRemote_SDK.h"
 #include "CRSDK/IDeviceCallback.h"
 #include "ConnectionInfo.h"
@@ -25,29 +26,6 @@ typedef int errno_t;
 
 namespace cli
 {
-/*
-class CRFolderInfos
-{
-public:
-    CRFolderInfos(SCRSDK::CrMtpFolderInfo* info, int32_t nums)
-        : pFolder(info)
-        , numOfContents(nums)
-    {};
-    ~CRFolderInfos()
-    {
-        delete[] pFolder->folderName;
-        pFolder->folderName = NULL;
-        delete pFolder;
-        pFolder = NULL;
-    };
-public:
-    SCRSDK::CrMtpFolderInfo* pFolder;
-    int32_t numOfContents;
-};
-
-typedef std::vector<CRFolderInfos*> MtpFolderList;
-typedef std::vector<SCRSDK::CrMtpContentsInfo*> MtpContentsList;
-*/
 class CameraDevice : public SCRSDK::IDeviceCallback
 {
 public:
@@ -67,11 +45,7 @@ public:
 
     void s1_shooting();
     void af_shutter();
-/*
-    void do_download_camera_setting_file();
-    void do_upload_camera_setting_file();
-    void getFileNames(std::vector<text> &file_names);
-*/
+
     // Check if this device is connected
     bool is_connected() const;
     std::uint32_t ip_address() const;
@@ -99,13 +73,6 @@ public:
     virtual void OnLvPropertyChangedCodes(CrInt32u num, CrInt32u* codes) override;
     virtual void OnNotifyContentsTransfer(CrInt32u notify, SCRSDK::CrContentHandle contentHandle, CrChar* filename) override;
 
-public:
-/*
-    void getContentsList();
-    void pullContents(SCRSDK::CrContentHandle content);
-    void getScreennail(SCRSDK::CrContentHandle content);
-    void getThumbnail(SCRSDK::CrContentHandle content);
-*/
 private:
     std::int32_t m_number;
     SCRSDK::ICrCameraObjectInfo* m_info;
@@ -115,8 +82,6 @@ private:
     NetworkInfo m_net_info;
     UsbInfo m_usb_info;
     SCRSDK::CrSdkControlMode m_modeSDK;
-    //MtpFolderList   m_foldList;
-    //MtpContentsList m_contentList;
     bool m_spontaneous_disconnection;
     std::string m_fingerprint;
     std::string m_userPassword;
@@ -142,6 +107,8 @@ public:
 	std::int32_t waitProp(SCRSDK::CrDevicePropertyCode id, std::int32_t timeoutMs);
 
 	void GetAvailablePropList(std::vector<std::string>& propList);
+
+	SCRSDK::CrCommandId Cmd_tag2id(std::string tag) const;
 
 	std::int32_t SendCommand(SCRSDK::CrCommandId cmd, std::string ope) const;
 	std::int32_t SendCommand(std::string _text, std::string ope) const;

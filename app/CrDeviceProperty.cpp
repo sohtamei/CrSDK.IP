@@ -4,6 +4,7 @@ const std::map<std::uint64_t, std::string> map_CrLiveViewPropertyCode
 	{ SDK::CrLiveViewPropertyCode::CrLiveViewProperty_Focus_Magnifier_Position,	"Focus_Magnifier_Position" },
 	{ SDK::CrLiveViewPropertyCode::CrLiveViewProperty_FaceFrame,	"FaceFrame" },
 	{ SDK::CrLiveViewPropertyCode::CrLiveViewProperty_TrackingFrame,	"TrackingFrame" },
+	{ SDK::CrLiveViewPropertyCode::CrLiveViewProperty_Level,	"Level" },
 	{ SDK::CrLiveViewPropertyCode::CrLiveViewProperty_LiveViewUndefined,	"LiveViewUndefined" },
 	{ SDK::CrLiveViewPropertyCode::CrLiveViewProperty__LiveViewMaxVal,	"_LiveViewMaxVal" },
 };
@@ -486,6 +487,16 @@ const std::map<std::uint64_t, std::string> map_CrFocusArea
 	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot_L,	"Tracking_Flexible_Spot_L" },
 	{ SDK::CrFocusArea::CrFocusArea_Tracking_Expand_Flexible_Spot,	"Tracking_Expand_Flexible_Spot" },
 	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot,	"Tracking_Flexible_Spot" },
+	{ SDK::CrFocusArea::CrFocusArea_Flexible_Spot_XS,	"Flexible_Spot_XS" },
+	{ SDK::CrFocusArea::CrFocusArea_Flexible_Spot_XL,	"Flexible_Spot_XL" },
+	{ SDK::CrFocusArea::CrFocusArea_Flexible_Spot_FreeSize1,	"Flexible_Spot_FreeSize1" },
+	{ SDK::CrFocusArea::CrFocusArea_Flexible_Spot_FreeSize2,	"Flexible_Spot_FreeSize2" },
+	{ SDK::CrFocusArea::CrFocusArea_Flexible_Spot_FreeSize3,	"Flexible_Spot_FreeSize3" },
+	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot_XS,	"Tracking_Flexible_Spot_XS" },
+	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot_XL,	"Tracking_Flexible_Spot_XL" },
+	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot_FreeSize1,	"Tracking_Flexible_Spot_FreeSize1" },
+	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot_FreeSize2,	"Tracking_Flexible_Spot_FreeSize2" },
+	{ SDK::CrFocusArea::CrFocusArea_Tracking_Flexible_Spot_FreeSize3,	"Tracking_Flexible_Spot_FreeSize3" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrColortemp
@@ -543,6 +554,7 @@ const std::map<std::uint64_t, std::string> map_CrBatteryLevel
 	{ SDK::CrBatteryLevel::CrBatteryLevel_3_4_PowerSupply,	"3_4_PowerSupply" },
 	{ SDK::CrBatteryLevel::CrBatteryLevel_4_4_PowerSupply,	"4_4_PowerSupply" },
 	{ SDK::CrBatteryLevel::CrBatteryLevel_Fake,	"Fake" },
+	{ SDK::CrBatteryLevel::CrBatteryLevel_BatteryNotInstalled,	"BatteryNotInstalled" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrWhiteBalanceInitialize
@@ -585,6 +597,12 @@ const std::map<std::uint64_t, std::string> map_CrPriorityKeySettings
 {
 	{ SDK::CrPriorityKeySettings::CrPriorityKey_CameraPosition,	"CameraPosition" },
 	{ SDK::CrPriorityKeySettings::CrPriorityKey_PCRemote,	"PCRemote" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrLevelState
+{
+	{ SDK::CrLevelState::CrLevel_Off,	"Off" },
+	{ SDK::CrLevelState::CrLevel_On,	"On" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrFocusFrameType
@@ -643,6 +661,7 @@ const std::map<std::uint64_t, std::string> map_CrFrameInfoType
 	{ SDK::CrFrameInfoType::CrFrameInfoType_Magnifier_Position,	"Magnifier_Position" },
 	{ SDK::CrFrameInfoType::CrFrameInfoType_FaceFrameInfo,	"FaceFrameInfo" },
 	{ SDK::CrFrameInfoType::CrFrameInfoType_TrackingFrameInfo,	"TrackingFrameInfo" },
+	{ SDK::CrFrameInfoType::CrFrameInfoType_Level,	"Level" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrPropertyEnableFlag
@@ -962,6 +981,7 @@ const std::map<std::uint64_t, std::string> map_CrSelectFinder
 	{ SDK::CrSelectFinder::CrSelectFinder_Auto,	"Auto" },
 	{ SDK::CrSelectFinder::CrSelectFinder_ViewFinder_M,	"ViewFinder_M" },
 	{ SDK::CrSelectFinder::CrSelectFinder_Monitor_M,	"Monitor_M" },
+	{ SDK::CrSelectFinder::CrSelectFinder_Auto2,	"Auto2" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrDispMode
@@ -1034,7 +1054,7 @@ const std::map<std::uint64_t, std::string> map_CrDisplayStringType
 	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved6,	"Reserved6" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved7,	"Reserved7" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_CreativeLook_Name_Display,	"CreativeLook_Name_Display" },
-	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved9,	"Reserved9" },
+	{ SDK::CrDisplayStringType::CrDisplayStringType_IPTC_Metadata_Display,	"IPTC_Metadata_Display" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_SubjectRecognitionAF_Display,	"SubjectRecognitionAF_Display" },
 	{ SDK::CrDisplayStringType::CrDisplayStringType_Reserved11,	"Reserved11" },
 };
@@ -1946,6 +1966,11 @@ const std::map<std::uint64_t, std::string> map_CrHighResolutionShutterSpeedSetti
 	{ SDK::CrHighResolutionShutterSpeedSetting::CrHighResolutionShutterSpeedSetting_On,	"On" },
 };
 
+const std::map<std::uint64_t, std::string> map_CrHighResolutionShutterSpeed
+{
+	{ SDK::CrHighResolutionShutterSpeed::CrHighResolutionShutterSpeed_Nothing,	"Nothing" },
+};
+
 const std::map<std::uint64_t, std::string> map_CrWindNoiseReduction
 {
 	{ SDK::CrWindNoiseReduction::CrWindNoiseReduction_Off,	"Off" },
@@ -2148,6 +2173,7 @@ const std::map<std::uint64_t, std::string> map_CrFTPAutoTransferTargetMovie
 {
 	{ SDK::CrFTPAutoTransferTargetMovie::CrFTPAutoTransferTargetMovie_All,	"All" },
 	{ SDK::CrFTPAutoTransferTargetMovie::CrFTPAutoTransferTargetMovie_OnlyShotMark,	"OnlyShotMark" },
+	{ SDK::CrFTPAutoTransferTargetMovie::CrFTPAutoTransferTargetMovie_ProtectOnly,	"ProtectOnly" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrFTPTransferTargetStill
@@ -2242,6 +2268,8 @@ const std::map<std::uint64_t, std::string> map_CrFTPServerUsingSecureProtocol
 	{ SDK::CrFTPServerUsingSecureProtocol::CrFTPServerUsingSecureProtocol_Invalid,	"Invalid" },
 	{ SDK::CrFTPServerUsingSecureProtocol::CrFTPServerUsingSecureProtocol_Off,	"Off" },
 	{ SDK::CrFTPServerUsingSecureProtocol::CrFTPServerUsingSecureProtocol_On,	"On" },
+	{ SDK::CrFTPServerUsingSecureProtocol::CrFTPServerUsingSecureProtocol_On_FTPS,	"On_FTPS" },
+	{ SDK::CrFTPServerUsingSecureProtocol::CrFTPServerUsingSecureProtocol_On_SFTP,	"On_SFTP" },
 };
 
 const std::map<std::uint64_t, std::string> map_CrFTPServerDirectoryHierarchyType
@@ -2396,5 +2424,502 @@ const std::map<std::uint64_t, std::string> map_CrImageStabilizationSteadyShotAdj
 {
 	{ SDK::CrImageStabilizationSteadyShotAdjust::CrImageStabilizationSteadyShotAdjust_Automatic,	"Automatic" },
 	{ SDK::CrImageStabilizationSteadyShotAdjust::CrImageStabilizationSteadyShotAdjust_Manual,	"Manual" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAudioLevelDisplay
+{
+	{ SDK::CrAudioLevelDisplay::CrAudioLevelDisplay_Off,	"Off" },
+	{ SDK::CrAudioLevelDisplay::CrAudioLevelDisplay_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrHDMIOutputColorGamutForRAWOutMovie
+{
+	{ SDK::CrHDMIOutputColorGamutForRAWOutMovie::CrHDMIOutputColorGamutForRAWOutMovie_S_Gamut3_Cine_SLog3,	"S_Gamut3_Cine_SLog3" },
+	{ SDK::CrHDMIOutputColorGamutForRAWOutMovie::CrHDMIOutputColorGamutForRAWOutMovie_S_Gamut3_SLog3,	"S_Gamut3_SLog3" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrElectricFrontCurtainShutter
+{
+	{ SDK::CrElectricFrontCurtainShutter::CrElectricFrontCurtainShutter_Off,	"Off" },
+	{ SDK::CrElectricFrontCurtainShutter::CrElectricFrontCurtainShutter_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrExtendedShutterSpeed
+{
+	{ SDK::CrExtendedShutterSpeed::CrExtendedShutterSpeed_Bulb,	"Bulb" },
+	{ SDK::CrExtendedShutterSpeed::CrExtendedShutterSpeed_Nothing,	"Nothing" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCameraButtonFunction
+{
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_UpButton,	"UpButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_DownButton,	"DownButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_LeftButton,	"LeftButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_RightButton,	"RightButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_EnterButton,	"EnterButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MenuButton,	"MenuButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorUp,	"MultiSelectorUp" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorDown,	"MultiSelectorDown" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorLeft,	"MultiSelectorLeft" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorRight,	"MultiSelectorRight" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorEnter,	"MultiSelectorEnter" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorRightUp,	"MultiSelectorRightUp" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorRightDown,	"MultiSelectorRightDown" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorLeftUp,	"MultiSelectorLeftUp" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MultiSelectorLeftDown,	"MultiSelectorLeftDown" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_FnButton,	"FnButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_PlaybackButton,	"PlaybackButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_DeleteButton,	"DeleteButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_ModeButton,	"ModeButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_C1Button,	"C1Button" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_C2Button,	"C2Button" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_C3Button,	"C3Button" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_C4Button,	"C4Button" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_C5Button,	"C5Button" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_C6Button,	"C6Button" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_MovieButton,	"MovieButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_AELButton,	"AELButton" },
+	{ SDK::CrCameraButtonFunction::CrCameraButtonFunction_AFOnButton,	"AFOnButton" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCameraButtonFunctionValue
+{
+	{ SDK::CrCameraButtonFunctionValue::CrCameraButtonFunctionValue_Up,	"Up" },
+	{ SDK::CrCameraButtonFunctionValue::CrCameraButtonFunctionValue_Down,	"Down" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCameraDialFunction
+{
+	{ SDK::CrCameraDialFunction::CrCameraDialFunction_ControlWheel,	"ControlWheel" },
+	{ SDK::CrCameraDialFunction::CrCameraDialFunction_FrontDial,	"FrontDial" },
+	{ SDK::CrCameraDialFunction::CrCameraDialFunction_RearDialL,	"RearDialL" },
+	{ SDK::CrCameraDialFunction::CrCameraDialFunction_RearDialR,	"RearDialR" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCameraButtonFunctionStatus
+{
+	{ SDK::CrCameraButtonFunctionStatus::CrCameraButtonFunctionStatus_Idle,	"Idle" },
+	{ SDK::CrCameraButtonFunctionStatus::CrCameraButtonFunctionStatus_AnyKeyOn,	"AnyKeyOn" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSynchroterminalForcedOutput
+{
+	{ SDK::CrSynchroterminalForcedOutput::CrSynchroterminalForcedOutput_Off,	"Off" },
+	{ SDK::CrSynchroterminalForcedOutput::CrSynchroterminalForcedOutput_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrShutterReleaseTimeLagControl
+{
+	{ SDK::CrShutterReleaseTimeLagControl::CrShutterReleaseTimeLagControl_Off,	"Off" },
+	{ SDK::CrShutterReleaseTimeLagControl::CrShutterReleaseTimeLagControl_On_Stability,	"On_Stability" },
+	{ SDK::CrShutterReleaseTimeLagControl::CrShutterReleaseTimeLagControl_On_Fastest,	"On_Fastest" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrContinuousShootingSpotBoostStatus
+{
+	{ SDK::CrContinuousShootingSpotBoostStatus::CrContinuousShootingSpotBoostStatus_NotSpotBoosting,	"NotSpotBoosting" },
+	{ SDK::CrContinuousShootingSpotBoostStatus::CrContinuousShootingSpotBoostStatus_SpotBoosting,	"SpotBoosting" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrContinuousShootingSpotBoostEnableStatus
+{
+	{ SDK::CrContinuousShootingSpotBoostEnableStatus::CrContinuousShootingSpotBoost_Disable,	"Disable" },
+	{ SDK::CrContinuousShootingSpotBoostEnableStatus::CrContinuousShootingSpotBoost_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrTimeShiftShooting
+{
+	{ SDK::CrTimeShiftShooting::CrTimeShiftShooting_Off,	"Off" },
+	{ SDK::CrTimeShiftShooting::CrTimeShiftShooting_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrTimeShiftTriggerSetting
+{
+	{ SDK::CrTimeShiftTriggerSetting::CrTimeShiftTriggerSetting_S1AndAF,	"S1AndAF" },
+	{ SDK::CrTimeShiftTriggerSetting::CrTimeShiftTriggerSetting_S1,	"S1" },
+	{ SDK::CrTimeShiftTriggerSetting::CrTimeShiftTriggerSetting_AF,	"AF" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrTimeShiftShootingStatus
+{
+	{ SDK::CrTimeShiftShootingStatus::CrTimeShiftShootingStatus_Idle,	"Idle" },
+	{ SDK::CrTimeShiftShootingStatus::CrTimeShiftShootingStatus_TimeShiftShooting,	"TimeShiftShooting" },
+	{ SDK::CrTimeShiftShootingStatus::CrTimeShiftShootingStatus_Impossible,	"Impossible" },
+	{ SDK::CrTimeShiftShootingStatus::CrTimeShiftShootingStatus_Impossible_TimerShiftOverheating,	"Impossible_TimerShiftOverheating" },
+	{ SDK::CrTimeShiftShootingStatus::CrTimeShiftShootingStatus_MainShooting,	"MainShooting" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrEmbedLUTFile
+{
+	{ SDK::CrEmbedLUTFile::CrEmbedLUTFile_Off,	"Off" },
+	{ SDK::CrEmbedLUTFile::CrEmbedLUTFile_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAPS_C_S35
+{
+	{ SDK::CrAPS_C_S35::CrAPS_C_S35_Off,	"C_S35_Off" },
+	{ SDK::CrAPS_C_S35::CrAPS_C_S35_On,	"C_S35_On" },
+	{ SDK::CrAPS_C_S35::CrAPS_C_S35_Auto,	"C_S35_Auto" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrLensCompensationShading
+{
+	{ SDK::CrLensCompensationShading::CrLensCompensationShading_Off,	"Off" },
+	{ SDK::CrLensCompensationShading::CrLensCompensationShading_Auto,	"Auto" },
+	{ SDK::CrLensCompensationShading::CrLensCompensationShading_Low,	"Low" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrLensCompensationChromaticAberration
+{
+	{ SDK::CrLensCompensationChromaticAberration::CrLensCompensationChromaticAberration_Off,	"Off" },
+	{ SDK::CrLensCompensationChromaticAberration::CrLensCompensationChromaticAberration_Auto,	"Auto" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrLensCompensationDistortion
+{
+	{ SDK::CrLensCompensationDistortion::CrLensCompensationDistortion_Off,	"Off" },
+	{ SDK::CrLensCompensationDistortion::CrLensCompensationDistortion_Auto,	"Auto" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrLensCompensationBreathing
+{
+	{ SDK::CrLensCompensationBreathing::CrLensCompensationBreathing_Off,	"Off" },
+	{ SDK::CrLensCompensationBreathing::CrLensCompensationBreathing_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrRecordingMedia
+{
+	{ SDK::CrRecordingMedia::CrRecordingMedia_Slot1,	"Slot1" },
+	{ SDK::CrRecordingMedia::CrRecordingMedia_Slot2,	"Slot2" },
+	{ SDK::CrRecordingMedia::CrRecordingMedia_SimultaneousRecording,	"SimultaneousRecording" },
+	{ SDK::CrRecordingMedia::CrRecordingMedia_SortRecording,	"SortRecording" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrRecordingMediaMovie
+{
+	{ SDK::CrRecordingMediaMovie::CrRecordingMediaMovie_Slot1,	"Slot1" },
+	{ SDK::CrRecordingMediaMovie::CrRecordingMediaMovie_Slot2,	"Slot2" },
+	{ SDK::CrRecordingMediaMovie::CrRecordingMediaMovie_SimultaneousRecording,	"SimultaneousRecording" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAutoSwitchMedia
+{
+	{ SDK::CrAutoSwitchMedia::CrAutoSwitchMedia_Off,	"Off" },
+	{ SDK::CrAutoSwitchMedia::CrAutoSwitchMedia_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrRecordingFileNumber
+{
+	{ SDK::CrRecordingFileNumber::CrRecordingFileNumber_Reset,	"Reset" },
+	{ SDK::CrRecordingFileNumber::CrRecordingFileNumber_Series,	"Series" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrRecordingFolderFormat
+{
+	{ SDK::CrRecordingFolderFormat::CrRecordingFolderFormat_Standard,	"Standard" },
+	{ SDK::CrRecordingFolderFormat::CrRecordingFolderFormat_Date,	"Date" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCreateNewFolderEnableStatus
+{
+	{ SDK::CrCreateNewFolderEnableStatus::CrCreateNewFolderEnableStatus_Disable,	"Disable" },
+	{ SDK::CrCreateNewFolderEnableStatus::CrCreateNewFolderEnableStatus_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSelectIPTCMetadata
+{
+	{ SDK::CrSelectIPTCMetadata::CrSelectIPTCMetadata_Off,	"Off" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrWriteCopyrightInfo
+{
+	{ SDK::CrWriteCopyrightInfo::CrWriteCopyrightInfo_Off,	"Off" },
+	{ SDK::CrWriteCopyrightInfo::CrWriteCopyrightInfo_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFocusBracketRecordingFolder
+{
+	{ SDK::CrFocusBracketRecordingFolder::CrFocusBracketRecordingFolder_CurrentFolder,	"CurrentFolder" },
+	{ SDK::CrFocusBracketRecordingFolder::CrFocusBracketRecordingFolder_NewFolder,	"NewFolder" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrForcedFileNumberReset
+{
+	{ SDK::CrForcedFileNumberReset::CrForcedFileNumberReset_Disable,	"Disable" },
+	{ SDK::CrForcedFileNumberReset::CrForcedFileNumberReset_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrReleaseWithoutLens
+{
+	{ SDK::CrReleaseWithoutLens::CrReleaseWithoutLens_Disable,	"Disable" },
+	{ SDK::CrReleaseWithoutLens::CrReleaseWithoutLens_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrReleaseWithoutCard
+{
+	{ SDK::CrReleaseWithoutCard::CrReleaseWithoutCard_Disable,	"Disable" },
+	{ SDK::CrReleaseWithoutCard::CrReleaseWithoutCard_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrGridLineDisplay
+{
+	{ SDK::CrGridLineDisplay::CrGridLineDisplay_Off,	"Off" },
+	{ SDK::CrGridLineDisplay::CrGridLineDisplay_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrContinuousShootingSpeedInElectricShutter
+{
+	{ SDK::CrContinuousShootingSpeedInElectricShutter::CrContinuousShootingSpeedInElectricShutter_Invalid,	"Invalid" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFacePriorityInMultiMetering
+{
+	{ SDK::CrFacePriorityInMultiMetering::CrFacePriorityInMultiMetering_Off,	"Off" },
+	{ SDK::CrFacePriorityInMultiMetering::CrFacePriorityInMultiMetering_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrPrioritySetInAWB
+{
+	{ SDK::CrPrioritySetInAWB::CrPrioritySetInAWB_Standard,	"Standard" },
+	{ SDK::CrPrioritySetInAWB::CrPrioritySetInAWB_Ambience,	"Ambience" },
+	{ SDK::CrPrioritySetInAWB::CrPrioritySetInAWB_White,	"White" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCustomWBSizeSetting
+{
+	{ SDK::CrCustomWBSizeSetting::CrCustomWBSizeSetting_S,	"S" },
+	{ SDK::CrCustomWBSizeSetting::CrCustomWBSizeSetting_M,	"M" },
+	{ SDK::CrCustomWBSizeSetting::CrCustomWBSizeSetting_L,	"L" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAFIlluminator
+{
+	{ SDK::CrAFIlluminator::CrAFIlluminator_Off,	"Off" },
+	{ SDK::CrAFIlluminator::CrAFIlluminator_Auto,	"Auto" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrApertureDriveInAF
+{
+	{ SDK::CrApertureDriveInAF::CrApertureDriveInAF_Standard,	"Standard" },
+	{ SDK::CrApertureDriveInAF::CrApertureDriveInAF_FocusPriority,	"FocusPriority" },
+	{ SDK::CrApertureDriveInAF::CrApertureDriveInAF_SilentPriority,	"SilentPriority" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAFWithShutter
+{
+	{ SDK::CrAFWithShutter::CrAFWithShutter_Off,	"Off" },
+	{ SDK::CrAFWithShutter::CrAFWithShutter_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFullTimeDMF
+{
+	{ SDK::CrFullTimeDMF::CrFullTimeDMF_Off,	"Off" },
+	{ SDK::CrFullTimeDMF::CrFullTimeDMF_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrPreAF
+{
+	{ SDK::CrPreAF::CrPreAF_Off,	"Off" },
+	{ SDK::CrPreAF::CrPreAF_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSubjectRecognitionAnimalBirdPriority
+{
+	{ SDK::CrSubjectRecognitionAnimalBirdPriority::CrSubjectRecognitionAnimalBirdPriority_Auto,	"Auto" },
+	{ SDK::CrSubjectRecognitionAnimalBirdPriority::CrSubjectRecognitionAnimalBirdPriority_AnimalPriority,	"AnimalPriority" },
+	{ SDK::CrSubjectRecognitionAnimalBirdPriority::CrSubjectRecognitionAnimalBirdPriority_BirdPriority,	"BirdPriority" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSubjectRecognitionAnimalBirdDetectionParts
+{
+	{ SDK::CrSubjectRecognitionAnimalBirdDetectionParts::CrSubjectRecognitionAnimalBirdDetectionParts_FollowIndividualSetting,	"FollowIndividualSetting" },
+	{ SDK::CrSubjectRecognitionAnimalBirdDetectionParts::CrSubjectRecognitionAnimalBirdDetectionParts_EyeHeadBody,	"EyeHeadBody" },
+	{ SDK::CrSubjectRecognitionAnimalBirdDetectionParts::CrSubjectRecognitionAnimalBirdDetectionParts_EyeHead,	"EyeHead" },
+	{ SDK::CrSubjectRecognitionAnimalBirdDetectionParts::CrSubjectRecognitionAnimalBirdDetectionParts_Eye,	"Eye" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSubjectRecognitionPriorityOnRegisteredFace
+{
+	{ SDK::CrSubjectRecognitionPriorityOnRegisteredFace::CrSubjectRecognitionPriorityOnRegisteredFace_Off,	"Off" },
+	{ SDK::CrSubjectRecognitionPriorityOnRegisteredFace::CrSubjectRecognitionPriorityOnRegisteredFace_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFaceEyeFrameDisplay
+{
+	{ SDK::CrFaceEyeFrameDisplay::CrFaceEyeFrameDisplay_Off,	"Off" },
+	{ SDK::CrFaceEyeFrameDisplay::CrFaceEyeFrameDisplay_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFocusMap
+{
+	{ SDK::CrFocusMap::CrFocusMap_Off,	"Off" },
+	{ SDK::CrFocusMap::CrFocusMap_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAFInFocusMagnifier
+{
+	{ SDK::CrAFInFocusMagnifier::CrAFInFocusMagnifier_Off,	"Off" },
+	{ SDK::CrAFInFocusMagnifier::CrAFInFocusMagnifier_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAFTrackForSpeedChange
+{
+	{ SDK::CrAFTrackForSpeedChange::CrAFTrackForSpeedChange_Stable,	"Stable" },
+	{ SDK::CrAFTrackForSpeedChange::CrAFTrackForSpeedChange_Standard,	"Standard" },
+	{ SDK::CrAFTrackForSpeedChange::CrAFTrackForSpeedChange_Responsive,	"Responsive" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrPlaySetOfMultiMedia
+{
+	{ SDK::CrPlaySetOfMultiMedia::CrPlaySetOfMultiMedia_Slot1,	"Slot1" },
+	{ SDK::CrPlaySetOfMultiMedia::CrPlaySetOfMultiMedia_Slot2,	"Slot2" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrRemoteSaveImageSize
+{
+	{ SDK::CrRemoteSaveImageSize::CrRemoteSaveImageSize_LargeSize,	"LargeSize" },
+	{ SDK::CrRemoteSaveImageSize::CrRemoteSaveImageSize_SmallSize,	"SmallSize" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFTPTransferStillImageQualitySize
+{
+	{ SDK::CrFTPTransferStillImageQualitySize::CrFTPTransferStillImageQualitySize_Small,	"Small" },
+	{ SDK::CrFTPTransferStillImageQualitySize::CrFTPTransferStillImageQualitySize_Large,	"Large" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFTPAutoTransferTargetStill
+{
+	{ SDK::CrFTPAutoTransferTargetStill::CrFTPAutoTransferTargetStill_All,	"All" },
+	{ SDK::CrFTPAutoTransferTargetStill::CrFTPAutoTransferTargetStill_ProtectOnly,	"ProtectOnly" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrProtectImageInFTPTransfer
+{
+	{ SDK::CrProtectImageInFTPTransfer::CrProtectImageInFTPTransfer_Off,	"Off" },
+	{ SDK::CrProtectImageInFTPTransfer::CrProtectImageInFTPTransfer_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrMonitorBrightnessType
+{
+	{ SDK::CrMonitorBrightnessType::CrMonitorBrightnessType_Manual,	"Manual" },
+	{ SDK::CrMonitorBrightnessType::CrMonitorBrightnessType_SunnyWeather,	"SunnyWeather" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrDisplayQualityFinder
+{
+	{ SDK::CrDisplayQualityFinder::CrDisplayQualityFinder_Standard,	"Standard" },
+	{ SDK::CrDisplayQualityFinder::CrDisplayQualityFinder_High,	"High" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrTCUBDisplaySetting
+{
+	{ SDK::CrTCUBDisplaySetting::CrTCUBDisplaySetting_Counter,	"Counter" },
+	{ SDK::CrTCUBDisplaySetting::CrTCUBDisplaySetting_TC,	"TC" },
+	{ SDK::CrTCUBDisplaySetting::CrTCUBDisplaySetting_UB,	"UB" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrGammaDisplayAssist
+{
+	{ SDK::CrGammaDisplayAssist::CrGammaDisplayAssist_Off,	"Off" },
+	{ SDK::CrGammaDisplayAssist::CrGammaDisplayAssist_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrGammaDisplayAssistType
+{
+	{ SDK::CrGammaDisplayAssistType::CrGammaDisplayAssistType_Auto,	"Auto" },
+	{ SDK::CrGammaDisplayAssistType::CrGammaDisplayAssistType_SLog2_709_800,	"SLog2_709_800" },
+	{ SDK::CrGammaDisplayAssistType::CrGammaDisplayAssistType_SLog3_709_800,	"SLog3_709_800" },
+	{ SDK::CrGammaDisplayAssistType::CrGammaDisplayAssistType_HLG_BT2020,	"HLG_BT2020" },
+	{ SDK::CrGammaDisplayAssistType::CrGammaDisplayAssistType_HLG_709,	"HLG_709" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAudioSignalsStartEnd
+{
+	{ SDK::CrAudioSignalsStartEnd::CrAudioSignalsStartEnd_Off,	"Off" },
+	{ SDK::CrAudioSignalsStartEnd::CrAudioSignalsStartEnd_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrControlForHDMI
+{
+	{ SDK::CrControlForHDMI::CrControlForHDMI_Off,	"Off" },
+	{ SDK::CrControlForHDMI::CrControlForHDMI_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrAntidustShutterWhenPowerOff
+{
+	{ SDK::CrAntidustShutterWhenPowerOff::CrAntidustShutterWhenPowerOff_Off,	"Off" },
+	{ SDK::CrAntidustShutterWhenPowerOff::CrAntidustShutterWhenPowerOff_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrWakeOnLAN
+{
+	{ SDK::CrWakeOnLAN::CrWakeOnLAN_Off,	"Off" },
+	{ SDK::CrWakeOnLAN::CrWakeOnLAN_On,	"On" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrCameraErrorCautionStatus
+{
+	{ SDK::CrCameraErrorCautionStatus::CrCameraErrorCautionStatus_NoError,	"NoError" },
+	{ SDK::CrCameraErrorCautionStatus::CrCameraErrorCautionStatus_Error,	"Error" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSystemErrorCautionStatus
+{
+	{ SDK::CrSystemErrorCautionStatus::CrSystemErrorCautionStatus_NoError,	"NoError" },
+	{ SDK::CrSystemErrorCautionStatus::CrSystemErrorCautionStatus_Error,	"Error" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrFlickerLessShootingStatus
+{
+	{ SDK::CrFlickerLessShootingStatus::CrFlickerLessShootingStatus_NotDetected,	"NotDetected" },
+	{ SDK::CrFlickerLessShootingStatus::CrFlickerLessShootingStatus_Detected,	"Detected" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrZoomDrivingStatus
+{
+	{ SDK::CrZoomDrivingStatus::CrZoomDrivingStatus_NotDriving,	"NotDriving" },
+	{ SDK::CrZoomDrivingStatus::CrZoomDrivingStatus_Driving,	"Driving" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrShootingSelfTimerStatus
+{
+	{ SDK::CrShootingSelfTimerStatus::CrShootingSelfTimerStatus_Idle,	"Idle" },
+	{ SDK::CrShootingSelfTimerStatus::CrShootingSelfTimerStatus_CountingDown,	"CountingDown" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrTrackingOnAndAFOnEnableStatus
+{
+	{ SDK::CrTrackingOnAndAFOnEnableStatus::CrTrackingOnAndAFOnEnableStatus_Disable,	"Disable" },
+	{ SDK::CrTrackingOnAndAFOnEnableStatus::CrTrackingOnAndAFOnEnableStatus_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrProgramShiftStatus
+{
+	{ SDK::CrProgramShiftStatus::CrProgramShiftStatus_Idle,	"Idle" },
+	{ SDK::CrProgramShiftStatus::CrProgramShiftStatus_ProgramShift,	"ProgramShift" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrSlotNumber
+{
+	{ SDK::CrSlotNumber::CrSlotNumber_Slot1,	"Slot1" },
+	{ SDK::CrSlotNumber::CrSlotNumber_Slot2,	"Slot2" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrZoomAndFocusPresetExist
+{
+	{ SDK::CrZoomAndFocusPresetExist::CrZoomAndFocusPresetExist_False,	"False" },
+	{ SDK::CrZoomAndFocusPresetExist::CrZoomAndFocusPresetExist_True,	"True" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrZoomAndFocusPresetZoomOnlyEnableStatus
+{
+	{ SDK::CrZoomAndFocusPresetZoomOnlyEnableStatus::CrZoomAndFocusPresetZoomOnlyEnableStatus_Disable,	"Disable" },
+	{ SDK::CrZoomAndFocusPresetZoomOnlyEnableStatus::CrZoomAndFocusPresetZoomOnlyEnableStatus_Enable,	"Enable" },
+};
+
+const std::map<std::uint64_t, std::string> map_CrZoomAndFocusPresetZoomOnlyValue
+{
+	{ SDK::CrZoomAndFocusPresetZoomOnlyValue::CrZoomAndFocusPresetZoomOnlyValue_Off,	"Off" },
+	{ SDK::CrZoomAndFocusPresetZoomOnlyValue::CrZoomAndFocusPresetZoomOnlyValue_On,	"On" },
 };
 

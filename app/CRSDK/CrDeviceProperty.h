@@ -1,4 +1,4 @@
-﻿#ifndef CRDEVICEPROPERTY_H
+#ifndef CRDEVICEPROPERTY_H
 #define CRDEVICEPROPERTY_H
 
 #include "CrDefines.h"
@@ -264,7 +264,7 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_UserBaseLookAELevelOffset,
 	CrDeviceProperty_BaseISOSwitchEI,
 	CrDeviceProperty_FlickerLessShooting,
-	CrDeviceProperty_reserved50,
+	CrDeviceProperty_AudioLevelDisplay,
 	CrDeviceProperty_PlaybackVolumeSettings,
 	CrDeviceProperty_AutoReview,
 	CrDeviceProperty_AudioSignals,
@@ -274,7 +274,7 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_Movie_HDMIOutput4KSetting,
 	CrDeviceProperty_Movie_HDMIOutputRAW,
 	CrDeviceProperty_Movie_HDMIOutputRawSetting,
-	CrDeviceProperty_reserved55,
+	CrDeviceProperty_Movie_HDMIOutputColorGamutForRAWOut,
 	CrDeviceProperty_Movie_HDMIOutputTimeCode,
 	CrDeviceProperty_Movie_HDMIOutputRecControl,
 	CrDeviceProperty_reserved56,
@@ -304,7 +304,7 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_IntervalRec_NumberOfShots,
 	CrDeviceProperty_IntervalRec_AETrackingSensitivity,
 	CrDeviceProperty_IntervalRec_ShutterType,
-	CrDeviceProperty_reserved60,
+	CrDeviceProperty_ElectricFrontCurtainShutter,
 	CrDeviceProperty_WindNoiseReduct,
 	CrDeviceProperty_RecordingSelfTimer,
 	CrDeviceProperty_RecordingSelfTimerCountTime,
@@ -353,6 +353,99 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_Movie_ImageStabilizationLevel,
 	CrDeviceProperty_ImageStabilizationSteadyShotAdjust,
 	CrDeviceProperty_ImageStabilizationSteadyShotFocalLength,
+
+	CrDeviceProperty_ExtendedShutterSpeed,
+	CrDeviceProperty_CameraButtonFunction,
+	CrDeviceProperty_CameraButtonFunctionMulti,
+	CrDeviceProperty_CameraDialFunction,
+
+	CrDeviceProperty_SynchroterminalForcedOutput,
+	CrDeviceProperty_ShutterReleaseTimeLagControl,
+	CrDeviceProperty_ContinuousShootingSpotBoostFrameSpeed,
+	CrDeviceProperty_TimeShiftShooting,
+	CrDeviceProperty_TimeShiftTriggerSetting,
+	CrDeviceProperty_TimeShiftPreShootingTimeSetting,
+	CrDeviceProperty_EmbedLUTFile,
+	CrDeviceProperty_APS_C_S35,
+	CrDeviceProperty_LensCompensationShading,
+	CrDeviceProperty_LensCompensationChromaticAberration,
+	CrDeviceProperty_LensCompensationDistortion,
+	CrDeviceProperty_LensCompensationBreathing,
+	CrDeviceProperty_RecordingMedia,
+	CrDeviceProperty_Movie_RecordingMedia,
+	CrDeviceProperty_AutoSwitchMedia,
+	CrDeviceProperty_RecordingFileNumber,
+	CrDeviceProperty_Movie_RecordingFileNumber,
+	CrDeviceProperty_RecordingSettingFileName,
+	CrDeviceProperty_RecordingFolderFormat,
+	CrDeviceProperty_CreateNewFolder,
+	CrDeviceProperty_SelectIPTCMetadata,
+	CrDeviceProperty_WriteCopyrightInfo,
+	CrDeviceProperty_SetPhotographer,
+	CrDeviceProperty_SetCopyright,
+	CrDeviceProperty_FileSettingsTitleNameSettings,
+	CrDeviceProperty_FocusBracketRecordingFolder,
+	CrDeviceProperty_ReleaseWithoutLens,
+	CrDeviceProperty_ReleaseWithoutCard,
+	CrDeviceProperty_GridLineDisplay,
+	CrDeviceProperty_ContinuousShootingSpeedInElectricShutterHiPlus,
+	CrDeviceProperty_ContinuousShootingSpeedInElectricShutterHi,
+	CrDeviceProperty_ContinuousShootingSpeedInElectricShutterMid,
+	CrDeviceProperty_ContinuousShootingSpeedInElectricShutterLo,
+	CrDeviceProperty_IsoAutoRangeLimitMin,
+	CrDeviceProperty_IsoAutoRangeLimitMax,
+	CrDeviceProperty_FacePriorityInMultiMetering,
+	CrDeviceProperty_PrioritySetInAWB,
+	CrDeviceProperty_CustomWB_Size_Setting,
+	CrDeviceProperty_AFIlluminator,
+	CrDeviceProperty_ApertureDriveInAF,
+	CrDeviceProperty_AFWithShutter,
+	CrDeviceProperty_FullTimeDMF,
+	CrDeviceProperty_PreAF,
+	CrDeviceProperty_SubjectRecognitionPersonTrackingSubjectShiftRange,
+	CrDeviceProperty_SubjectRecognitionAnimalBirdPriority,
+	CrDeviceProperty_SubjectRecognitionAnimalBirdDetectionParts,
+	CrDeviceProperty_SubjectRecognitionAnimalTrackingSubjectShiftRange,
+	CrDeviceProperty_SubjectRecognitionAnimalTrackingSensitivity,
+	CrDeviceProperty_SubjectRecognitionAnimalDetectionSensitivity,
+	CrDeviceProperty_SubjectRecognitionAnimalDetectionParts,
+	CrDeviceProperty_SubjectRecognitionBirdTrackingSubjectShiftRange,
+	CrDeviceProperty_SubjectRecognitionBirdTrackingSensitivity,
+	CrDeviceProperty_SubjectRecognitionBirdDetectionSensitivity,
+	CrDeviceProperty_SubjectRecognitionBirdDetectionParts,
+	CrDeviceProperty_SubjectRecognitionInsectTrackingSubjectShiftRange,
+	CrDeviceProperty_SubjectRecognitionInsectTrackingSensitivity,
+	CrDeviceProperty_SubjectRecognitionInsectDetectionSensitivity,
+	CrDeviceProperty_SubjectRecognitionCarTrainTrackingSubjectShiftRange,
+	CrDeviceProperty_SubjectRecognitionCarTrainTrackingSensitivity,
+	CrDeviceProperty_SubjectRecognitionCarTrainDetectionSensitivity,
+	CrDeviceProperty_SubjectRecognitionPlaneTrackingSubjectShiftRange,
+	CrDeviceProperty_SubjectRecognitionPlaneTrackingSensitivity,
+	CrDeviceProperty_SubjectRecognitionPlaneDetectionSensitivity,
+	CrDeviceProperty_SubjectRecognitionPriorityOnRegisteredFace,
+	CrDeviceProperty_FaceEyeFrameDisplay,
+	CrDeviceProperty_FocusMap,
+	CrDeviceProperty_InitialFocusMagnifier,
+	CrDeviceProperty_AFInFocusMagnifier,
+	CrDeviceProperty_AFTrackForSpeedChange,
+	CrDeviceProperty_AFFreeSizeAndPositionSetting,
+	CrDeviceProperty_ZoomAndFocusPresetZoomOnly_Set,
+	CrDeviceProperty_PlaySetOfMultiMedia,
+	CrDeviceProperty_RemoteSaveImageSize,
+	CrDeviceProperty_FTP_TransferStillImageQualitySize,
+	CrDeviceProperty_FTP_AutoTransferTarget_StillImage,
+	CrDeviceProperty_ProtectImageInFTPTransfer,
+	CrDeviceProperty_MonitorBrightnessType,
+	CrDeviceProperty_MonitorBrightnessManual,
+	CrDeviceProperty_DisplayQualityFinder,
+	CrDeviceProperty_TCUBDisplaySetting,
+	CrDeviceProperty_GammaDisplayAssist,
+	CrDeviceProperty_GammaDisplayAssistType,
+	CrDeviceProperty_AudioSignalsStartEnd,
+	CrDeviceProperty_AudioSignalsVolume,
+	CrDeviceProperty_ControlForHDMI,
+	CrDeviceProperty_AntidustShutterWhenPowerOff,
+	CrDeviceProperty_WakeOnLAN,
 
 	CrDeviceProperty_S2 = 0x0500,
 	CrDeviceProperty_reserved10,
@@ -512,6 +605,29 @@ enum CrDevicePropertyCode : CrInt32u
 	CrDeviceProperty_MonitoringIsDelivering,
 	CrDeviceProperty_MonitoringSettingVersion,
 	CrDeviceProperty_MonitoringDeliveryTypeSupportInfo,
+	CrDeviceProperty_MonitoringReserved,
+
+	CrDeviceProperty_CameraErrorCautionStatus,
+	CrDeviceProperty_SystemErrorCautionStatus,
+	CrDeviceProperty_CameraButtonFunctionStatus,
+	CrDeviceProperty_FlickerLessShootingStatus,
+	CrDeviceProperty_ContinuousShootingSpotBoostStatus,
+	CrDeviceProperty_ContinuousShootingSpotBoostEnableStatus,
+	CrDeviceProperty_TimeShiftShootingStatus,
+	CrDeviceProperty_ZoomDrivingStatus,
+	CrDeviceProperty_ShootingSelfTimerStatus,
+	CrDeviceProperty_CreateNewFolderEnableStatus,
+	CrDeviceProperty_ForcedFileNumberResetEnableStatus,
+	CrDeviceProperty_DefaultAFFreeSizeAndPositionSetting,
+	CrDeviceProperty_TrackingOnAndAFOnEnableStatus,
+	CrDeviceProperty_ProgramShiftStatus,
+	CrDeviceProperty_MeteredManualLevel,
+	CrDeviceProperty_ZoomAndFocusPresetDataVersion,
+	CrDeviceProperty_SecondBatteryRemain,
+	CrDeviceProperty_SecondBatteryLevel,
+	CrDeviceProperty_TotalBatteryRemain,
+	CrDeviceProperty_TotalBatteryLevel,
+	CrDeviceProperty_BodySerialNumber,
 
 	CrDeviceProperty_MaxVal	= 0x1000,
 };
@@ -522,6 +638,7 @@ enum CrLiveViewPropertyCode : CrInt32u
 	CrLiveViewProperty_Focus_Magnifier_Position = 0x0122,
 	CrLiveViewProperty_FaceFrame = 0x0581,
 	CrLiveViewProperty_TrackingFrame = CrDevicePropertyCode::CrDeviceProperty_RemoteTouchOperation,
+	CrLiveViewProperty_Level = 0x0582,
 	CrLiveViewProperty_LiveViewUndefined = CrDevicePropertyCode::CrDeviceProperty_MaxVal,
 	CrLiveViewProperty__LiveViewMaxVal = 0x2000,
 };
@@ -602,13 +719,13 @@ enum CrMoviePlayingSpeed : CrInt64u
 	CrMoviePlayingSpeed_Nothing = 0xFFFFFFFFFFFFFFFF, // Nothing to display
 };
 
-// FocalDistanceInMeter/Feet
+// Focal Distance in Meter/Feet
 static const CrInt32u CrFocalDistance_Infinity = 0xFFFFFFFF;
 
-// BatteryRemaininginMinutes
+// Battery Remaining in Minutes
 static const CrInt32u CrBatteryRemainingInMinutes_Untaken = 0xFFFFFFFF;
 
-// BatteryRemainingInVoltage
+// Battery Remaining in Voltage
 static const CrInt32u CrBatteryRemainingInVoltage_Untaken = 0xFFFFFFFF;
 
 // DCVoltage
@@ -1074,6 +1191,16 @@ enum CrFocusArea : CrInt16u
 	CrFocusArea_Tracking_Flexible_Spot_L,
 	CrFocusArea_Tracking_Expand_Flexible_Spot,
 	CrFocusArea_Tracking_Flexible_Spot,
+	CrFocusArea_Flexible_Spot_XS,
+	CrFocusArea_Flexible_Spot_XL,
+	CrFocusArea_Flexible_Spot_FreeSize1,
+	CrFocusArea_Flexible_Spot_FreeSize2,
+	CrFocusArea_Flexible_Spot_FreeSize3,
+	CrFocusArea_Tracking_Flexible_Spot_XS = 0x0023,
+	CrFocusArea_Tracking_Flexible_Spot_XL,
+	CrFocusArea_Tracking_Flexible_Spot_FreeSize1,
+	CrFocusArea_Tracking_Flexible_Spot_FreeSize2,
+	CrFocusArea_Tracking_Flexible_Spot_FreeSize3,
 };
 
 // Colortemp
@@ -1151,6 +1278,7 @@ enum CrBatteryLevel : CrInt32u
 	CrBatteryLevel_3_4_PowerSupply,
 	CrBatteryLevel_4_4_PowerSupply,
 	CrBatteryLevel_Fake = 0xFFFFFFFD,				// Fake
+	CrBatteryLevel_BatteryNotInstalled = 0xFFFFFFFE,
 };
 
 enum CrWhiteBalanceInitialize : CrInt16u
@@ -1197,6 +1325,12 @@ enum CrPriorityKeySettings : CrInt16u
 {
 	CrPriorityKey_CameraPosition = 0x0001,
 	CrPriorityKey_PCRemote = 0x0002,
+};
+
+enum CrLevelState : CrInt32
+{
+	CrLevel_Off = 0x00000001,
+	CrLevel_On
 };
 
 enum CrFocusFrameType : CrInt16u
@@ -1257,6 +1391,7 @@ enum CrFrameInfoType : CrInt16u
 	CrFrameInfoType_Magnifier_Position,
 	CrFrameInfoType_FaceFrameInfo = 0x0004,
 	CrFrameInfoType_TrackingFrameInfo,
+	CrFrameInfoType_Level,
 };
 
 enum CrPropertyEnableFlag : CrInt16
@@ -1598,6 +1733,7 @@ enum CrSelectFinder : CrInt8u
 	CrSelectFinder_Auto = 0x01,
 	CrSelectFinder_ViewFinder_M,
 	CrSelectFinder_Monitor_M,
+	CrSelectFinder_Auto2,
 };
 
 // Disp Mode
@@ -1681,7 +1817,7 @@ enum CrDisplayStringType : CrInt32u
 	CrDisplayStringType_Reserved6 = 0x00000011,
 	CrDisplayStringType_Reserved7 = 0x00000012,
 	CrDisplayStringType_CreativeLook_Name_Display = 0x00000013,
-	CrDisplayStringType_Reserved9 = 0x00000014,
+	CrDisplayStringType_IPTC_Metadata_Display = 0x00000014,
 	CrDisplayStringType_SubjectRecognitionAF_Display = 0x00000015,
 	CrDisplayStringType_Reserved11 = 0x00000016,
 };
@@ -2755,6 +2891,10 @@ enum CrHighResolutionShutterSpeedSetting : CrInt8u
 // High Resolution Shutter Speed
 // CrDataType_UInt64Range
 // Upper four bytes: numerator, Lower four bytes: denominator.
+enum CrHighResolutionShutterSpeed : CrInt64u
+{
+	CrHighResolutionShutterSpeed_Nothing = 0xFFFFFFFFFFFFFFFF, // Nothing to display
+};
 
 // Wind Noise Reduction
 enum CrWindNoiseReduction : CrInt8u
@@ -2997,7 +3137,7 @@ enum CrFTPAutoTransfer : CrInt8u
 	CrFTPAutoTransfer_On,
 };
 
-//	Auto FTP Transfer Target(Still/Movie)
+//	Auto FTP Transfer Target FileType (Still and/or Movie)
 enum CrFTPAutoTransferTarget : CrInt8u
 {
 	CrFTPAutoTransferTarget_StillOnly = 0x01,
@@ -3010,6 +3150,7 @@ enum CrFTPAutoTransferTargetMovie : CrInt8u
 {
 	CrFTPAutoTransferTargetMovie_All = 0x01,
 	CrFTPAutoTransferTargetMovie_OnlyShotMark,
+	CrFTPAutoTransferTargetMovie_ProtectOnly,
 };
 
 //	FTP Transfer Target(Still)
@@ -3116,7 +3257,9 @@ enum CrFTPServerUsingSecureProtocol : CrInt8u
 {
 	CrFTPServerUsingSecureProtocol_Invalid = 0x00,
 	CrFTPServerUsingSecureProtocol_Off,
-	CrFTPServerUsingSecureProtocol_On,
+	CrFTPServerUsingSecureProtocol_On,   // Do not use. Will be removed in the next release.
+	CrFTPServerUsingSecureProtocol_On_FTPS = CrFTPServerUsingSecureProtocol_On,
+	CrFTPServerUsingSecureProtocol_On_SFTP,
 };
 
 //	FTP Server Directory Hierarchy Type
@@ -3299,6 +3442,703 @@ enum CrImageStabilizationSteadyShotAdjust : CrInt8u
 // CrDataType_UInt16
 // Unit : mm
 
+
+// Audio Level Display
+enum CrAudioLevelDisplay : CrInt8u
+{
+	CrAudioLevelDisplay_Off = 0x01,
+	CrAudioLevelDisplay_On,
+};
+
+// HDMI Output Color Gamut for RAW Out(Movie)
+enum CrHDMIOutputColorGamutForRAWOutMovie : CrInt8u
+{
+	CrHDMIOutputColorGamutForRAWOutMovie_S_Gamut3_Cine_SLog3 = 0x01,
+	CrHDMIOutputColorGamutForRAWOutMovie_S_Gamut3_SLog3,
+};
+
+// e-Front Curtain Shutter
+enum CrElectricFrontCurtainShutter : CrInt8u
+{
+	CrElectricFrontCurtainShutter_Off = 0x01,
+	CrElectricFrontCurtainShutter_On
+};
+
+// Extend Shutter Speed
+// Upper four bytes: numerator, Lower four bytes: denominator.
+enum CrExtendedShutterSpeed : CrInt64u
+{
+	CrExtendedShutterSpeed_Bulb = 0x0000000000000000,
+	CrExtendedShutterSpeed_Nothing = 0xFFFFFFFFFFFFFFFF, // Nothing to display
+};
+
+// Camera Button Function
+// Camera Button Function Multi
+enum CrCameraButtonFunction : CrInt32u
+{
+	CrCameraButtonFunction_UpButton = 0x00010000,
+	CrCameraButtonFunction_DownButton = 0x00020000,
+	CrCameraButtonFunction_LeftButton = 0x00030000,
+	CrCameraButtonFunction_RightButton = 0x00040000,
+	CrCameraButtonFunction_EnterButton = 0x00050000,
+	CrCameraButtonFunction_MenuButton = 0x00060000,
+	CrCameraButtonFunction_MultiSelectorUp = 0x00070000,
+	CrCameraButtonFunction_MultiSelectorDown = 0x00080000,
+	CrCameraButtonFunction_MultiSelectorLeft = 0x00090000,
+	CrCameraButtonFunction_MultiSelectorRight = 0x000A0000,
+	CrCameraButtonFunction_MultiSelectorEnter = 0x000B0000,
+	CrCameraButtonFunction_MultiSelectorRightUp = 0x000C0000,
+	CrCameraButtonFunction_MultiSelectorRightDown = 0x000D0000,
+	CrCameraButtonFunction_MultiSelectorLeftUp = 0x000E0000,
+	CrCameraButtonFunction_MultiSelectorLeftDown = 0x000F0000,
+	CrCameraButtonFunction_FnButton = 0x00100000,
+	CrCameraButtonFunction_PlaybackButton = 0x00110000,
+	CrCameraButtonFunction_DeleteButton = 0x00120000,
+	CrCameraButtonFunction_ModeButton = 0x00130000,
+	CrCameraButtonFunction_C1Button = 0x00140000,
+	CrCameraButtonFunction_C2Button = 0x00150000,
+	CrCameraButtonFunction_C3Button = 0x00160000,
+	CrCameraButtonFunction_C4Button = 0x00170000,
+	CrCameraButtonFunction_C5Button = 0x00180000,
+	CrCameraButtonFunction_C6Button = 0x00190000,
+	CrCameraButtonFunction_MovieButton = 0x001A0000,
+	CrCameraButtonFunction_AELButton = 0x001B0000,
+	CrCameraButtonFunction_AFOnButton = 0x001C0000,
+};
+
+// Lower 16 bits of camera button function
+enum CrCameraButtonFunctionValue : CrInt16u
+{
+	CrCameraButtonFunctionValue_Up = 0x0001,
+	CrCameraButtonFunctionValue_Down,
+};
+
+// Camera Dial Function
+enum CrCameraDialFunction : CrInt32u
+{
+	CrCameraDialFunction_ControlWheel = 0x40010000,
+	CrCameraDialFunction_FrontDial = 0x40020000,
+	CrCameraDialFunction_RearDialL = 0x40030000,
+	CrCameraDialFunction_RearDialR = 0x40040000,
+};
+
+// Camera Button Function Status
+enum CrCameraButtonFunctionStatus : CrInt16u
+{
+	CrCameraButtonFunctionStatus_Idle = 0x0001,
+	CrCameraButtonFunctionStatus_AnyKeyOn,
+};
+
+// Synchroterminal Forced Output
+enum CrSynchroterminalForcedOutput : CrInt8u
+{
+	CrSynchroterminalForcedOutput_Off = 0x01,
+	CrSynchroterminalForcedOutput_On,
+};
+
+// Shutter Release Time Lag Control
+enum CrShutterReleaseTimeLagControl : CrInt8u
+{
+	CrShutterReleaseTimeLagControl_Off = 0x01,
+	CrShutterReleaseTimeLagControl_On_Stability,
+	CrShutterReleaseTimeLagControl_On_Fastest,
+};
+
+// Continuous Shooting Spot Boost Frame Speed
+// CrDataType_UInt16
+// Unit : fps
+// e.g.) 0x0078 = 120 fps
+
+// Continuous Shooting Spot Boost Status
+enum CrContinuousShootingSpotBoostStatus : CrInt8u
+{
+	CrContinuousShootingSpotBoostStatus_NotSpotBoosting = 0x01,
+	CrContinuousShootingSpotBoostStatus_SpotBoosting,
+};
+
+// Continuous Shooting Spot Boost Enable Status
+enum CrContinuousShootingSpotBoostEnableStatus : CrInt8u
+{
+	CrContinuousShootingSpotBoost_Disable = 0x01,
+	CrContinuousShootingSpotBoost_Enable,
+};
+
+// TimeShift Shooting
+enum CrTimeShiftShooting : CrInt8u
+{
+	CrTimeShiftShooting_Off = 0x01,
+	CrTimeShiftShooting_On,
+};
+
+// TimeShift Trigger Setting
+enum CrTimeShiftTriggerSetting : CrInt8u
+{
+	CrTimeShiftTriggerSetting_S1AndAF = 0x01,
+	CrTimeShiftTriggerSetting_S1,
+	CrTimeShiftTriggerSetting_AF,
+};
+
+
+// TimeShift Shooting Status
+enum CrTimeShiftShootingStatus : CrInt8u
+{
+	CrTimeShiftShootingStatus_Idle = 0x01,
+	CrTimeShiftShootingStatus_TimeShiftShooting,
+	CrTimeShiftShootingStatus_Impossible,
+	CrTimeShiftShootingStatus_Impossible_TimerShiftOverheating,
+	CrTimeShiftShootingStatus_MainShooting,
+};
+
+// TimeShift PreShooting Time Setting
+// CrDataType_UInt32
+// Unit : msec
+// e.g.) 0x0000000A = 10 msec
+
+
+// Embed LUT File
+enum CrEmbedLUTFile : CrInt8u
+{
+	CrEmbedLUTFile_Off = 0x01,
+	CrEmbedLUTFile_On,
+};
+
+// APS-C/Super 35mm Shooting
+enum CrAPS_C_S35 : CrInt8u
+{
+	CrAPS_C_S35_Off = 0x01,
+	CrAPS_C_S35_On,
+	CrAPS_C_S35_Auto,
+};
+
+// Lens Compensation Shading
+enum CrLensCompensationShading : CrInt8u
+{
+	CrLensCompensationShading_Off = 0x01,
+	CrLensCompensationShading_Auto,
+	CrLensCompensationShading_Low,
+};
+
+// Lens Compensation Chromatic Aberration
+enum CrLensCompensationChromaticAberration : CrInt8u
+{
+	CrLensCompensationChromaticAberration_Off = 0x01,
+	CrLensCompensationChromaticAberration_Auto,
+};
+
+// Lens Compensation Distortion
+enum CrLensCompensationDistortion : CrInt8u
+{
+	CrLensCompensationDistortion_Off = 0x01,
+	CrLensCompensationDistortion_Auto,
+};
+
+// Lens Compensation Breathing
+enum CrLensCompensationBreathing : CrInt8u
+{
+	CrLensCompensationBreathing_Off = 0x01,
+	CrLensCompensationBreathing_On,
+};
+
+// Recording Media (Still Image)
+enum CrRecordingMedia : CrInt16u
+{
+	CrRecordingMedia_Slot1 = 0x0001,
+	CrRecordingMedia_Slot2,
+	CrRecordingMedia_SimultaneousRecording = 0x0101,
+	CrRecordingMedia_SortRecording,
+};
+
+// Recording Media (Movie)
+enum CrRecordingMediaMovie : CrInt16u
+{
+	CrRecordingMediaMovie_Slot1 = 0x0001,
+	CrRecordingMediaMovie_Slot2,
+	CrRecordingMediaMovie_SimultaneousRecording = 0x0101,
+};
+
+// Auto Switch Media
+enum CrAutoSwitchMedia : CrInt8u
+{
+	CrAutoSwitchMedia_Off = 0x01,
+	CrAutoSwitchMedia_On,
+};
+
+// Recording File Number (Still)
+// Recording File Number (Movie)
+enum CrRecordingFileNumber : CrInt8u
+{
+	CrRecordingFileNumber_Reset = 0x01,
+	CrRecordingFileNumber_Series,
+};
+
+// Recording Setting File Name 
+// CrDataType_STR
+
+
+// Recording Folder Format
+enum CrRecordingFolderFormat : CrInt8u
+{
+	CrRecordingFolderFormat_Standard = 0x01,
+	CrRecordingFolderFormat_Date,
+};
+
+// Create New Folder(Still) Enable Status
+enum CrCreateNewFolderEnableStatus : CrInt8u
+{
+	CrCreateNewFolderEnableStatus_Disable = 0x00,
+	CrCreateNewFolderEnableStatus_Enable,
+};
+
+// Create New Folder(Still)
+// CrDataType_STR
+// SetOnly
+
+
+// Select IPTC Metadata
+// Index The value of IPTCMetadata
+//   cf.) CrDisplayStringType_IPTC_Metadata_Display
+enum CrSelectIPTCMetadata : CrInt8u
+{
+	CrSelectIPTCMetadata_Off = 0x00,
+};
+
+// Copyright Info
+enum CrWriteCopyrightInfo : CrInt8u
+{
+	CrWriteCopyrightInfo_Off = 0x01,
+	CrWriteCopyrightInfo_On,
+};
+
+// Set Photographer
+// CrDataType_STR
+
+// Set Copyright
+// CrDataType_STR
+
+// File Settings Title Name Settings
+// CrDataType_STR
+
+
+// Focus Bracket Recording Folder
+enum CrFocusBracketRecordingFolder : CrInt8u
+{
+	CrFocusBracketRecordingFolder_CurrentFolder = 0x01,
+	CrFocusBracketRecordingFolder_NewFolder,
+};
+
+// Forced File Number Reset Enable Status
+enum CrForcedFileNumberReset : CrInt8u
+{
+	CrForcedFileNumberReset_Disable = 0x00,
+	CrForcedFileNumberReset_Enable,
+};
+
+// Release without Lens
+enum CrReleaseWithoutLens : CrInt8u
+{
+	CrReleaseWithoutLens_Disable = 0x01,
+	CrReleaseWithoutLens_Enable,
+};
+
+// Release without Card
+enum CrReleaseWithoutCard : CrInt8u
+{
+	CrReleaseWithoutCard_Disable = 0x01,
+	CrReleaseWithoutCard_Enable,
+};
+
+// Grid Line Display
+enum CrGridLineDisplay : CrInt8u
+{
+	CrGridLineDisplay_Off = 0x01,
+	CrGridLineDisplay_On,
+};
+
+// Continuous Shooting Speed in Electric Shutter(Hi+)
+// Continuous Shooting Speed in Electric Shutter(Hi)
+// Continuous Shooting Speed in Electric Shutter(Mid)
+// Continuous Shooting Speed in Electric Shutter(Lo)
+// 
+// The real value of shutter speed in pictures/second.
+enum CrContinuousShootingSpeedInElectricShutter : CrInt16u
+{
+	CrContinuousShootingSpeedInElectricShutter_Invalid = 0x0000,
+};
+
+// ISO Auto Range Limit(min), ISO Auto Range Limit(max)
+// The value is same as IsoSensitivity
+
+
+// Face Priority in Multi Metering
+enum CrFacePriorityInMultiMetering : CrInt8u
+{
+	CrFacePriorityInMultiMetering_Off = 0x01,
+	CrFacePriorityInMultiMetering_On,
+};
+
+// Priority Set in AWB
+enum CrPrioritySetInAWB : CrInt8u
+{
+	CrPrioritySetInAWB_Standard = 0x01,
+	CrPrioritySetInAWB_Ambience,
+	CrPrioritySetInAWB_White,
+};
+
+// Custom WB Size Setting
+enum CrCustomWBSizeSetting : CrInt8u
+{
+	CrCustomWBSizeSetting_S = 0x01,
+	CrCustomWBSizeSetting_M,
+	CrCustomWBSizeSetting_L,
+};
+
+// AF Illuminator
+enum CrAFIlluminator : CrInt8u
+{
+	CrAFIlluminator_Off = 0x01,
+	CrAFIlluminator_Auto,
+};
+
+// Aperture Drive in AF
+enum CrApertureDriveInAF : CrInt8u
+{
+	CrApertureDriveInAF_Standard = 0x01,
+	CrApertureDriveInAF_FocusPriority,
+	CrApertureDriveInAF_SilentPriority,
+};
+
+// AF with shutter
+enum CrAFWithShutter : CrInt8u
+{
+	CrAFWithShutter_Off = 0x01,
+	CrAFWithShutter_On,
+};
+
+// Full Time DMF
+enum CrFullTimeDMF : CrInt8u
+{
+	CrFullTimeDMF_Off = 0x01,
+	CrFullTimeDMF_On,
+};
+
+// Pre-AF
+enum CrPreAF : CrInt8u
+{
+	CrPreAF_Off = 0x01,
+	CrPreAF_On,
+};
+
+// Subject Recognition Person Tracking Subject Shift Range
+// CrDataType_UInt8Range
+
+// Subject Recognition Animal+Bird Priority
+enum CrSubjectRecognitionAnimalBirdPriority : CrInt8u
+{
+	CrSubjectRecognitionAnimalBirdPriority_Auto = 0x01,
+	CrSubjectRecognitionAnimalBirdPriority_AnimalPriority,
+	CrSubjectRecognitionAnimalBirdPriority_BirdPriority,
+};
+
+// Subject Recognition Animal+Bird Detection Parts
+// Subject Recognition Animal(Still) Detection Parts
+// Subject Recognition Bird Detection Parts
+enum CrSubjectRecognitionAnimalBirdDetectionParts : CrInt8u
+{
+	CrSubjectRecognitionAnimalBirdDetectionParts_FollowIndividualSetting = 0xFF,
+	CrSubjectRecognitionAnimalBirdDetectionParts_EyeHeadBody = 0x01,
+	CrSubjectRecognitionAnimalBirdDetectionParts_EyeHead,
+	CrSubjectRecognitionAnimalBirdDetectionParts_Eye,
+};
+
+// Subject Recognition Animal(Still) Tracking Subject Shift Range
+// CrDataType_UInt8Range
+
+// Subject Recognition Animal(Still) Tracking Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Animal(Still) Detection Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Bird Tracking Subject Shift Range
+// CrDataType_UInt8Range
+
+// Subject Recognition Bird Tracking Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Bird Detection Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Insect Tracking Subject Shift Range
+// CrDataType_UInt8Range
+
+// Subject Recognition Insect Tracking Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Insect Detection Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Car/Train Tracking Subject Shift Range
+// CrDataType_UInt8Range
+
+// Subject Recognition Car/Train Tracking Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Car/Train Detection Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Plane Tracking Subject Shift Range
+// CrDataType_UInt8Range
+
+// Subject Recognition Plane Tracking Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Plane Detection Sensitivity
+// CrDataType_UInt8Range
+
+// Subject Recognition Priority on Registered Face
+enum CrSubjectRecognitionPriorityOnRegisteredFace : CrInt8u
+{
+	CrSubjectRecognitionPriorityOnRegisteredFace_Off = 0x01,
+	CrSubjectRecognitionPriorityOnRegisteredFace_On,
+};
+
+// Face/Eye Frame Display
+enum CrFaceEyeFrameDisplay : CrInt8u
+{
+	CrFaceEyeFrameDisplay_Off = 0x01,
+	CrFaceEyeFrameDisplay_On,
+};
+
+// Focus Map
+enum CrFocusMap : CrInt8u
+{
+	CrFocusMap_Off = 0x01,
+	CrFocusMap_On,
+};
+
+// Initial Focus Magnifier(Still)
+// CrDataType_UInt16
+// 10 times value of the Ratio
+// e.g.) 0x000A = 10 (x1.0)
+
+// AF in Focus Magnifier
+enum CrAFInFocusMagnifier : CrInt8u
+{
+	CrAFInFocusMagnifier_Off = 0x01,
+	CrAFInFocusMagnifier_On,
+};
+
+// AF Track for Speed Change
+enum CrAFTrackForSpeedChange : CrInt8u
+{
+	CrAFTrackForSpeedChange_Stable = 0x01,
+	CrAFTrackForSpeedChange_Standard,
+	CrAFTrackForSpeedChange_Responsive,
+};
+
+// AF Free Size and Position Setting/Default AF Free Size and Position Setting
+// CrDataType_UInt64
+// Upper four bytes: Height and Width
+//   the height is set in the upper two bytes and the width is set in the lower two bytes. 
+// Lower four bytes: Center coordinates .
+//   the x coordinate is set in the upper two bytes and the y coordinate is set in the lower two bytes. 
+// e.g.) 0x0032003200960064 = Height is 50, Width is 50, x is 150, y is 100
+
+// Play Set of Multi. Media
+enum CrPlaySetOfMultiMedia : CrInt8u
+{
+	CrPlaySetOfMultiMedia_Slot1 = 0x01,
+	CrPlaySetOfMultiMedia_Slot2,
+};
+
+// Remote Save Image Size
+enum CrRemoteSaveImageSize : CrInt8u
+{
+	CrRemoteSaveImageSize_LargeSize = 0x01,
+	CrRemoteSaveImageSize_SmallSize,
+};
+
+// FTP Transfer Still Image Quality Size
+enum CrFTPTransferStillImageQualitySize : CrInt8u
+{
+	CrFTPTransferStillImageQualitySize_Small = 0x01,
+	CrFTPTransferStillImageQualitySize_Large,
+};
+
+// Auto FTP Transfer Target(Still)
+enum CrFTPAutoTransferTargetStill : CrInt8u
+{
+	CrFTPAutoTransferTargetStill_All = 0x01,
+	CrFTPAutoTransferTargetStill_ProtectOnly,
+};
+
+// Protect Image in FTP Transfer
+enum CrProtectImageInFTPTransfer : CrInt8u
+{
+	CrProtectImageInFTPTransfer_Off = 0x01,
+	CrProtectImageInFTPTransfer_On,
+};
+
+// Monitor Brightness Type
+enum CrMonitorBrightnessType : CrInt8u
+{
+	CrMonitorBrightnessType_Manual = 0x01,
+	CrMonitorBrightnessType_SunnyWeather,
+};
+
+// Monitor Brightness Manual
+// CrDataType_Int16Range
+
+
+// Display Quality(Finder/Monitor)
+enum CrDisplayQualityFinder : CrInt8u
+{
+	CrDisplayQualityFinder_Standard = 0x01,
+	CrDisplayQualityFinder_High,
+};
+
+// TC/UB Display Setting
+enum CrTCUBDisplaySetting : CrInt8u
+{
+	CrTCUBDisplaySetting_Counter = 0x01,
+	CrTCUBDisplaySetting_TC, // TimeCode
+	CrTCUBDisplaySetting_UB, // UserBit
+};
+
+// Gamma Display Assist
+enum CrGammaDisplayAssist : CrInt8u
+{
+	CrGammaDisplayAssist_Off = 0x01,
+	CrGammaDisplayAssist_On,
+};
+
+// Gamma Display Assist Type
+enum CrGammaDisplayAssistType : CrInt16u
+{
+	CrGammaDisplayAssistType_Auto = 0x0001,
+	CrGammaDisplayAssistType_SLog2_709_800 = 0x0302,
+	CrGammaDisplayAssistType_SLog3_709_800 = 0x0303,
+	CrGammaDisplayAssistType_HLG_BT2020 = 0x0401,
+	CrGammaDisplayAssistType_HLG_709 = 0x0402,
+};
+
+// Audio Signals(Start/End)
+enum CrAudioSignalsStartEnd : CrInt8u
+{
+	CrAudioSignalsStartEnd_Off = 0x01,
+	CrAudioSignalsStartEnd_On,
+};
+
+// Audio Signals Volume
+// CrDataType_UInt8Range
+
+
+// Control For HDMI
+enum CrControlForHDMI : CrInt8u
+{
+	CrControlForHDMI_Off = 0x01,
+	CrControlForHDMI_On,
+};
+
+// Anti-dust Shutter When Power OFF
+enum CrAntidustShutterWhenPowerOff : CrInt8u
+{
+	CrAntidustShutterWhenPowerOff_Off = 0x01,
+	CrAntidustShutterWhenPowerOff_On,
+};
+
+// Wake on LAN
+enum CrWakeOnLAN : CrInt8u
+{
+	CrWakeOnLAN_Off = 0x01,
+	CrWakeOnLAN_On,
+};
+
+// Camera Error Caution Status
+enum CrCameraErrorCautionStatus : CrInt8u
+{
+	CrCameraErrorCautionStatus_NoError = 0x01,
+	CrCameraErrorCautionStatus_Error,
+};
+
+// System Error Caution Status
+enum CrSystemErrorCautionStatus : CrInt8u
+{
+	CrSystemErrorCautionStatus_NoError = 0x01,
+	CrSystemErrorCautionStatus_Error,
+};
+
+// Flicker Less Shooting Status
+enum CrFlickerLessShootingStatus : CrInt8u
+{
+	CrFlickerLessShootingStatus_NotDetected = 0x00,
+	CrFlickerLessShootingStatus_Detected,
+};
+
+// Zoom Driving Status
+enum CrZoomDrivingStatus : CrInt8u
+{
+	CrZoomDrivingStatus_NotDriving = 0x01,
+	CrZoomDrivingStatus_Driving,
+};
+
+// Shooting Self timer Status
+enum CrShootingSelfTimerStatus : CrInt8u
+{
+	CrShootingSelfTimerStatus_Idle = 0x01,
+	CrShootingSelfTimerStatus_CountingDown,
+};
+
+// Tracking On + AF On Enable Status
+enum CrTrackingOnAndAFOnEnableStatus : CrInt8u
+{
+	CrTrackingOnAndAFOnEnableStatus_Disable = 0x00,
+	CrTrackingOnAndAFOnEnableStatus_Enable,
+};
+
+// Program Shift Status
+enum CrProgramShiftStatus : CrInt8u
+{
+	CrProgramShiftStatus_Idle = 0x01,
+	CrProgramShiftStatus_ProgramShift,
+};
+
+// Metered Manual Level
+// CrDataType_Int16Range
+// 1000 times value
+
+
+// Zoom and Focus Preset Data Version
+// CrDataType_UInt16
+// 100 times value
+// e.g.) 0x0065 = 101 (version 1.01)
+
+// Zoom and Focus Preset ZoomOnly Set
+// CrDataType_UInt16
+// Upper 8bit = Preset number, Lower 8bit = Off/On(CrZoomAndFocusPresetZoomOnlyValue)
+
+
+// Second/Total Battery Remain
+// 0~100: percentage of the battery residual quantity.
+// cf.) Battery Residual Quantity 
+
+
+// Second/Total Battery Level
+// cf.) Battery Level Indicator
+
+
+// Body Serial Number
+// CrDataType_STR
+
+
+// Media Slot Number
+enum CrSlotNumber : CrInt32u
+{
+	CrSlotNumber_Slot1 = 0x00000001,
+	CrSlotNumber_Slot2,
+};
+
+
 class SCRSDK_API CrDeviceProperty
 {
 public:
@@ -3463,6 +4303,28 @@ public:
 	CrInt32u fileNameSize;
 	CrChar* fileName;
 };
+
+#pragma pack(1)
+class CrLevelInfo
+{
+public:
+	CrLevelInfo()
+		: state(CrLevel_Off)
+		, reserved(0)
+		, x(0)
+		, y(0)
+		, z(0)
+	{}
+	~CrLevelInfo()
+	{}
+public:
+	CrLevelState state;
+	CrInt32 reserved;
+	CrInt32 x;
+	CrInt32 y;
+	CrInt32 z;
+};
+#pragma pack()
 
 #pragma pack(1)
 class CrFocusFrameInfo
@@ -3758,6 +4620,49 @@ public:
 	CrInt32u                 downTime;
 	CrInt32u                 videoPort;
 };
+
+
+// Zoom and Focus PresetInfo isExists
+enum CrZoomAndFocusPresetExist : CrInt8u
+{
+	CrZoomAndFocusPresetExist_False = 0x01,
+	CrZoomAndFocusPresetExist_True ,
+};
+
+// Zoom and Focus PresetInfo ZoomOnly Enable Status
+enum CrZoomAndFocusPresetZoomOnlyEnableStatus : CrInt8u
+{
+	CrZoomAndFocusPresetZoomOnlyEnableStatus_Disable = 0x01,
+	CrZoomAndFocusPresetZoomOnlyEnableStatus_Enable,
+};
+
+// Zoom and Focus PresetInfo ZoomOnly Value
+// CrDeviceProperty_ZoomAndFocusPresetZoomOnly_Set
+enum CrZoomAndFocusPresetZoomOnlyValue : CrInt8u
+{
+	CrZoomAndFocusPresetZoomOnlyValue_Off = 0x01,
+	CrZoomAndFocusPresetZoomOnlyValue_On,
+};
+
+// Used by GetZoomAndFocusPreset API
+#pragma pack(1)
+class SCRSDK_API CrZoomAndFocusPresetInfo
+{
+public:
+	CrZoomAndFocusPresetInfo();
+	~CrZoomAndFocusPresetInfo();
+	CrZoomAndFocusPresetInfo(const CrZoomAndFocusPresetInfo& ref);
+	CrZoomAndFocusPresetInfo& operator =(const CrZoomAndFocusPresetInfo& ref);
+
+public:
+	CrZoomAndFocusPresetExist                isExists;
+	CrInt16u*                                lensModelName;
+	CrInt32u                                 zoomDistance;
+	CrInt32u                                 focalDistance;
+	CrZoomAndFocusPresetZoomOnlyEnableStatus zoomOnlyEnableStatus;
+	CrZoomAndFocusPresetZoomOnlyValue        zoomOnlyValue;
+};
+#pragma pack()
 
 }
 
